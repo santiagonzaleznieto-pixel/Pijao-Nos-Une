@@ -32,7 +32,7 @@ jobs:
 
       - name: Preparar proyecto
         run: |
-          mkdir -source
+          mkdir -p source
           unzip -o Archivo.zip -d source
           find source -name '__MACOSX' -type d -prune -exec rm -rf {} +
           find source -name '._*' -type f -delete
