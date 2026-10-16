@@ -1,4 +1,3 @@
-
 name: Construir APK Android
 
 on:
@@ -36,15 +35,15 @@ jobs:
           unzip -o Archivo.zip -d source
           find source -name '__MACOSX' -type d -prune -exec rm -rf {} +
           find source -name '._*' -type f -delete
-          test -f source/buildozer.spec
+          test -f source/pijao_nos_une/buildozer.spec
 
       - name: Construir APK
-        working-directory: source
+        working-directory: source/pijao_nos_une
         run: buildozer -v android debug
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
           name: Pijao-Nos-Une-APK
-          path: source/bin/*.apk
+          path: source/pijao_nos_une/bin/*.apk
           if-no-files-found: error
