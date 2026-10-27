@@ -13,10 +13,18 @@ jobs:
       - name: Descargar proyecto
         uses: actions/checkout@v4
 
-      - name: Buscar el proyecto (la carpeta que tiene buildozer.spec)
+      - name: Preparar el proyecto (busca buildozer.spec o descomprime el .zip del repositorio)
         run: |
-          RUTA=$(find . -maxdepth 3 -name buildozer.spec -not -path "*/.buildozer/*" | head -n 1)
-          if [ -z "$RUTA" ]; then echo "No encontré buildozer.spec en el repositorio"; exit 1; fi
+          echo "Contenido del repositorio:"; ls -la
+          RUTA=$(find . -maxdepth 4 -name buildozer.spec -not -path "*/.buildozer/*" -not -path "./.git/*" | head -n 1)
+          if [ -z "$RUTA" ]; then
+            ZIP=$(find . -maxdepth 2 -name "*.zip" -not -path "./.git/*" | sort -V | tail -n 1)
+            if [ -z "$ZIP" ]; then echo "No encontré buildozer.spec ni un archivo .zip con el proyecto"; exit 1; fi
+            echo "Usando el zip más reciente: $ZIP"
+            rm -rf source && mkdir source && unzip -q "$ZIP" -d source
+            RUTA=$(find source -maxdepth 3 -name buildozer.spec -not -path "*/.buildozer/*" | head -n 1)
+            if [ -z "$RUTA" ]; then echo "El zip no contiene buildozer.spec"; exit 1; fi
+          fi
           echo "PROYECTO=$(dirname "$RUTA")" >> "$GITHUB_ENV"
           echo "Proyecto en: $(dirname "$RUTA")"
 
