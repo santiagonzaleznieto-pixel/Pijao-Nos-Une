@@ -2,48 +2,87 @@ name: Construir APK Android
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04          # Ubuntu 22.04 trae justo las herramientas que usa Buildozer (la «latest» cambió y rompe la construcción)
+    timeout-minutes: 90
     steps:
       - name: Descargar proyecto
         uses: actions/checkout@v4
 
-      - name: Instalar Java
+      - name: Buscar el proyecto (la carpeta que tiene buildozer.spec)
+        run: |
+          RUTA=$(find . -maxdepth 3 -name buildozer.spec -not -path "*/.buildozer/*" | head -n 1)
+          if [ -z "$RUTA" ]; then echo "No encontré buildozer.spec en el repositorio"; exit 1; fi
+          echo "PROYECTO=$(dirname "$RUTA")" >> "$GITHUB_ENV"
+          echo "Proyecto en: $(dirname "$RUTA")"
+
+      - name: Instalar Java 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
+      - name: Instalar Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Instalar dependencias
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip \
-            autoconf automake libtool pkg-config \
-            zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo5 cmake libffi-dev libssl-dev \
-            build-essential ccache \
-            libltdl-dev
-          python3 -m pip install --upgrade pip
-          python3 -m pip install buildozer cython==0.29.36
+          sudo apt-get update -y
+          sudo apt-get install -y --no-install-recommends git zip unzip autoconf automake libtool pkg-config zlib1g-dev \
+            libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev build-essential ccache
+          python -m pip install --upgrade pip
+          pip install "buildozer==1.5.0" "cython==0.29.36" "setuptools<70" wheel virtualenv
 
-      - name: Preparar proyecto
-        run: |
-          mkdir -p source
-          unzip -o Archivo.zip -d source
-          find source -name '__MACOSX' -type d -prune -exec rm -rf {} +
-          find source -name '._*' -type f -delete
-          test -f source/buildozer.spec
+      - name: Recordar las descargas de Android (SDK y NDK)
+        uses: actions/cache@v4
+        with:
+          path: ~/.buildozer
+          key: buildozer-global-${{ hashFiles('**/buildozer.spec') }}
+          restore-keys: buildozer-global-
 
       - name: Construir APK
-        working-directory: source
-        run: buildozer -v android debug
+        working-directory: ${{ env.PROYECTO }}
+        run: |
+          set -o pipefail
+          buildozer -v android debug 2>&1 | tee "$GITHUB_WORKSPACE/build.log"
+
+      - name: Resumen del error
+        if: failure()
+        run: |
+          {
+            echo "## Por qué falló la construcción"
+            if [ ! -f build.log ]; then echo "No se llegó a construir: revisa el paso que quedó en rojo."; exit 0; fi
+            echo
+            echo "### Líneas con errores"
+            echo '```'
+            grep -n -i -E "error|traceback|exception|no matching|not found|cannot|denied|failed to|fatal" build.log | grep -v -i -E "warning|0 errors" | tail -n 40 || true
+            echo '```'
+            echo
+            echo "### Lo que pasó justo antes del aviso final"
+            echo '```'
+            LINEA=$(grep -n "Buildozer failed to execute the last command" build.log | head -n 1 | cut -d: -f1)
+            if [ -n "$LINEA" ]; then sed -n "$((LINEA > 90 ? LINEA - 90 : 1)),${LINEA}p" build.log | grep -v "^#" | tail -n 70; else tail -n 70 build.log; fi
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Guardar APK
         uses: actions/upload-artifact@v4
         with:
-          name: Pijao-Nos-Une-APK
-          path: source/bin/*.apk
+          name: pijao-nos-une-apk
+          path: ${{ env.PROYECTO }}/bin/*.apk
           if-no-files-found: error
+
+      - name: Guardar el registro de la construcción
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: registro-construccion
+          path: build.log
+          if-no-files-found: ignore
+          retention-days: 7
