@@ -7,9 +7,10 @@
 | Campaña | Jaime González · Alcaldía de Pijao (Quindío) · periodo 2028–2031 |
 | Lema | "Pijao nos une" |
 | Preparado para | El Administrador del sistema y el Director de Campaña |
-| Versión | 1.0 · borrador para revisión |
-| Fecha | 13 de octubre de 2026 |
-| Naturaleza del documento | Descripción en lenguaje natural de todo lo que la app hace, cómo lo hace y con qué reglas. Todavía no es código ni diseño gráfico final. |
+| Versión | 1.1 · revisada contra el código y el calendario oficial |
+| Fecha | 4 de noviembre de 2026 (versión 1.0: 13 de octubre de 2026) |
+| Naturaleza del documento | Descripción en lenguaje natural de todo lo que la app hace, cómo lo hace y con qué reglas. Desde la versión 1.1 incluye también el estado real de construcción (sección 24), las funciones nuevas propuestas (sección 25) y el registro de cambios (sección 26). |
+| Estado del software | App v0.10.1 · Fase 2, parte 1 · repositorio `Pijao-Nos-Une` en GitHub (rama `main`) |
 
 > **Aviso importante.** Este documento incluye orientación sobre normas colombianas (protección de datos personales, campañas y delitos electorales). Es una guía de diseño, no asesoría jurídica. Los puntos que debe revisar un abogado electoral y de protección de datos están reunidos en la sección 23.
 
@@ -26,6 +27,7 @@ Está escrito en lenguaje natural para que lo entienda cualquier persona del equ
 - **Secciones 16 y 17:** protección de datos, seguridad, funcionamiento sin internet y rendimiento.
 - **Sección 18:** cada pantalla de la app, una por una.
 - **Secciones 19 a 23:** reglas de negocio y catálogos, historias de uso, riesgos, fases de construcción y decisiones pendientes.
+- **Secciones 24 a 26 (nuevas en 1.1):** estado real del software frente a este documento, hallazgos de seguridad, funciones nuevas propuestas y registro de cambios.
 
 **Marcas que verá en el texto**
 
@@ -72,6 +74,9 @@ Está escrito en lenguaje natural para que lo entienda cualquier persona del equ
 21. Riesgos y cómo se cubren
 22. Fases de construcción y lista de verificación antes de lanzar
 23. Decisiones pendientes y puntos para validar con un abogado
+24. Estado real de construcción (auditoría del 4 de noviembre de 2026) — *nuevo en 1.1*
+25. Funciones nuevas propuestas — *nuevo en 1.1*
+26. Registro de cambios del documento — *nuevo en 1.1*
 - Apéndice A. Glosario
 - Apéndice B. Notas para quien construya
 
@@ -167,22 +172,31 @@ Indicadores de éxito sugeridos:
 
 **Se asume (a confirmar con el equipo):** conectividad irregular en zonas rurales, muchos adultos mayores, colaboradores con teléfonos Android de gama media o baja y poca experiencia con aplicaciones complejas.
 
-**El calendario.** Las elecciones de alcaldes, gobernadores, concejos, asambleas y juntas administradoras locales se realizan el último domingo de octubre, que en 2027 es el **31 de octubre**. El periodo 2028–2031 empieza el 1 de enero de 2028. A hoy (13 de octubre de 2026) faltan cerca de 12 meses y medio. La Registraduría publica el calendario oficial; como referencia, esto fue lo ocurrido en 2023 y lo que se espera para 2027:
+**El calendario.** Las elecciones de alcaldes, gobernadores, concejos, asambleas y juntas administradoras locales se realizan el último domingo de octubre, que en 2027 es el **31 de octubre**. El periodo 2028–2031 empieza el 1 de enero de 2028. A hoy (4 de noviembre de 2026) faltan **361 días**.
 
-| Hito | Referencia en 2023 | Estimado para 2027 (confirmar) |
+**Calendario oficial.** La Registraduría fijó el calendario el 28 de octubre de 2026 (la prensa cita la **Resolución 12338 de 2026**; una fuente cita la 12342, así que el número debe confirmarse en registraduria.gov.co). Fechas publicadas hasta ahora:
+
+| Hito | Fecha oficial 2027 | Estado |
 |---|---|---|
-| Apertura de la inscripción de cédulas | 29 de octubre de 2022 | Hacia el 31 de octubre de 2026 |
-| Cierre de la inscripción de cédulas | 29 de agosto de 2023 | Hacia el 31 de agosto de 2027 |
-| Inscripción de candidaturas | Entre finales de junio y finales de julio | Mitad de 2027 |
-| Inicio de propaganda electoral en espacio público | 29 de julio | Hacia finales de julio de 2027 |
-| Inicio de propaganda electoral en medios | 2 de agosto | Hacia inicios de agosto de 2027 |
-| Último día para inscribir testigos electorales | 27 de octubre | Dos días antes de la elección |
-| Elecciones | 29 de octubre de 2023 | **Domingo 31 de octubre de 2027** |
-| Posesión de las nuevas autoridades | 1 de enero de 2024 | 1 de enero de 2028 |
+| Apertura de la inscripción de cédulas y del registro de grupos significativos de ciudadanos (recolección de apoyos) | 31 de octubre de 2026 | **Ya abierta** |
+| Cierre de inscripción de grupos significativos, movimientos sociales y promotores del voto en blanco; apertura de la inscripción de candidaturas; se suspende la incorporación de cédulas nuevas al censo | 30 de junio de 2027 | Confirmada en prensa |
+| Cierre de la inscripción de candidaturas y entrega de firmas; publicación del censo electoral | 31 de julio de 2027 | Confirmada en prensa |
+| Inicio del periodo de modificación de candidaturas | 2 de agosto de 2027 | Confirmada en prensa |
+| Inicio de la propaganda electoral en medios de comunicación | 5 de agosto de 2027 | Confirmada en prensa |
+| Cierre de la inscripción de cédulas | 31 de agosto de 2027 | Confirmada en prensa |
+| Sorteo y publicación de jurados de votación | A más tardar el 16 de octubre de 2027 | Confirmada en prensa |
+| Inicio de la propaganda en espacio público | Por confirmar (en 2023 fue tres meses antes de la elección) | **Pendiente: abogado** |
+| Último día para inscribir testigos electorales | Por confirmar (en 2023, dos días antes de la elección) | **Pendiente: abogado** |
+| **Elecciones** (8:00 a. m. a 4:00 p. m.) | **Domingo 31 de octubre de 2027** | Confirmada |
+| Inicio de los escrutinios generales | Martes 2 de noviembre de 2027 | Confirmada en prensa |
+| Posesión de las nuevas autoridades | 1 de enero de 2028 | Confirmada |
 
-Dos consecuencias prácticas:
+Las fechas se cargan en el calendario legal de la app (sección 14.7) y el Administrador las corrige cuando el abogado confirme el texto de la resolución.
 
-- **La inscripción de cédulas está por abrir.** Ese proceso sirve para quienes cambiaron de domicilio y quieren votar donde viven. La app nunca debe usarse para promover inscripciones de personas que no viven en Pijao: eso es un delito (fraude en inscripción de cédulas, conocido como "trashumancia electoral"). Ver secciones 14 y 16.
+Tres consecuencias prácticas:
+
+- **Si la candidatura va por firmas, el reloj ya corre.** La recolección de apoyos de los grupos significativos de ciudadanos abrió el 31 de octubre de 2026 y cierra el 30 de junio de 2027. La decisión 23.1-1 (forma de inscripción) pasa a ser **urgente**: si es por firmas, el módulo de apoyos (14.10) sube a la Fase 2.
+- **La inscripción de cédulas ya está abierta** (hasta el 31 de agosto de 2027). Ese proceso sirve para quienes cambiaron de domicilio y quieren votar donde viven. La app nunca debe usarse para promover inscripciones de personas que no viven en Pijao: eso es un delito (fraude en inscripción de cédulas, conocido como "trashumancia electoral"). Ver secciones 14 y 16.
 - **La propaganda tiene ventanas legales.** Antes de que abra el periodo legal de propaganda, el trabajo de la app debe centrarse en conocer el territorio, escuchar a las familias y organizar al equipo. Cada guion de visita y cada mensaje debe revisarse con el abogado para no incurrir en propaganda fuera de tiempo.
 
 ## 2.3 Principios de diseño
@@ -222,7 +236,7 @@ La app **nunca**:
 
 1. "Principal cabeza de alimentos" significa **principal sostén del hogar**: la persona que aporta el sustento principal.
 2. El Administrador es quien encarga este documento. Jaime González será el Director de Campaña.
-3. La app será móvil (Android e iOS) para el trabajo de campo, con un **panel web** para tareas pesadas del Director y del Administrador (informes, importaciones, permisos).
+3. La app será móvil para el trabajo de campo, con un **panel web** para tareas pesadas del Director y del Administrador (informes, importaciones, permisos). **Actualización 1.1:** hoy solo existe para Android, sin panel web. iOS queda como secundario y solo se hará si el equipo lo necesita. La tecnología se decide en 23.1-17 (ver 24.5).
 4. La base de datos y los archivos viven en Supabase.
 5. La app está en español de Colombia.
 6. La forma en que se inscribirá la candidatura (por partido, coalición o firmas) todavía no está definida (ver sección 23).
@@ -519,6 +533,16 @@ El mapa y las estadísticas básicas son para todos, como se pidió. Pero los pe
 7. **Suspendida.** Temporal (por el Director) o automática si hay 30 días sin actividad. Cierra sesiones y apaga permisos.
 8. **Dada de baja.** Definitiva. Se cierran todas sus sesiones, se borra la información guardada en su teléfono en la siguiente conexión, se reasignan sus tareas y zonas, se le recuerdan sus compromisos de confidencialidad y se registra el motivo. Los registros que hizo se conservan en la campaña con su nombre como autor.
 
+**Cómo funciona hoy (versión 1.1).** Los pasos 1 y 2 se hacen con un **código de invitación** en lugar de un enlace con verificación por SMS. El Director genera el código y la persona lo escribe en la app junto con sus datos. La cuenta se crea sin correo de confirmación (función de servidor `registrar-con-codigo`) y queda pendiente de aprobación. Es más barato y funciona sin servicio de SMS, pero exige estas reglas:
+
+- Código de **12 caracteres o más**, de un solo uso y con vencimiento de 72 horas.
+- **Límite de intentos** y mensaje de error genérico.
+- La mayoría de edad y el correo de la invitación se validan **en la base de datos**, no solo en la función.
+- El **registro abierto de Supabase**, desactivado.
+- Las invitaciones de Director, con aprobación del Administrador.
+
+Ver 24.3, hallazgos A7 y A8.
+
 ## 4.10 Inicio de sesión y seguridad de acceso
 
 - **Ingreso:** celular con código por mensaje, o correo con contraseña. Después, huella o rostro del teléfono para volver a entrar rápido.
@@ -679,6 +703,7 @@ El mapa conecta a las personas del equipo, pero con límites claros para respeta
 - Se actualiza sola cada noche con Wi-Fi.
 - Tope de almacenamiento configurable; se puede borrar una zona para liberar espacio.
 - Fuera de las zonas descargadas y sin señal, aparece un mensaje claro: "Este mapa no está disponible sin conexión".
+- **Licencias (agregado en 1.1).** Los servidores públicos de OpenStreetMap y las imágenes satelitales gratuitas de Esri **no permiten descargar zonas enteras para usarlas sin conexión**. El mapa sin conexión debe salir de un **paquete propio de Pijao** (calles de OpenStreetMap procesadas y ortofoto del IGAC o tomada con dron, en formato PMTiles o MBTiles) o de un proveedor que lo autorice por contrato (ver N-02 y la decisión 23.1-5).
 
 ## 5.15 Dirección escrita y coordenadas
 
@@ -1088,6 +1113,12 @@ Se transmiten en vivo: cambios en los puntos del mapa, tareas y anuncios nuevos,
 - Se guarda en una **base local cifrada** y entra a una **cola de envío** con reintentos automáticos.
 - Se envían primero los datos y después las fotos; si una foto falla, el registro no se pierde.
 - Los conflictos se resuelven como en la sección 5.13.
+- **Reglas agregadas en 1.1:**
+  - Cada registro de la cola lleva el **usuario que lo creó** y nunca se envía con otra sesión.
+  - Lo que se capturó sin conexión y luego no cumple una regla (por ejemplo, la distancia de 50 m) **se acepta y se marca para revisión**, no se rechaza.
+  - La descarga desde el servidor relee con un **margen de 2 minutos** para no perder cambios confirmados tarde.
+  - Cada teléfono descarga **solo sus zonas asignadas**.
+- **Estado actual:** la base local todavía no está cifrada (24.3, C1). Es requisito para el piloto con datos reales.
 
 ## 8.8 Cifrado y datos sensibles
 
@@ -1671,7 +1702,7 @@ Carga de resultados oficiales, comparación con el conteo paralelo, informe, agr
 - **Ley 1581 de 2012** (régimen general de protección de datos) y **Decreto 1074 de 2015** (que compila el Decreto 1377 de 2013).
 - **Autoridad:** Superintendencia de Industria y Comercio (SIC).
 - **Circular Externa 001 de 2022 de la SIC** para campañas: informar la finalidad específica; no usar medios engañosos; no usar bases de datos de otras entidades; guardar los datos solo el tiempo necesario y **suprimirlos cuando se cumpla la finalidad**; inscribir las nuevas bases de datos en el RNBD cuando corresponda.
-- **Circular Externa 002 de 2026 de la SIC** (enero de 2026), según la información pública disponible: ningún dato personal sin autorización previa, expresa e informada; todos los canales deben mostrar la política de tratamiento y el aviso de privacidad y ofrecer mecanismos de autorización; prohíbe incluir personas en grupos de mensajería, listas de distribución o envíos masivos sin su consentimiento; el dato sensible, como la orientación política, exige autorización explícita; advierte sobre perfiles sin consentimiento; pide transparencia sobre criterios de segmentación, fuentes de datos y uso de inteligencia artificial; exige mecanismos ágiles, permanentes y sencillos para conocer, actualizar, rectificar o suprimir datos; y limita el uso de datos de afiliados y seguidores a la comunicación directa, sin compartirlos con terceros sin autorización.
+- **Circular Externa 002 de 2026 de la SIC** (15 de enero de 2026; el texto oficial está publicado en sedeelectronica.sic.gov.co), según la información pública disponible: ningún dato personal sin autorización previa, expresa e informada; todos los canales deben mostrar la política de tratamiento y el aviso de privacidad y ofrecer mecanismos de autorización; prohíbe incluir personas en grupos de mensajería, listas de distribución o envíos masivos sin su consentimiento; el dato sensible, como la orientación política, exige autorización explícita; advierte sobre perfiles sin consentimiento; pide transparencia sobre criterios de segmentación, fuentes de datos y uso de inteligencia artificial; exige mecanismos ágiles, permanentes y sencillos para conocer, actualizar, rectificar o suprimir datos; y limita el uso de datos de afiliados y seguidores a la comunicación directa, sin compartirlos con terceros sin autorización.
 
 **El abogado debe leer los textos oficiales** (sección 23). La app está diseñada para cumplir estos puntos.
 
@@ -1775,7 +1806,7 @@ Todo lo esencial funciona **sin señal**: ver el mapa descargado, registrar visi
 
 ## 17.2 Qué se guarda en el teléfono
 
-- Una **base local cifrada** con las zonas asignadas (viviendas, hogares y personas en su versión enmascarada), tareas, agenda, anuncios, catálogos, borradores, cola de envío y fotos pendientes.
+- Una **base local cifrada** con las zonas asignadas (viviendas, hogares y personas en su versión enmascarada), tareas, agenda, anuncios, catálogos, borradores, cola de envío y fotos pendientes. La llave se guarda en el almacén seguro del teléfono (Android Keystore), y las llaves de sesión no se guardan en la base. *(Pendiente en la v0.10.1: ver 24.3, C1.)*
 - Los mapas descargados.
 - **Se borra** al cerrar la sesión a distancia, al dar de baja la cuenta, al reportar el teléfono como perdido y al desinstalar. Los datos de zonas que ya no están asignadas se eliminan.
 - La llave de la base local se protege con el bloqueo del teléfono.
@@ -1789,6 +1820,10 @@ Todo lo esencial funciona **sin señal**: ver el mapa descargado, registrar visi
 - Pantalla **"Pendientes de envío"** con el botón **"Reintentar ahora"**.
 - Aviso si hay registros sin enviar por más de 24 horas.
 - **Un registro local nunca se borra hasta que el servidor confirma que lo recibió.**
+- **Agregado en 1.1:**
+  - La sincronización arranca sola al recuperar la señal y cada cierto tiempo, y nunca corren dos a la vez.
+  - Tras varios intentos fallidos, el registro pasa a **cuarentena**, visible para el colaborador y en el panel de salud de la flota (N-12), en lugar de reintentarse sin fin.
+  - **Nunca se le pide al colaborador desinstalar la app** mientras tenga registros sin enviar. Por eso el APK se firma siempre con la misma llave (24.3, B1).
 
 ## 17.4 Metas de rendimiento
 
@@ -1803,7 +1838,8 @@ Todo lo esencial funciona **sin señal**: ver el mapa descargado, registrar visi
 
 ## 17.5 Dispositivos y sistemas
 
-- **Android 8 o superior** (prioridad) e **iOS 14 o superior**.
+- **Android 8 o superior** (prioridad). **iOS 14 o superior**, solo si el equipo lo necesita (actualización 1.1: hoy la app se compila para Android 7 o superior y no tiene versión para iOS).
+- Cuando la campaña lo pida, Android 14 exige declarar el **servicio de ubicación en primer plano** para la jornada. La versión objetivo del sistema debe subir a la API 34 o más.
 - Teléfonos de gama media o baja (mínimo 2 GB de memoria) y pantallas pequeñas.
 - Uso vertical como principal; horizontal opcional. Tabletas, sin prioridad.
 - **Permisos que pide:** cámara, ubicación (mientras se usa; en segundo plano solo durante la jornada), notificaciones, micrófono (dictado) y almacenamiento. Explica cada uno con palabras sencillas.
@@ -2073,66 +2109,37 @@ Todo lo esencial funciona **sin señal**: ver el mapa descargado, registrar visi
 
 # 22. Fases de construcción y lista de verificación antes de lanzar
 
-## 22.1 Fases sugeridas
+## 22.1 Fases de construcción (reorganizadas en la versión 1.1)
 
-**Fase 0 · Preparación (antes de programar)**
+El detalle completo, tarea por tarea, con criterio de salida y un anexo que asigna una fase a cada elemento de este documento, está en **`docs/Plan-de-Construccion.md`**. Ese plan reemplaza las fases 0 a 5 de la versión 1.0. Resumen:
 
-- Contratar al abogado electoral y de datos personales.
-- Redactar los textos legales: política de tratamiento, aviso de privacidad, autorización, acuerdo de confidencialidad y código de conducta.
-- Tomar las decisiones de la sección 23.
-- Obtener logos en formato vectorial y la guía de marca.
-- Conseguir la lista oficial de barrios y veredas y sus límites.
-- Revisar los catálogos (C-01 a C-20) con el Director.
-- Abrir las cuentas con proveedores (Supabase, mapas, mensajería).
-- Validar con el Director el modelo de datos (sección 8).
+| Orden | Fase | Fechas | Contenido principal |
+|---|---|---|---|
+| 1 | **Fase 1 · Cimientos, seguridad y núcleo de campo** | 5 de noviembre de 2026 a 31 de enero de 2027 | Preparación legal y decisiones (antes «Fase 0»); decisión de tecnología; ambientes, firma del APK y respaldos; corrección de todos los hallazgos de 24.3; acceso con verificación en dos pasos; mapa con GPS y mapa sin conexión; visita completa con foto; personas y autorizaciones; derechos de los titulares (P-35, P-50 y P-53); modo práctica; panel web inicial (P-36, P-37 y P-41 a P-43); módulo de firmas si aplica |
+| 2 | **Fase 2 · Diseño visual y estético** (exclusiva de diseño) | 1 de febrero a 15 de marzo de 2027, en paralelo con el piloto | Sistema de diseño en Claude Design, ícono y logos derivados, iconografía y marcadores del mapa, estilo del mapa, las 53 pantallas con sus estados y modos, prototipos, textos, accesibilidad AA, materiales impresos y aplicación del diseño a lo construido |
+| 3 | **Fase 3 · Operación del equipo, territorio y comunidad** | 16 de marzo a 31 de mayo de 2027 (despliegue desde el 15 de abril) | Zonas, Reconocimiento y rutas; jornada y SOS; equipo, tareas, eventos y capacitación; calidad y anti-fraude; estadísticas avanzadas e informes; escucha y programa de gobierno; voluntariado y organizaciones; centro de información; incidentes y calendario legal |
+| 4 | **Fase 4 · Campaña pública, finanzas, día de elecciones y cierre** | 1 de junio a 30 de septiembre de 2027, más la operación hasta febrero de 2028 | Finanzas antes de la inscripción de candidaturas; comunicaciones, propaganda y redes antes de la propaganda en medios; análisis histórico; Día de elecciones con simulacros; herramientas y ejecución del plan de cierre |
 
-**Fase 1 · Núcleo (versión mínima útil)**
+**¿Por qué el diseño va de segundo?** Si se diseña antes del núcleo, el piloto obligaría a rediseñar. Si se diseña al final, habría que rehacer más de 50 pantallas y reentrenar al equipo cerca de la elección. Entre el núcleo y la expansión, el diseño aprovecha lo que enseñe el piloto, el equipo aprende una sola vez la interfaz definitiva y todo lo posterior nace ya diseñado.
 
-- Ingreso, roles, permisos base y opcionales, invitaciones y curso de ingreso mínimo.
-- Mapa con GPS, "Registrar aquí" y detección de duplicados.
-- Registro de viviendas, hogares y personas con fotos y autorización.
-- Funcionamiento sin conexión y sincronización.
-- Panel personal y panel de campaña básico.
-- Enmascaramiento de datos, auditoría, respaldos y modo práctica.
+## 22.2 Calendario (actualizado en la versión 1.1)
 
-**Fase 2 · Operación del equipo**
+Ajustado al estado real del software (sección 24) y al calendario oficial (2.2). La columna «Fase» corresponde a las cuatro fases de 22.1.
 
-- Zonas y asignaciones, tareas, eventos, anuncios y directorio.
-- Modo reconocimiento y rutas.
-- Jornada, ubicación en vivo y SOS.
-- Control de calidad y anti-fraude.
-- Estadísticas avanzadas, mapas de calor e informes automáticos.
-- Carnet digital y atención de derechos de los titulares (P-35 y P-50).
-
-**Fase 3 · Comunidad y programa**
-
-- Escucha ciudadana, "Cuéntale a Pijao", banco de propuestas y programa versionado.
-- Voluntariado, mapa social y compromisos.
-- Comunicaciones (SMS, WhatsApp, correo), propaganda, redes y reputación.
-- "Historias que nos unen".
-
-**Fase 4 · Finanzas y análisis**
-
-- Finanzas y cumplimiento, calendario legal y escudo de integridad.
-- Análisis histórico electoral y meta de votos.
-- Módulo de apoyos ciudadanos, si la candidatura se inscribe por firmas.
-
-**Fase 5 · Día de elecciones y cierre**
-
-- Testigos, actas, conteo paralelo, sala de control y reclamaciones.
-- Plan de cierre y eliminación de datos.
-
-## 22.2 Calendario orientativo (ajustable)
-
-| Periodo | Qué debería estar pasando |
-|---|---|
-| Octubre a diciembre de 2026 | Fase 0 completa; decisiones y textos legales |
-| Enero a marzo de 2027 | Construcción de la Fase 1; piloto con un grupo pequeño en una zona |
-| Abril a junio de 2027 | Fase 2 y despliegue al equipo; recorrido de escucha del municipio |
-| Junio a agosto de 2027 | Fases 3 y 4, antes de que se abra la propaganda y el movimiento de dinero |
-| Septiembre y octubre de 2027 | Fase 5 probada con simulacros (al menos un mes antes de la elección) |
-| 31 de octubre de 2027 | Elecciones |
-| Noviembre de 2027 a febrero de 2028 | Escrutinio, rendición final y plan de cierre |
+| Periodo | Fase | Qué debe pasar |
+|---|---|---|
+| 4 al 30 de noviembre de 2026 | 1 | Contratar al abogado y preparar los textos legales. Corregir los hallazgos críticos y altos de 24.3. Crear el ambiente de pruebas y pasar las migraciones a Supabase CLI. Firma fija del APK. Prueba técnica de la tecnología (24.5). **Decidir las 23.1-1 y 23.1-17 el 30 de noviembre** |
+| 1 de diciembre de 2026 al 31 de enero de 2027 | 1 | Foto de fachada, mapa sin conexión, base local cifrada, cola con espera creciente y sincronización automática, bloqueo de capturas, modo práctica, salud de la flota (N-12), versión mínima obligatoria (N-13) y panel web inicial (aprobaciones, permisos, mapa y avance) |
+| 1 de febrero al 15 de marzo de 2027 | 2 | Fase exclusiva de diseño visual y estético (sistema de diseño, las 53 pantallas y aplicación a lo construido). En paralelo, durante febrero, el piloto: 5 a 10 colaboradores, en el casco urbano y una vereda, durante dos a tres semanas (22.3) |
+| 16 de marzo al 14 de abril de 2027 | 3 | Zonas y polígonos, Reconocimiento con precarga de edificaciones (N-01), rutas, tareas y anuncios con notificaciones, jornada con SOS (N-06, N-07), calidad y anti-fraude (N-08), estadísticas avanzadas e informes, carnet y tarjeta con QR (N-09) |
+| 15 de abril al 31 de mayo de 2027 | 3 (despliegue) | Por etapas: 30, luego 100 y luego 300 colaboradores. **Desde abril no se cambia de tecnología** |
+| 15 de abril al 31 de mayo de 2027 | 3 | Escucha y programa de gobierno, «Cuéntale a Pijao», voluntariado y organizaciones, eventos, centro de información, incidentes y calendario legal (en paralelo con el despliegue). El módulo de firmas, si aplica, ya quedó en la Fase 1 porque la recolección cierra el 30 de junio |
+| Junio de 2027 | 4 | Aportes, gastos, topes y exportación para Cuentas Claras, antes de la inscripción de candidaturas (30 de junio al 31 de julio) y de la propaganda en medios (desde el 5 de agosto) |
+| Julio de 2027 | 4 | Comunicaciones, propaganda y redes, listas antes de la propaganda en medios (desde el 5 de agosto) |
+| Agosto y septiembre de 2027 | 4 | Testigos, fotos de actas, conteo paralelo y sala de control. **Simulacros el 19 de septiembre, el 10 de octubre, el 24 de octubre (una semana antes) y el 30 de octubre (el día anterior)**, como pide 15.2 |
+| 1 de octubre de 2027 | 4 (congelamiento) | Solo arreglos críticos, con vuelta atrás probada |
+| 31 de octubre de 2027 | 4 (elecciones) | Turno técnico de guardia y panel de la flota abierto |
+| Noviembre de 2027 a febrero de 2028 | 4 (cierre) | Escrutinios desde el 2 de noviembre, rendición final y plan de cierre (16.9) |
 
 Recordatorio: antes de que se abra el periodo legal de propaganda, el trabajo de campo debe centrarse en **conocer y escuchar**, con guiones revisados por el abogado.
 
@@ -2167,13 +2174,29 @@ Cinco a diez colaboradores, una zona, dos semanas. Se miden: tiempo por registro
 23. La instalación privada por invitación está configurada.
 24. Se definió quién da soporte y en qué horario.
 
+## 22.5 Lista técnica antes de lanzar (agregada en 1.1)
+
+1. El APK de producción se firma con una **llave única**, guardada en los secretos de GitHub y en un respaldo fuera de línea. La versión de la app se toma de un solo lugar.
+2. Funcionan la versión mínima obligatoria y la actualización instantánea con vuelta atrás.
+3. Los ambientes de pruebas y producción están separados, y las migraciones se aplican solo con Supabase CLI.
+4. Hay pruebas automáticas de las reglas por fila para cada rol y para cada permiso opcional (R-01 a R-45). Corren antes de cada construcción.
+5. Los hallazgos críticos y altos de 24.3 están cerrados y verificados.
+6. Funcionan el reporte de errores sin datos personales y el panel de salud de la flota.
+7. El respaldo diario y la copia externa cifrada funcionan, la restauración se probó y la llave `pii_key` está guardada fuera de línea.
+8. Se probaron el borrado remoto y el caso de «teléfono perdido».
+9. Se hizo una prueba de carga con 300 usuarios sincronizando a la vez y 10.000 viviendas en el mapa.
+10. En un teléfono de 2 GB, la app arranca en menos de 3 segundos y aguanta una jornada de 6 horas con GPS.
+11. Se probaron tres días sin señal en una vereda, con sincronización completa al final.
+12. Las licencias de los mapas están verificadas.
+13. Hay instructivos escritos para incidentes y caídas del servicio, y un segundo custodio con credenciales selladas.
+
 ---
 
 # 23. Decisiones pendientes y puntos para validar con un abogado
 
 ## 23.1 Decisiones del Administrador y del Director
 
-1. **Forma de inscripción de la candidatura:** por partido o coalición, o por grupo significativo de ciudadanos (firmas). Define si se construye el módulo de apoyos (14.10).
+1. **Forma de inscripción de la candidatura:** por partido o coalición, o por grupo significativo de ciudadanos (firmas). Define si se construye el módulo de apoyos (14.10). **URGENTE (1.1):** la recolección de apoyos abrió el 31 de octubre de 2026 y cierra el 30 de junio de 2027. Fecha límite para decidir: 30 de noviembre de 2026.
 2. **Gerente de campaña:** quién será y si usará la app con O-15 y O-16.
 3. **Tipo de vinculación del equipo:** voluntarios, contratados o ambos (afecta finanzas, conducta y seguros).
 4. **Tamaño del equipo** y tipo de teléfonos que usarán.
@@ -2189,6 +2212,10 @@ Cinco a diez colaboradores, una zona, dos semanas. Se miden: tiempo por registro
 14. **Inicio del trabajo de campo** y mensaje de las primeras visitas, según el calendario de propaganda.
 15. **Alcance geográfico:** si se incluye a personas de Pijao que viven en otras ciudades pero votan en Pijao.
 16. **Cartografía:** límites oficiales (IGAC y DANE) u OpenStreetMap.
+17. **Tecnología de la app móvil (nueva en 1.1):** seguir con Kivy o migrar a React Native con Expo (recomendado, ver 24.5). Se decide el 30 de noviembre de 2026, con el resultado de la prueba técnica. Después de abril de 2027 no se cambia.
+18. **Mapa sin conexión (nueva en 1.1):** paquete propio de Pijao (ortofoto del IGAC o tomada con dron) o proveedor con licencia para uso sin conexión, con su presupuesto.
+19. **Segundo custodio técnico (nueva en 1.1):** quién guarda, en sobre sellado, las credenciales de emergencia, la llave de firma del APK y la llave de cifrado de datos personales, por si el Administrador no está disponible.
+20. **Precarga de edificaciones (nueva en 1.1):** usar o no fuentes abiertas de edificaciones para el Reconocimiento (N-01).
 
 ## 23.2 Puntos que debe validar un abogado (electoral y de protección de datos)
 
@@ -2210,6 +2237,193 @@ Cinco a diez colaboradores, una zona, dos semanas. Se miden: tiempo por registro
 16. Plazo de conservación de documentos contables frente a la eliminación de datos personales.
 17. Si se pudiera usar algún listado oficial (por ejemplo, del censo electoral) y bajo qué condiciones.
 18. Uso de la marca, el logo y el nombre del candidato en el carnet digital y en los materiales.
+
+---
+
+# 24. Estado real de construcción (auditoría del 4 de noviembre de 2026)
+
+*Sección nueva en la versión 1.1.* Resultado de revisar el repositorio `Pijao-Nos-Une` (rama `main`, app v0.10.1) contra este documento, con tres revisiones independientes de ECC (trazabilidad, seguridad y arquitectura) y una verificación manual de los hallazgos principales. Las 87 pruebas automáticas pasan y la revisión estática (`tools/revisar_codigo.py`) no encuentra errores.
+
+## 24.1 Qué existe hoy
+
+**Tecnología actual:**
+- **App:** Python 3.11 con Kivy, empaquetada con Buildozer como APK de Android (mínimo Android 7, API 24). No hay versión para iOS ni panel web.
+- **Servidor:** Supabase con PostgreSQL. Tiene 12 migraciones, reglas de seguridad por fila en todas las tablas y la lógica de negocio en funciones del servidor (RPC).
+- **Registro:** una función de servidor (`registrar-con-codigo`) para crear cuentas con código de invitación.
+- **Sin conexión:** base local SQLite con cola de envío e identificadores únicos, de modo que un reenvío no duplica registros.
+- **Construcción:** el APK se compila en GitHub Actions.
+
+**Leyenda:** ✅ funciona en la app · 🟡 parcial · 🖥️ listo en el servidor pero sin pantalla en la app · ⬜ no existe.
+
+| Módulo (sección) | Estado | Detalle |
+|---|---|---|
+| Ingreso, invitación con código, acuerdos y curso de ingreso (4.9, 10.6) | ✅ | Registro sin correo de confirmación, mediante un código de invitación. El curso de ingreso activa la cuenta |
+| Roles, permisos opcionales O-xx, plantillas y vencimiento (4.5–4.7) | ✅ | Pantalla de permisos. El servidor revisa los permisos en cada operación |
+| Verificación en dos pasos (4.10) | 🖥️ | El servidor la exige para los permisos de riesgo alto. La app no tiene pantalla para activarla |
+| Mapa real, GPS con muestreo, «Registrar aquí», ubicación manual y diferida, filtros (5.2–5.5, 5.8) | ✅ | Sin agrupación de puntos: con miles de viviendas puede ser lento |
+| Zonas con polígonos (5.9) y modo Reconocimiento (5.10) | 🖥️ | Funciones de servidor en las migraciones 0011 y 0012 |
+| Rutas (5.11) | ⬜ | |
+| Jornada, ubicación en vivo y SOS (5.12) | 🖥️ | Tablas y funciones listas, sin pantalla |
+| Tiempo real (5.13, 8.6) | 🟡 | La app consulta al servidor cuando se pide sincronizar. No recibe cambios en vivo |
+| Mapa sin conexión (5.14) | ⬜ | Solo guarda en caché lo que ya se vio |
+| Visita en pasos con autorización y firma en pantalla (6.3) | ✅ | |
+| Foto de fachada (6.3, paso 2) | ⬜ | **Bloqueante:** sin foto, ningún registro puede quedar en verde (R-13) |
+| Semáforo de calidad (6.4) | ✅ | |
+| Anti-fraude (6.5) | 🟡 | El servidor revisa el ritmo y los saltos de ubicación. Falta el sorteo del 5 %, la detección de GPS falso y la pantalla P-39 |
+| Edición con ventana de 72 h y papelera (6.6) | 🖥️ | Falta la fusión de duplicados |
+| Visitas de seguimiento (6.7) | ⬜ | |
+| Ficha de persona, línea de tiempo y cumpleaños (7.5–7.8) | ⬜ | El registro y el enmascarado sí existen |
+| Base de datos, cifrado por campo de la cédula y los teléfonos, auditoría solo de agregar (8) | ✅ | Falta comprobar los respaldos y los dos ambientes (hoy hay un solo proyecto) |
+| Panel personal y panel de campaña con «menos de 5» (9.2, 9.3) | ✅ | |
+| Estadísticas avanzadas, mapas de calor, paneles del Director y del Administrador, metas e informes (9.4–9.11) | ⬜ | |
+| Tareas y anuncios (10.3, 10.5) | ✅ | |
+| Eventos, turnos, directorio, carnet, desempeño y salida (10) | ⬜ | |
+| Escucha y programa de gobierno (11) | 🟡 | Solo las necesidades registradas en la visita |
+| Voluntariado y organizaciones (12) | 🟡 | Solo las casillas «voluntario» y «anfitrión» |
+| Comunicaciones, propaganda y redes (13) | ⬜ | |
+| Finanzas y cumplimiento (14) | ⬜ | |
+| Día de elecciones (15) | ⬜ | |
+| Derechos de los titulares (16.5) | 🖥️ | Se registran solicitudes y «No contactar». No hay pantallas P-35 ni P-50 |
+| Plan de cierre (16.9) | 🟡 | Anonimiza solo en parte (ver 24.3, A6) |
+| Base local cifrada (8.7, 17.2) | ⬜ | **Incumple lo prometido** (ver 24.3, C1) |
+| Configuración desde P-42 (19.1) | 🟡 | Los valores viven en la tabla `configuracion`, pero la app usa valores fijos en el código |
+
+**Avance por fase (sección 22):** Fase 1 al 80 % aproximadamente; le faltan la foto, el cifrado local, el modo práctica y los respaldos. Fase 2 iniciada, con la mayor parte ya lista en el servidor. Fases 3, 4 y 5 sin empezar.
+
+## 24.2 Diferencias entre el código y el documento
+
+- **Tecnología:** el Apéndice B proponía Flutter o React Native para Android e iOS; se construyó en Kivy, solo para Android. Ver la decisión 23.1-17.
+- **Registro:** se usa un **código de invitación** sin correo de confirmación, en lugar del enlace con verificación por SMS de 4.9. Es válido y más barato, pero necesita los refuerzos de 24.3 (A7, A8).
+- **Parámetros:** el radio de duplicados, la precisión del GPS, la distancia manual y el tiempo de muestreo están fijos en la app. Si el Administrador los cambia en la configuración, solo el servidor lo respeta.
+- **R-09 (50 m):** hoy la valida solo el servidor. Un registro tomado sin señal que el servidor rechaza queda trabado en «error» para siempre. Se corrige así: **en la sincronización, el servidor acepta el registro y lo marca para revisión, en vez de rechazarlo**.
+- **R-10:** con mala precisión la app bloquea y ofrece marcar en el mapa. Coincide con la intención del documento.
+- **Descarga por zonas (17.2):** hoy cada teléfono descarga las viviendas y las personas enmascaradas de **todo** el municipio. Debe limitarse a las zonas asignadas.
+- **README:** dice que hay migraciones «0001…0008», pero existen hasta la 0012.
+
+## 24.3 Hallazgos de seguridad y protección de datos
+
+Ordenados por gravedad. Todos tienen corrección conocida. Los de nivel crítico y alto deben cerrarse **antes del piloto con datos reales**.
+
+| Código | Gravedad | Hallazgo | Corrección |
+|---|---|---|---|
+| C1 | Crítico | La base local del teléfono no está cifrada. La cola de envío y los borradores guardan en claro la cédula, el teléfono, la simpatía y la firma, y también los tokens de sesión. Con un teléfono robado se leen todos | Cifrar la base local, con la llave guardada en el almacén seguro de Android (Keystore). Sacar los tokens de la base y vaciar o cifrar la cola al cerrar sesión |
+| C2 | Crítico | Si otra persona inicia sesión en el mismo teléfono, la cola del usuario anterior se envía con la cuenta nueva y el autor queda mal registrado | Marcar cada registro de la cola con su usuario y no enviar nunca registros de otro |
+| A1 | Alto | El servidor acepta como válida la autorización que declara la app: un solo consentimiento «global» sirve para todas las personas, y no se exige evidencia | Exigir una autorización por persona, con evidencia según el método, versión del texto y fecha verosímil |
+| A2 | Alto | Varias funciones del servidor copian todos los campos que envía la app. Así, una app manipulada puede fijar la zona, marcar «verificada» o apuntar a la foto de otro | Aceptar solo una lista cerrada de campos por tabla |
+| A3 | Alto | Cualquier colaborador activo puede ver todas las fotos, incluidas las que muestran personas y las de autorizaciones en papel | Limitar las fotos por zona, autoría o permiso. Las fotos de autorizaciones, solo para el Director y el Administrador |
+| A4 | Alto | El Director y el Administrador pueden ver datos completos y ejecutar el plan de cierre **sin verificación en dos pasos** | Exigir la verificación en dos pasos también al Director y al Administrador para las acciones de riesgo alto y las destructivas |
+| A5 | Alto | Las personas que pidieron la eliminación siguen siendo visibles y se pueden descifrar | Bloquear el descifrado y ocultarlas en la vista enmascarada de inmediato |
+| A6 | Alto | No existe el borrado definitivo por persona. El plan de cierre deja direcciones, fotos, hogares, necesidades, nombres en la auditoría y las copias en los teléfonos | Crear un borrado definitivo por persona, un borrado de fotos en el almacenamiento, una orden de borrado remoto a los teléfonos y una auditoría que no guarde nombres |
+| A7 | Alto | El código de invitación tiene 8 caracteres, sin límite de intentos, y los mensajes de error revelan si un correo ya está registrado. Un código de Director filtrado da acceso total de inmediato | Usar códigos de 12 caracteres o más, límite de intentos, mensaje genérico, y que las invitaciones de Director requieran aprobación del Administrador |
+| A8 | Alto | Las reglas de la función de registro se pueden saltar con el registro abierto de Supabase | Desactivar el registro abierto y validar la mayoría de edad y el correo de la invitación también en la base de datos. Consumir la invitación con bloqueo, para que dos registros a la vez no usen el mismo código |
+| M1 | Medio | Cualquier colaborador puede averiguar si una cédula ya está registrada y abrir esa ficha | Responder solo «ya registrada» y dejarlo en la auditoría |
+| M3 | Medio | Los permisos de riesgo alto pueden quedar sin fecha de vencimiento | Hacer obligatorio el vencimiento para O-01, O-02, O-05, O-12, O-13 y O-16 |
+| M4 | Medio | Cualquier colaborador puede marcar a cualquier persona como «No contactar» o revocar sus autorizaciones | Limitarlo por zona o autoría, y avisar al Director |
+| M5 | Medio | La auditoría admite vaciado completo (TRUNCATE) | Bloquear también el vaciado y encadenar huellas para detectar alteraciones |
+| M6 | Medio | No hay bloqueo de capturas de pantalla ni detección de teléfono modificado | Activar el bloqueo de capturas (FLAG_SECURE) y la detección de teléfono modificado |
+| M7 | Medio | La ubicación en vivo no se valida y su borrado a los 7 días no está automatizado | Validar las coordenadas y programar el borrado automático (pg_cron) |
+| B1 | Bajo | El APK se construye en modo de depuración, con una **llave de firma distinta en cada construcción**. Una actualización con otra firma obliga a desinstalar, y **desinstalar borra las visitas que no se han enviado** | Construir en modo producción con una llave fija guardada en los secretos de GitHub y en un respaldo fuera de línea |
+| B2 | Bajo | Las librerías de red son antiguas. Los mensajes de error técnicos se muestran al usuario | Actualizarlas y mostrar mensajes amables |
+
+**Lo que ya está bien:** reglas de seguridad por fila en todas las tablas; cédula y teléfonos cifrados por campo, con búsqueda por huella HMAC; enmascarado hecho en el servidor; almacenamiento privado; funciones del servidor protegidas contra la suplantación de esquema; copia de seguridad del teléfono desactivada; ninguna llave maestra en el repositorio (la clave «anon» de `config.json` es pública por diseño y su seguridad depende de las reglas por fila).
+
+## 24.4 Calidad técnica
+
+**Lo que funciona bien:**
+- Separación limpia en capas: reglas puras (`core`), datos (`data`), servicios y pantallas (`ui`).
+- 87 pruebas y un emulador de la interfaz que permite revisarla sin celular.
+- La cola de envío no borra nada hasta que el servidor confirma, y los reenvíos no duplican registros.
+
+**Lo que falta:**
+
+| Tema | Problema | Corrección |
+|---|---|---|
+| Sincronización | Puede perder cambios que el servidor confirma con retraso | Releer con un margen de 2 minutos |
+| Sincronización | No tiene espera creciente ni tope de intentos | Añadir espera creciente, tope de intentos y cuarentena |
+| Sincronización | Solo se hace a mano y podrían correr dos al mismo tiempo | Sincronizar sola al recuperar la señal, con un candado para que corra una a la vez |
+| Ediciones simultáneas | Gana la última, sin control de versión | Añadir una columna de versión y aplicar la regla de 5.13 |
+| Fotos | Pueden quedar fotos huérfanas | Reintentar por separado el marcado de cada foto |
+| Migraciones | Se aplican a mano y hay un solo ambiente | Pasar a Supabase CLI y crear el ambiente de pruebas |
+| Pruebas de reglas | No hay pruebas automáticas de las reglas por fila según cada rol | Añadir pruebas pgTAP |
+| Construcción del APK (CI) | No corre las pruebas antes de compilar. La versión en el User-Agent sigue en 0.9 | Correr las pruebas primero y tomar la versión de un solo lugar |
+| Observabilidad | No hay forma de ver errores ni el estado de los teléfonos en campo | Agregar un reporte de errores sin datos personales (por ejemplo Sentry) y un panel de **salud de la flota**: versión, cola pendiente, última sincronización, espacio libre y batería |
+| Mapas | Las capas de OpenStreetMap y Esri que se usan hoy **no permiten la descarga masiva para usar sin conexión** | Mapa propio de Pijao empaquetado (PMTiles o MBTiles) o un proveedor con licencia para uso sin conexión |
+| Respaldos | Falta el plan completo | Respaldo diario del plan pago, copia nocturna cifrada fuera de Supabase (base y fotos), prueba de restauración mensual y la **llave de cifrado de datos personales (`pii_key`) guardada fuera de línea**: sin ella las cédulas no se recuperan |
+
+## 24.5 Recomendación de tecnología
+
+El servidor (Supabase) es sólido y **se conserva completo**. La app de Kivy funciona, pero varios requisitos del documento cuestan mucho o son frágiles en Kivy: notificaciones, GPS en segundo plano para la jornada y el SOS, huella o rostro, cifrado local, tiempo real, iOS y panel web. Por eso se recomienda **migrar la app móvil a React Native con Expo (TypeScript)** y hacer el **panel web en React**. Las razones:
+
+1. **Un solo lenguaje** para la app, el panel web y las funciones del servidor, que ya están en TypeScript.
+2. **Actualizaciones instantáneas (EAS Update):** los arreglos llegan a los 300 teléfonos sin reinstalar el APK, y se pueden revertir. En una campaña es decisivo.
+3. Notificaciones, segundo plano, biometría, cifrado y mapas sin conexión (MapLibre) son librerías mantenidas.
+4. Las reglas de `pijao/core` y sus 87 pruebas se traducen casi una a una y sirven de especificación.
+
+**Condición:** antes de migrar, una **prueba técnica de 3 semanas** (hasta el 30 de noviembre de 2026) en un teléfono de 2 GB. Debe comprobar:
+
+- Mapa de Pijao sin conexión.
+- Jornada de 6 horas con GPS.
+- Base cifrada.
+- Notificaciones.
+
+Si no pasa, o si al 15 de febrero de 2027 la app nueva no iguala a la v0.10.1, se sigue con Kivy, sin notificaciones ni biometría y con jornada solo con la pantalla encendida. **Después de abril de 2027 no se cambia de tecnología.** Es una decisión del Administrador (23.1-17).
+
+---
+
+# 25. Funciones nuevas propuestas
+
+*Sección nueva en la versión 1.1.* Todas respetan las líneas rojas de 2.4: nada de compra de votos, nada sobre por quién vota alguien, nada de datos individuales de menores, sin perfiles automáticos. La columna «Fase» usa las cuatro fases de 22.1 (detalle en el anexo E de `docs/Plan-de-Construccion.md`).
+
+## 25.1 Trabajo de campo y territorio
+
+| Código | Función | Para qué sirve | Fase |
+|---|---|---|---|
+| N-01 | **Precarga de edificaciones** desde fuentes abiertas (Google Open Buildings o Microsoft Building Footprints) como puntos grises «por visitar» | El Reconocimiento pasa de crear puntos a confirmarlos. La cobertura se mide desde el primer día. No son datos personales ni una base comprada | 3 |
+| N-02 | **Mapa propio de Pijao sin conexión:** ortofoto del IGAC o tomada con dron del casco urbano, empaquetada | Satélite sin señal, actualizado y sin problemas de licencia | 1 |
+| N-03 | **Capa de estado de caminos:** derrumbes, pasos cerrados y quebradas crecidas, reportados por el equipo y con vencimiento | Seguridad y planeación en temporada de lluvias; alimenta las necesidades colectivas | 3 |
+| N-04 | **Equidad territorial:** cobertura por vereda frente a su población estimada (proyecciones del DANE) | Evita dejar veredas olvidadas. Solo usa cifras agregadas | 3 |
+| N-05 | **Registro por voz guiado:** dictar el paso de necesidades y notas, con revisión antes de guardar | Más rápido con una mano y más accesible. No se guarda el audio | 3 |
+
+## 25.2 Seguridad del equipo
+
+| Código | Función | Para qué sirve | Fase |
+|---|---|---|---|
+| N-06 | **SOS por mensaje de texto** cuando hay señal de voz pero no de datos | En las veredas el SOS por internet puede no salir | 3 |
+| N-07 | **Trabajo en parejas en zona rural:** la jornada rural no arranca sin compañero, y cada uno confirma al otro | Complementa la revisión de bienestar | 3 |
+| N-08 | **Detección de GPS falso y de velocidades imposibles** | Anti-fraude objetivo. Alerta al Director, no bloquea | 3 |
+
+## 25.3 Confianza y derechos de las personas
+
+| Código | Función | Para qué sirve | Fase |
+|---|---|---|---|
+| N-09 | **Tarjeta de visita con QR** que se deja en cada casa: nombre del colaborador, verificación de su carnet (P-52) y enlace a «Mis datos» (P-50) | Transparencia, protección contra impostores y canal de habeas data siempre a mano. No lleva datos de la familia | 3 |
+| N-10 | **Recibo de autorización:** si la persona lo pide, un mensaje con el número de caso, lo que autorizó y cómo revocarlo | Prueba de la autorización (16.5), como pide la SIC | 4 |
+| N-11 | **Panel de cumplimiento de datos:** autorizaciones por versión del texto, solicitudes abiertas con su plazo, permisos de riesgo encendidos y última prueba de borrado | El Administrador demuestra cumplimiento ante la SIC o el abogado | 3 |
+
+## 25.4 Operación y calidad técnica
+
+| Código | Función | Para qué sirve | Fase |
+|---|---|---|---|
+| N-12 | **Salud de la flota:** versión instalada, registros sin enviar, última sincronización, espacio y batería de cada teléfono | Detectar a tiempo teléfonos con datos trabados antes de que se pierdan | 1 |
+| N-13 | **Versión mínima obligatoria y actualización instantánea con vuelta atrás** | Corregir errores críticos en todo el equipo el mismo día | 1 |
+| N-14 | **Simulador de carga:** 300 usuarios sincronizando a la vez y 10.000 viviendas | Probar antes del despliegue y del día de elecciones | 3 |
+| N-15 | **Informe semanal automático para el candidato** en una página: cinco cifras, tres alertas y las necesidades que más crecen | Ya está en 9.5; se propone automatizarlo desde la Fase 2 | 3 |
+
+## 25.5 Lo que se descartó a propósito
+
+- **Transporte de votantes el día de elecciones:** roza el constreñimiento y las normas electorales.
+- **Seguimiento individual de la «intención de voto»:** contradice R-42 y el secreto del voto.
+- **Perfiles automáticos con inteligencia artificial** sobre personas: lo prohíbe 16.6.
+- **Cruce con bases externas de personas** (Sisbén, padrones, listas compradas): lo prohíben 2.4 y R-24.
+
+---
+
+# 26. Registro de cambios del documento
+
+| Versión | Fecha | Cambios |
+|---|---|---|
+| 1.0 | 13 de octubre de 2026 | Primera versión completa (secciones 1 a 23 y apéndices) |
+| 1.1 | 4 de noviembre de 2026 | **Calendario:** fechas oficiales de la Registraduría en 2.2, alerta por la recolección de firmas que ya está abierta y plan por fases con fechas en 22.2. **Contenido nuevo:** sección 24 (estado real del software, diferencias con el documento, 18 hallazgos de seguridad y calidad técnica), sección 25 (15 funciones nuevas), lista técnica de lanzamiento en 22.5 y decisiones 17 a 20 en 23.1. **Correcciones de fondo:** supuesto de la plataforma (2.5), registro por código de invitación (4.9), licencias de mapas sin conexión (5.14), estado del cifrado local (8.7 y 17.2), reglas de sincronización (17.3) y tecnología recomendada (Apéndice B). **Fases:** las fases 0 a 5 se reorganizan en cuatro (22.1): tres de construcción y una exclusiva de diseño visual, con el plan detallado y su anexo de trazabilidad en `docs/Plan-de-Construccion.md` |
 
 ---
 
@@ -2268,8 +2482,8 @@ Cinco a diez colaboradores, una zona, dos semanas. Se miden: tiempo por registro
 # Apéndice B. Notas para quien construya (en lenguaje sencillo)
 
 1. **Servidor:** Supabase con base de datos PostgreSQL y extensión geográfica (PostGIS); ingreso con celular y correo y verificación en dos pasos; almacenamiento privado; tiempo real; funciones de servidor para tareas automáticas (informes, anonimización, borrado programado). Reglas de seguridad por fila en **todas** las listas y vistas enmascaradas para personas.
-2. **App móvil:** una sola base de código para Android e iOS (por ejemplo Flutter o React Native), con base local cifrada y cola de sincronización; cámara con sello de fecha y coordenadas; muestreo de GPS; notificaciones al teléfono.
-3. **Mapas:** proveedor con soporte de mapas sin conexión (evaluar MapLibre, Mapbox o Google; revisar licencias y costos).
+2. **App móvil:** una sola base de código, con base local cifrada y cola de sincronización; cámara con sello de fecha y coordenadas; muestreo de GPS; notificaciones al teléfono. **Estado 1.1:** existe una versión en Python con Kivy, solo para Android (v0.10.1). La recomendación es migrar a React Native con Expo en TypeScript, conservando todo el servidor y usando las pruebas de `pijao/core` como especificación (24.5, decisión 23.1-17).
+3. **Mapas:** MapLibre con un paquete propio de Pijao sin conexión (PMTiles o MBTiles). Los puntos se agrupan para que el mapa aguante miles de viviendas en teléfonos de gama baja. No se descargan zonas desde los servidores públicos de OpenStreetMap ni Esri, porque sus licencias no lo permiten (5.14).
 4. **Panel web:** aplicación web adaptable para Director y Administrador.
 5. **Páginas públicas:** ligeras, para "Cuéntale a Pijao", "Mis datos", "Quiero ser parte", verificación de carnet y política de datos.
 6. **Seguridad:** ninguna llave de servicio en el teléfono; probar las reglas por fila con una cuenta de cada rol; no guardar datos personales en los registros de error; revisar dependencias.
@@ -2282,4 +2496,12 @@ Cinco a diez colaboradores, una zona, dos semanas. Se miden: tiempo por registro
 
 ---
 
-*Fin del documento maestro, versión 1.0.*
+13. **Entrega profesional (agregado en 1.1):**
+    - Los cambios se hacen con commits en git, en ramas y con solicitudes de cambio (pull requests), no subiendo archivos .zip por la web.
+    - Cada versión lleva una etiqueta (por ejemplo `v0.11.0`) y una nota de cambios.
+    - La integración continua corre las pruebas, la revisión estática y las pruebas de reglas por fila antes de construir el APK.
+    - Las migraciones se aplican primero en pruebas y después en producción.
+
+---
+
+*Fin del documento maestro, versión 1.1.*
