@@ -64,7 +64,15 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
         run: |
           set -o pipefail
-          if ! ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon --stacktrace 2>&1 | tee /tmp/gradle.log; then
+          # Las descargas de Maven a veces fallan por saturación (504): hasta 3 intentos antes de rendirse.
+          ok=0
+          for intento in 1 2 3; do
+            if ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon --stacktrace 2>&1 | tee /tmp/gradle.log; then ok=1; break; fi
+            if ! grep -q -E "Could not (GET|get resource|download)|Gateway Time-out|status code 50[0-9]|Read timed out" /tmp/gradle.log; then break; fi
+            echo "::warning::Fallo de descarga en el intento $intento; se reintenta en 60 s."
+            sleep 60
+          done
+          if [ "$ok" != 1 ]; then
             # Las anotaciones son públicas: así se ve el error sin entrar a GitHub.
             grep -n -E "What went wrong|error:|Error:|FAILURE|Could not|Execution failed|Cannot|not found|timeout" /tmp/gradle.log | head -n 15 | while IFS= read -r l; do echo "::error::${l:0:900}"; done
             grep -n -A6 "What went wrong" /tmp/gradle.log | head -n 20 | while IFS= read -r l; do echo "::error::${l:0:900}"; done
