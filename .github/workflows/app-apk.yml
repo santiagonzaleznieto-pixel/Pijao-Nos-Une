@@ -62,7 +62,14 @@ jobs:
         working-directory: app/android
         env:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
-        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon
+        run: |
+          set -o pipefail
+          if ! ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon --stacktrace 2>&1 | tee /tmp/gradle.log; then
+            # Las anotaciones son públicas: así se ve el error sin entrar a GitHub.
+            grep -n -E "What went wrong|error:|Error:|FAILURE|Could not|Execution failed|Cannot|not found|timeout" /tmp/gradle.log | head -n 15 | while IFS= read -r l; do echo "::error::${l:0:900}"; done
+            grep -n -A6 "What went wrong" /tmp/gradle.log | head -n 20 | while IFS= read -r l; do echo "::error::${l:0:900}"; done
+            exit 1
+          fi
 
       - name: Guardar el APK
         uses: actions/upload-artifact@v4
