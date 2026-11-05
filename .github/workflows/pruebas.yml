@@ -1,0 +1,37 @@
+name: Pruebas
+
+# Fase 1 · bloque 1.2: nada se construye ni se une a main sin pasar las pruebas.
+# Todo corre en GitHub Actions, gratis para repositorios públicos.
+on:
+  push:
+    branches: [main, "fase-*/**"]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependencias de prueba
+        run: pip install requests
+      - name: Revisión estática (nombres, importaciones y métodos)
+        run: python tools/revisar_codigo.py
+      - name: Pruebas unitarias y de interfaz emulada
+        run: python -m unittest discover -s tests -t . -v
+
+  base-de-datos:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Migraciones y pruebas SQL de seguridad (supabase/postgres en Docker)
+        run: bash tools/probar_migraciones.sh

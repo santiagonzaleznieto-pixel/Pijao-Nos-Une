@@ -10,7 +10,8 @@ except Exception:                                   # noqa: BLE001
 # Los servidores de mapas bloquean el identificador genérico de las librerías: se usa uno propio.
 try:
     import requests.utils as _u
-    _u.default_user_agent = lambda name="python-requests": "PijaoNosUne/0.9 (app de campo; Android)"
+    from pijao import __version__ as _VERSION
+    _u.default_user_agent = lambda name="python-requests": f"PijaoNosUne/{_VERSION} (app de campo; Android)"
 except Exception:                                   # noqa: BLE001
     pass
 

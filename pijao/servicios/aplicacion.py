@@ -275,9 +275,19 @@ class Aplicacion:
         return self.remoto.rpc("rpc_anuncio_leido", {"p_id": ident})
 
     # ------------------------------------------------------------ permisos opcionales (4.5 a 4.7)
+    # M3: un permiso de riesgo alto siempre vence (por defecto en 30 días y nunca después de 90).
+    DIAS_ALTO_DEFECTO = 30
+    DIAS_ALTO_MAXIMO = 90
+
     @staticmethod
     def _vence(dias: int | None) -> str | None:
         return (datetime.now(timezone.utc) + timedelta(days=dias)).isoformat() if dias else None
+
+    @classmethod
+    def _dias_para(cls, codigos, dias: int | None) -> int | None:
+        if any(PERMISOS[c].riesgo == "alto" for c in codigos if c in PERMISOS):
+            return min(dias or cls.DIAS_ALTO_DEFECTO, cls.DIAS_ALTO_MAXIMO)
+        return dias
 
     def permisos_activos(self, usuario_id: str) -> set[str]:
         filas = self.remoto.seleccionar("permisos_opcionales", {"select": "codigo", "usuario_id": f"eq.{usuario_id}", "activo": "eq.true"})
@@ -289,7 +299,8 @@ class Aplicacion:
         cambios = 0
         for codigo in PERMISOS:
             if codigo in quedan and codigo not in antes:
-                self.remoto.rpc("rpc_set_permiso", {"p_usuario": usuario_id, "p_codigo": codigo, "p_activo": True, "p_vence": self._vence(dias)})
+                self.remoto.rpc("rpc_set_permiso", {"p_usuario": usuario_id, "p_codigo": codigo, "p_activo": True,
+                                                    "p_vence": self._vence(self._dias_para([codigo], dias))})
                 cambios += 1
             elif codigo not in quedan and codigo in antes:
                 self.remoto.rpc("rpc_set_permiso", {"p_usuario": usuario_id, "p_codigo": codigo, "p_activo": False})
@@ -299,4 +310,5 @@ class Aplicacion:
     def aplicar_plantilla(self, usuario_id: str, nombre: str, dias: int | None = None):
         if nombre not in PLANTILLAS:
             raise ValueError("Elige una plantilla.")
+        dias = self._dias_para(PLANTILLAS[nombre].get("permisos", []), dias)
         return self.remoto.rpc("rpc_aplicar_plantilla", {"p_usuario": usuario_id, "p_nombre": nombre, "p_vence": self._vence(dias)})
