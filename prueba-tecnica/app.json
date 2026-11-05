@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Pijao Prueba",
+    "slug": "pijao-prueba-tecnica",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "co.pijao.pruebatecnica",
+      "versionCode": 1,
+      "allowBackup": false,
+      "adaptiveIcon": {
+        "backgroundColor": "#1C3D72",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION",
+        "CAMERA",
+        "POST_NOTIFICATIONS",
+        "USE_BIOMETRIC"
+      ],
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-asset",
+      "@maplibre/maplibre-react-native",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Pijao nos une usa su ubicación solo durante la jornada de trabajo, para su seguridad y para registrar las visitas.",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ],
+      [
+        "expo-camera",
+        { "cameraPermission": "Pijao nos une usa la cámara para la foto de fachada de cada vivienda." }
+      ],
+      [
+        "expo-local-authentication",
+        { "faceIDPermission": "Pijao nos une usa su huella o rostro para volver a entrar de forma segura." }
+      ],
+      "expo-notifications"
+    ]
+  }
+}

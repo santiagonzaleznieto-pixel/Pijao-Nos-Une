@@ -1,0 +1,87 @@
+name: Prueba técnica (Expo)
+
+# Fase 1 · bloque 1.1: construye el APK de la prueba técnica de React Native + Expo, gratis en GitHub Actions
+# (sin EAS ni servicios de pago). Incluye el mapa de Pijao sin conexión, recortado de OpenStreetMap (Protomaps).
+# El APK queda como pre-versión en GitHub Releases para descargarlo directamente desde el teléfono.
+# No usa secretos ni datos reales.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["fase-*/**"]
+    paths: ["prueba-tecnica/**", ".github/workflows/prueba-tecnica.yml"]
+
+permissions:
+  contents: write   # solo para publicar la pre-versión con el APK de prueba
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    defaults:
+      run:
+        working-directory: prueba-tecnica
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: prueba-tecnica/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Mapa de Pijao sin conexión (OpenStreetMap · Protomaps · ODbL)
+        run: |
+          set -euo pipefail
+          VERSION=1.31.2
+          curl -sSL -o /tmp/pmtiles.tgz "https://github.com/protomaps/go-pmtiles/releases/download/v${VERSION}/go-pmtiles_${VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/pmtiles.tgz -C /tmp pmtiles
+          FUENTE=""
+          for i in $(seq 1 10); do
+            D=$(date -u -d "-$i day" +%Y%m%d)
+            if curl -sfI "https://build.protomaps.com/$D.pmtiles" >/dev/null; then FUENTE="https://build.protomaps.com/$D.pmtiles"; break; fi
+          done
+          if [ -z "$FUENTE" ]; then echo "::error::No se encontró una compilación reciente de Protomaps"; exit 1; fi
+          echo "Fuente: $FUENTE"
+          # Municipio de Pijao (Quindío) con margen: oeste, sur, este, norte.
+          /tmp/pmtiles extract "$FUENTE" assets/pijao.pmtiles --bbox=-75.82,4.18,-75.55,4.45 --maxzoom=15
+          ls -la assets/pijao.pmtiles
+          echo "MAPA_MB=$(du -m assets/pijao.pmtiles | cut -f1)" >> "$GITHUB_ENV"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar tipos y configuración
+        run: |
+          npx tsc --noEmit
+          npx expo-doctor
+
+      - name: Generar el proyecto Android (expo prebuild)
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Construir el APK
+        working-directory: prueba-tecnica/android
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon
+
+      - name: Guardar el APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pijao-prueba-tecnica-apk
+          path: prueba-tecnica/android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Publicar como pre-versión para descargar desde el teléfono
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ETIQUETA="prueba-tecnica-${GITHUB_RUN_NUMBER}"
+          cp android/app/build/outputs/apk/release/app-release.apk "/tmp/pijao-prueba-tecnica-${GITHUB_RUN_NUMBER}.apk"
+          gh release create "$ETIQUETA" "/tmp/pijao-prueba-tecnica-${GITHUB_RUN_NUMBER}.apk" --prerelease --target "$GITHUB_SHA" \
+            --title "Prueba técnica Expo #${GITHUB_RUN_NUMBER}" \
+            --notes "APK de la prueba técnica (bloque 1.1). No contiene datos reales. Mapa de Pijao incluido: ${MAPA_MB} MB. Guía: docs/Prueba-Tecnica.md"
