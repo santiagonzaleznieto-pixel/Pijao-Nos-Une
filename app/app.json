@@ -1,44 +1,66 @@
 {
   "expo": {
-    "name": "app",
-    "slug": "app",
-    "version": "1.0.0",
+    "name": "Pijao Nos Une",
+    "slug": "pijao-nos-une",
+    "version": "0.11.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "app",
-    "userInterfaceStyle": "automatic",
-    "ios": {
-      "icon": "./assets/expo.icon"
-    },
+    "scheme": "pijao",
+    "userInterfaceStyle": "light",
     "android": {
+      "package": "co.pijao.nosune",
+      "versionCode": 11,
+      "allowBackup": false,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#1C3D72",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "POST_NOTIFICATIONS",
+        "USE_BIOMETRIC"
+      ],
+      "blockedPermissions": ["android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"],
       "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "output": "server",
-      "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
-        {
-          "backgroundColor": "#208AEF",
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 76
-        }
+        { "backgroundColor": "#FFFFFF", "image": "./assets/images/splash-icon.png", "imageWidth": 120 }
       ],
       "expo-secure-store",
       "expo-asset",
-      "@maplibre/maplibre-react-native"
+      "@maplibre/maplibre-react-native",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Pijao nos une usa su ubicación para registrar cada visita en el punto exacto de la vivienda.",
+          "isAndroidBackgroundLocationEnabled": false
+        }
+      ],
+      [
+        "expo-camera",
+        { "cameraPermission": "Pijao nos une usa la cámara para la foto de fachada de cada vivienda." }
+      ],
+      [
+        "expo-local-authentication",
+        { "faceIDPermission": "Pijao nos une usa su huella o rostro para volver a entrar de forma segura." }
+      ],
+      "expo-notifications"
     ],
+    "extra": {
+      "supabaseUrl": "https://hxodqzorvvlkzensrsjr.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4b2Rxem9ydnZsa3plbnNyc2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTYwMDEsImV4cCI6MjEwNzY3MjAwMX0.1OpCL88hLiIduD4ybUsO4QZ_erx26DOdKrpqNZ1iBi0",
+      "paginaCarnet": "https://santiagonzaleznieto-pixel.github.io/Pijao-Nos-Une/carnet.html",
+      "paginaMisDatos": "https://santiagonzaleznieto-pixel.github.io/Pijao-Nos-Une/mis-datos.html"
+    },
     "experiments": {
-      "typedRoutes": true,
+      "typedRoutes": false,
       "reactCompiler": true
     }
   }
