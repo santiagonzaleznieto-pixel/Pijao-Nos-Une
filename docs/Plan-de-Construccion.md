@@ -82,6 +82,16 @@ Una tarea solo cuenta como **terminada** si cumple todo esto:
 - **Tramo 1B (1 de diciembre al 10 de enero):** bloques 1.4 a 1.7.
 - **Tramo 1C (11 al 31 de enero):** bloques 1.8 a 1.14 y la preparación del piloto.
 
+**Avance al 5 de noviembre de 2026** (rama `fase-1/cimientos-seguridad`):
+
+| Bloque | Estado | Detalle |
+|---|---|---|
+| 1.0 Preparación sin código | ⏳ Pendiente del Administrador | Decisión 23.1-1 tomada: **partido o coalición**, así que el bloque 1.14 (firmas) no se construye. Faltan el abogado, los textos legales y las demás decisiones |
+| 1.1 Decisión de tecnología | ⏳ En curso | Viabilidad a costo cero verificada (`docs/Analisis-Costo-Cero.md`). Falta la prueba técnica en un teléfono de 2 GB |
+| 1.2 Infraestructura | 🟡 Mayormente hecho | Hecho: pruebas en la integración continua antes de construir; firma fija y APK de producción en Releases; versión en un solo lugar; respaldo propio (`tools/respaldo.ps1`); tarea que mantiene activo el plan gratuito; guía `docs/Entrega-y-Firma.md`; README. Falta: crear las llaves y cargar los secretos (Administrador), segundo custodio, la parte de la app de la versión mínima, el reporte de errores y la salud de la flota (dependen de la tecnología) |
+| 1.3 Seguridad del servidor | ✅ Hecho y probado | Migración 0013 con A1–A8, M1–M7, R-09 sin conexión, almacenamiento (8.5), cifrado y rotación (8.8), alertas (8.9), control de versión y descarga por zonas. **36 comprobaciones SQL** en Docker. Revisada por `ecc:database-reviewer` (14 observaciones corregidas). Falta aplicarla en producción y los pasos del panel (`docs/Entrega-y-Firma.md` §3) |
+| 1.4 a 1.13 (app) | ⏳ Esperan la decisión de tecnología | Ya se ajustó la app a la regla M3 (los permisos de riesgo alto siempre vencen) |
+
 ### 1.0 Preparación sin código (la «Fase 0» del documento maestro)
 
 - [ ] Contratar al abogado electoral y de protección de datos.

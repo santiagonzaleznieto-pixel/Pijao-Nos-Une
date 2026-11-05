@@ -76,7 +76,7 @@ revoke all on function public._exigir_aal2() from public, anon, authenticated;
 grant execute on function public._aal2() to authenticated;
 
 create or replace function public.tiene_permiso(p_codigo text, p_zona uuid default null) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select case
     when public.es_staff() then
       not coalesce((select requiere_2fa from public.permisos_catalogo where codigo = p_codigo), false) or public._aal2()
@@ -144,15 +144,28 @@ alter table public.dispositivos add column if not exists bateria_pct int;
 alter table public.auditoria add column if not exists actor_rol text;
 alter table public.auditoria add column if not exists hash_anterior text;
 alter table public.auditoria add column if not exists hash text;
+alter table public.auditoria add column if not exists seq bigint;
+create sequence if not exists public.auditoria_seq;
+create unique index if not exists uq_auditoria_seq on public.auditoria (seq);
+
+-- Texto canónico de una fila de auditoría: no depende de la zona horaria de la sesión.
+create or replace function public._auditoria_texto(p_prev text, p_seq bigint, p_usuario uuid, p_accion text, p_entidad text,
+                                                   p_entidad_id text, p_detalle jsonb, p_creado timestamptz) returns text
+language sql immutable set search_path = public, pg_temp as $$
+  select coalesce(p_prev, '') || '|' || p_seq || '|' || coalesce(p_usuario::text, '') || '|' || p_accion || '|' || p_entidad || '|' ||
+         coalesce(p_entidad_id, '') || '|' || p_detalle::text || '|' ||
+         to_char(p_creado at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US')
+$$;
 
 create or replace function public.fn_auditoria_encadenar() returns trigger
 language plpgsql security definer set search_path = public, extensions, pg_temp as $$
 begin
+  -- El orden de la cadena lo da «seq», tomado BAJO el candado: dos inserciones simultáneas no se cruzan.
   perform pg_advisory_xact_lock(hashtext('pijao_auditoria'));
-  select hash into new.hash_anterior from public.auditoria order by id desc limit 1;
-  new.hash := encode(extensions.digest(
-    coalesce(new.hash_anterior, '') || '|' || new.id || '|' || coalesce(new.usuario_id::text, '') || '|' || new.accion || '|' ||
-    new.entidad || '|' || coalesce(new.entidad_id, '') || '|' || new.detalle::text || '|' || new.creado_en::text, 'sha256'), 'hex');
+  select hash into new.hash_anterior from public.auditoria where seq is not null order by seq desc limit 1;
+  new.seq := nextval('public.auditoria_seq');
+  new.hash := encode(extensions.digest(public._auditoria_texto(new.hash_anterior, new.seq, new.usuario_id, new.accion, new.entidad,
+                                                               new.entidad_id, new.detalle, new.creado_en), 'sha256'), 'hex');
   return new;
 end $$;
 drop trigger if exists trg_auditoria_encadenar on public.auditoria;
@@ -170,11 +183,10 @@ language plpgsql security definer set search_path = public, extensions, pg_temp 
 declare r record; v_prev text; v_calc text; v_n bigint := 0;
 begin
   if not public.es_admin() then raise exception 'Solo el Administrador' using errcode = '42501'; end if;
-  for r in select * from public.auditoria where hash is not null order by id loop
-    v_calc := encode(extensions.digest(
-      coalesce(r.hash_anterior, '') || '|' || r.id || '|' || coalesce(r.usuario_id::text, '') || '|' || r.accion || '|' ||
-      r.entidad || '|' || coalesce(r.entidad_id, '') || '|' || r.detalle::text || '|' || r.creado_en::text, 'sha256'), 'hex');
-    if v_calc <> r.hash or (v_prev is not null and r.hash_anterior is distinct from v_prev) then
+  for r in select * from public.auditoria where seq is not null order by seq loop
+    v_calc := encode(extensions.digest(public._auditoria_texto(r.hash_anterior, r.seq, r.usuario_id, r.accion, r.entidad,
+                                                               r.entidad_id, r.detalle, r.creado_en), 'sha256'), 'hex');
+    if v_calc <> r.hash or (v_n > 0 and r.hash_anterior is distinct from v_prev) then
       return jsonb_build_object('integra', false, 'primer_id_roto', r.id, 'revisados', v_n);
     end if;
     v_prev := r.hash; v_n := v_n + 1;
@@ -184,7 +196,7 @@ end $$;
 
 create or replace function public.fn_auditar(p_accion text, p_entidad text, p_id text default null,
                                              p_detalle jsonb default '{}'::jsonb) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_ip text;
 begin
   begin
@@ -210,13 +222,13 @@ alter table public.intentos_registro enable row level security;   -- sin políti
 create index if not exists ix_intentos_ip on public.intentos_registro (ip, creado_en desc);
 
 create or replace function public.rpc_registro_permitido(p_ip text) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select (select count(*) from public.intentos_registro
            where ip = p_ip and not exito and creado_en > now() - interval '15 minutes')
          < public.cfg_num('registro_intentos_max', 8)
 $$;
 create or replace function public.rpc_registrar_intento(p_ip text, p_exito boolean) returns void
-language sql security definer set search_path = public as $$
+language sql security definer set search_path = public, pg_temp as $$
   insert into public.intentos_registro (ip, exito) values (p_ip, p_exito);
   delete from public.intentos_registro where creado_en < now() - interval '2 days';
 $$;
@@ -227,7 +239,7 @@ grant execute on function public.rpc_registrar_intento(text, boolean) to service
 
 -- Antes de crear la cuenta: la invitación se valida y se consume con bloqueo (dos registros a la vez no usan el mismo código).
 create or replace function public.fn_auth_antes_de_crear() returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   v_meta jsonb := coalesce(new.raw_user_meta_data, '{}'::jsonb);
   v_token text;
@@ -260,7 +272,7 @@ end $$;
 
 -- Después de crear la cuenta: toda cuenta nueva, incluida la de un Director invitado, queda pendiente de aprobación.
 create or replace function public.fn_auth_despues_de_crear() returns trigger
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   v_meta jsonb := coalesce(new.raw_user_meta_data, '{}'::jsonb);
   v_inv public.invitaciones;
@@ -306,7 +318,7 @@ end $$;
 -- A7: código de 12 caracteres sin letras ni números que se confundan. La auditoría no guarda el nombre (A6).
 create or replace function public.rpc_invitar(p_nombre text, p_celular text default null, p_correo text default null,
                                               p_rol text default 'colaborador') returns jsonb
-language plpgsql security definer set search_path = public, extensions as $$
+language plpgsql security definer set search_path = public, extensions, pg_temp as $$
 declare
   v_alfabeto constant text := 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
   v_bytes bytea := extensions.gen_random_bytes(12);
@@ -332,7 +344,7 @@ end $$;
 
 -- 4.9: se aprueba o se rechaza con motivo.
 create or replace function public.rpc_aprobar_usuario(p_id uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   perform public._exigir_staff_o('O-08');
   update public.perfiles set estado = 'aprobado', aprobado_por = auth.uid(), motivo_estado = null
@@ -343,7 +355,7 @@ begin
 end $$;
 
 create or replace function public.rpc_rechazar_usuario(p_id uuid, p_motivo text) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   perform public._exigir_staff_o('O-08');
   if coalesce(trim(p_motivo), '') = '' then raise exception 'Escriba el motivo del rechazo'; end if;
@@ -356,7 +368,7 @@ end $$;
 
 -- A4 y 4.3: designar al Director exige la verificación en dos pasos. La persona anterior pierde el rol.
 create or replace function public.rpc_designar_director(p_id uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v public.perfiles;
 begin
   if not public.es_admin() then raise exception 'Solo el Administrador' using errcode = '42501'; end if;
@@ -378,7 +390,7 @@ end $$;
 create or replace function public.rpc_set_permiso(p_usuario uuid, p_codigo text, p_activo boolean,
                                                   p_vence timestamptz default null, p_zonas uuid[] default null,
                                                   p_motivo text default null) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_def public.permisos_catalogo; v_rol text; v_max int := public.cfg_num('permiso_alto_max_dias', 90)::int;
 begin
   if not public.es_staff() then raise exception 'Solo el Director o el Administrador' using errcode = '42501'; end if;
@@ -421,7 +433,7 @@ end $$;
 -- ======================================================================= registrar una visita (A1, A2, M1, R-09)
 
 create or replace function public._consentimiento_valido(c jsonb, p_fotos jsonb) returns text
-language plpgsql stable security definer set search_path = public as $$
+language plpgsql stable security definer set search_path = public, pg_temp as $$
 declare
   v_fecha timestamptz;
   v_version_vigente text;
@@ -528,7 +540,6 @@ declare
   v_dt double precision;
   v_dd double precision;
   v_asignado uuid;
-  v_hash_texto text;
 begin
   if public.mi_rol() is null then
     raise exception 'Cuenta no activa' using errcode = '42501';
@@ -545,9 +556,15 @@ begin
   v_dlat := nullif(v_dev ->> 'lat', '')::double precision;
   v_dlng := nullif(v_dev ->> 'lng', '')::double precision;
 
-  -- Idempotencia: reenviar el mismo registro no lo duplica.
+  -- Idempotencia: reenviar el mismo registro no lo duplica, aunque el reintento llegue mientras el primero sigue en curso.
+  perform pg_advisory_xact_lock(hashtextextended(v_visita_id::text, 0));
   if exists (select 1 from public.visitas where id = v_visita_id) then
     return jsonb_build_object('ok', true, 'duplicado', true);
+  end if;
+  -- Una visita no puede fecharse antes de la antigüedad máxima permitida para lo capturado sin conexión.
+  if v_fecha < now() - make_interval(days => public.cfg_num('consentimiento_max_dias', 30)::int) then
+    v_fecha := now();
+    v_avisos := v_avisos || 'La fecha de la visita era demasiado antigua; se usó la fecha de envío'::text;
   end if;
 
   select exists (select 1 from public.viviendas where id = v_vid) into v_existe;
@@ -638,6 +655,11 @@ begin
         'requiere_aprobacion', v_diferido or v_revision,
         'calidad', v_calidad,
         'creado_por', v_uid, 'creado_en', now(), 'actualizado_en', now()));
+    if v_zona is null and exists (select 1 from public.zonas where activo and poligono is not null) then
+      insert into public.alertas_calidad (tipo, severidad, usuario_id, vivienda_id, detalle)
+      values ('fuera_de_zona', 'baja', v_uid, v_vid, '{}'::jsonb);
+      v_avisos := v_avisos || 'El punto no cae en ningún barrio o vereda dibujado'::text;
+    end if;
     -- R-08: posible duplicado (otra vivienda a menos de 15 m). Se avisa, no se bloquea.
     for v_prev in
       select id from public.viviendas
@@ -690,8 +712,6 @@ begin
       raise exception 'A1: autorización no válida (%): %', coalesce(v_con ->> 'proposito', '?'), v_error_con;
     end if;
   end loop;
-  select encode(extensions.digest(contenido, 'sha256'), 'hex') into v_hash_texto
-    from public.textos_legales where tipo = 'autorizacion' and vigente order by es_borrador, creado_en desc limit 1;
 
   -- Personas (R-15, R-16, R-17, R-19).
   for v_per in select c from jsonb_array_elements(coalesce(p -> 'personas', '[]'::jsonb)) as t(c) loop
@@ -729,8 +749,7 @@ begin
     end if;
     if v_otro is not null then
       -- M1: no se revela el id de la persona existente; solo que ya está registrada, y queda en la auditoría.
-      v_dups := v_dups || jsonb_build_object('id_cliente', v_pid, 'ya_registrada', true);
-      perform public.fn_auditar('cedula_ya_registrada', 'persona', v_otro::text, jsonb_build_object('vivienda', v_vid));
+      v_dups := v_dups || jsonb_build_object('id_cliente', v_pid, 'ya_registrada', true, '_existente', v_otro);
       continue;
     end if;
 
@@ -768,6 +787,12 @@ begin
     where id = v_pid and creado_por = v_uid;
   end loop;
 
+  if v_hogar_id is not null then
+    update public.hogares h set sosten_persona_id = null
+     where h.id = v_hogar_id and h.sosten_persona_id is not null
+       and not exists (select 1 from public.personas pp where pp.id = h.sosten_persona_id);
+  end if;
+
   -- Consentimientos (se omiten los de personas que no se guardaron por estar duplicadas).
   for v_con in select c from jsonb_array_elements(v_cons) as t(c) loop
     if nullif(v_con ->> 'persona_id', '') is not null
@@ -780,7 +805,8 @@ begin
         'vivienda_id', v_vid, 'hogar_id', v_hogar_id, 'recogido_por', v_uid,
         'estado', 'vigente', 'revocado_en', null, 'revocado_motivo', null,
         'evidencia', coalesce(v_con -> 'evidencia', '{}'::jsonb),
-        'texto_hash', v_hash_texto,
+        'texto_hash', (select encode(extensions.digest(t.contenido, 'sha256'), 'hex') from public.textos_legales t
+                        where t.tipo = 'autorizacion' and t.version = v_con ->> 'version_texto' limit 1),
         'creado_en', now(), 'actualizado_en', now()))
     on conflict (id) do nothing;
   end loop;
@@ -875,17 +901,21 @@ begin
 
   -- R-20 / R-21: si pidió no ser visitado, nadie del hogar queda contactable.
   if v_resultado = 'pidio_no_ser_visitado' then
-    update public.personas set estado = 'no_contactar' where vivienda_id = v_vid and eliminado_en is null;
+    update public.personas set estado = 'no_contactar' where vivienda_id = v_vid and eliminado_en is null and estado = 'activa';
     update public.consentimientos
        set estado = 'revocado', revocado_en = now(), revocado_motivo = 'Pidió no ser visitado'
      where vivienda_id = v_vid and estado = 'vigente' and proposito like 'contacto\_%';
   end if;
 
+  perform public.fn_auditar('cedula_ya_registrada', 'persona', d ->> '_existente', jsonb_build_object('vivienda', v_vid))
+     from jsonb_array_elements(v_dups) d;
   perform public.fn_auditar('registrar_visita', 'visita', v_visita_id::text,
     jsonb_build_object('vivienda', v_vid, 'calidad', v_calidad, 'resultado', v_resultado));
 
   return jsonb_build_object('ok', true, 'calidad', v_calidad, 'motivos', to_jsonb(v_motivos),
-    'advertencias', to_jsonb(v_avisos), 'personas_duplicadas', v_dups, 'diferido', v_diferido,
+    'advertencias', to_jsonb(v_avisos),
+    'personas_duplicadas', coalesce((select jsonb_agg(d - '_existente') from jsonb_array_elements(v_dups) d), '[]'::jsonb),
+    'diferido', v_diferido,
     'en_revision', v_revision, 'zona_id', (select zona_id from public.viviendas where id = v_vid));
 end $$;
 
@@ -944,7 +974,7 @@ begin
 end $$;
 
 create or replace function public.rpc_foto_subida(p_id uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if public.mi_rol() is null then raise exception 'Cuenta no activa' using errcode = '42501'; end if;
   update public.fotos f set subida = true
@@ -956,7 +986,7 @@ end $$;
 -- ======================================================================= edición con control de versión (5.13)
 
 create or replace function public.rpc_editar_visita(p_id uuid, p jsonb) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v public.visitas; v_version int := nullif(p ->> 'version', '')::int;
 begin
   if public.mi_rol() is null then raise exception 'Cuenta no activa' using errcode = '42501'; end if;
@@ -992,7 +1022,7 @@ end $$;
 -- ======================================================================= datos completos y vista enmascarada (A5, M2)
 
 create or replace function public.rpc_persona_completa(p_id uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v public.personas; v_zona uuid; v_simpatia boolean; v_n int;
 begin
   if public.mi_rol() is null then raise exception 'Cuenta no activa' using errcode = '42501'; end if;
@@ -1025,20 +1055,6 @@ begin
     'simpatia', case when v_simpatia then public._dec(v.simpatia_enc) end);
 end $$;
 
--- Qué personas puede ver cada quien en su versión enmascarada (M2): el Director y el Administrador, todas;
--- un colaborador, las que registró, las de sus zonas asignadas y las de las zonas de su permiso O-01.
-create or replace function public._puede_ver_persona(p_creado_por uuid, p_vivienda uuid) returns boolean
-language sql stable security definer set search_path = public as $$
-  select public.mi_rol() is not null and (
-    public.es_staff()
-    or p_creado_por = auth.uid()
-    or exists (select 1 from public.viviendas v
-                join public.asignaciones_zona a on a.zona_id = v.zona_id and a.activo and a.usuario_id = auth.uid()
-               where v.id = p_vivienda)
-    or public.tiene_permiso('O-01', (select zona_id from public.viviendas where id = p_vivienda)))
-$$;
-grant execute on function public._puede_ver_persona(uuid, uuid) to authenticated;
-
 -- A5: quien pidió la eliminación ya no se ve (la fila queda sin datos para que los teléfonos borren su copia).
 create or replace view public.personas_v as
 select
@@ -1060,14 +1076,26 @@ select
      where c.persona_id = p.id and c.estado = 'vigente' and c.proposito like 'contacto\_%') as tiene_contacto_autorizado,
   p.creado_por, p.creado_en, p.actualizado_en, p.eliminado_en
 from public.personas p
-where public._puede_ver_persona(p.creado_por, p.vivienda_id);
+-- M2: el Director y el Administrador ven todas; un colaborador, las que registró, las de sus zonas asignadas
+-- y las de su permiso O-01 (en toda Pijao o en sus zonas). Condiciones sin correlación: se evalúan una vez por consulta.
+where (select public.mi_rol()) is not null
+  and ((select public.es_staff())
+       or p.creado_por = (select auth.uid())
+       or p.vivienda_id in (select v.id from public.viviendas v
+                             join public.asignaciones_zona a on a.zona_id = v.zona_id and a.activo
+                            where a.usuario_id = (select auth.uid()))
+       or (select public.tiene_permiso('O-01'))
+       or p.vivienda_id in (select v.id from public.viviendas v
+                             join public.permisos_opcionales po on v.zona_id = any (po.zonas)
+                            where po.usuario_id = (select auth.uid()) and po.codigo = 'O-01' and po.activo
+                              and (po.vence_en is null or po.vence_en > now()) and (select public._aal2())));
 grant select on public.personas_v to authenticated;
 
 -- ======================================================================= fotos y almacenamiento (A3, 8.5)
 
 -- Fotos restringidas: las de autorizaciones y las que muestran personas solo las ven quien las tomó y el Director o el Administrador.
 create or replace function public._foto_visible(p_tipo text, p_con_personas boolean, p_usuario uuid) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select public.mi_rol() is not null and (
     public.es_staff() or p_usuario = auth.uid()
     or (p_tipo not in ('autorizacion') and not coalesce(p_con_personas, false)))
@@ -1076,16 +1104,18 @@ grant execute on function public._foto_visible(text, boolean, uuid) to authentic
 
 drop policy if exists sel_activos_fotos on public.fotos;
 create policy sel_activos_fotos on public.fotos for select to authenticated
-  using (public._foto_visible(tipo, con_personas, usuario_id));
+  using ((select public.mi_rol()) is not null
+         and ((select public.es_staff()) or usuario_id = (select auth.uid())
+              or (tipo <> 'autorizacion' and not con_personas)));
 
 create or replace function public._archivo_foto_visible(p_nombre text) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select exists (select 1 from public.fotos f
                   where f.storage_path = p_nombre and f.eliminado_en is null
                     and public._foto_visible(f.tipo, f.con_personas, f.usuario_id))
 $$;
 create or replace function public._archivo_foto_subible(p_nombre text) returns boolean
-language sql stable security definer set search_path = public as $$
+language sql stable security definer set search_path = public, pg_temp as $$
   select public.mi_rol() is not null and exists (
     select 1 from public.fotos f where f.storage_path = p_nombre and f.usuario_id = auth.uid() and not f.subida)
 $$;
@@ -1108,7 +1138,7 @@ create policy pijao_docs_subir on storage.objects for insert to authenticated
 -- Cualquier colaborador puede registrar la decisión de un ciudadano (nunca se bloquea un derecho),
 -- pero cada marca sobre una persona ajena avisa al Director y un volumen anormal genera una alerta alta.
 create or replace function public._vigilar_no_contactar(p_persona uuid, p_tipo text) returns void
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_n int; v_propia boolean;
 begin
   select exists (select 1 from public.personas where id = p_persona and creado_por = auth.uid()) into v_propia;
@@ -1118,7 +1148,9 @@ begin
   end if;
   select count(*) into v_n from public.auditoria
    where usuario_id = auth.uid() and accion in ('no_contactar', 'solicitud_titular') and creado_en > now() - interval '1 day';
-  if v_n = public.cfg_num('no_contactar_max_dia', 15)::int then
+  if v_n >= public.cfg_num('no_contactar_max_dia', 15)::int
+     and not exists (select 1 from public.alertas_calidad where tipo = 'no_contactar_masivo' and usuario_id = auth.uid()
+                      and creada_en > now() - interval '1 day') then
     insert into public.alertas_calidad (tipo, severidad, usuario_id, detalle)
     values ('no_contactar_masivo', 'alta', auth.uid(), jsonb_build_object('marcas_ultimo_dia', v_n));
   end if;
@@ -1126,7 +1158,7 @@ end $$;
 revoke all on function public._vigilar_no_contactar(uuid, text) from public, anon, authenticated;
 
 create or replace function public.rpc_marcar_no_contactar(p_persona uuid, p_motivo text default null) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if public.mi_rol() is null then raise exception 'Cuenta no activa' using errcode = '42501'; end if;
   if not exists (select 1 from public.personas where id = p_persona and eliminado_en is null) then
@@ -1141,9 +1173,39 @@ begin
   return jsonb_build_object('ok', true);
 end $$;
 
+create or replace function public._aplicar_supresion(p_persona uuid) returns void
+language plpgsql security definer set search_path = public, pg_temp as $$
+begin
+  update public.personas set estado = 'solicito_eliminacion' where id = p_persona;
+  update public.consentimientos
+     set estado = 'revocado', revocado_en = now(), revocado_motivo = 'Solicitud de supresión del titular'
+   where persona_id = p_persona and estado = 'vigente';
+end $$;
+revoke all on function public._aplicar_supresion(uuid) from public, anon, authenticated;
+
+-- Al resolver un caso de supresión, el Director confirma la supresión completa (16.5).
+create or replace function public.rpc_resolver_titular(p_id uuid, p_estado text, p_respuesta text) returns jsonb
+language plpgsql security definer set search_path = public, pg_temp as $$
+declare v public.solicitudes_titulares;
+begin
+  if not public.es_staff() then raise exception 'Solo el Director o el Administrador' using errcode = '42501'; end if;
+  if p_estado not in ('en_proceso', 'resuelta', 'rechazada') then raise exception 'Estado no válido'; end if;
+  select * into v from public.solicitudes_titulares where id = p_id;
+  if not found then raise exception 'Solicitud no encontrada'; end if;
+  update public.solicitudes_titulares
+     set estado = p_estado, respuesta = p_respuesta, atendida_por = auth.uid(),
+         resuelta_en = case when p_estado in ('resuelta', 'rechazada') then now() end
+   where id = p_id;
+  if v.tipo = 'supresion' and v.persona_id is not null and p_estado in ('en_proceso', 'resuelta') then
+    perform public._aplicar_supresion(v.persona_id);
+  end if;
+  perform public.fn_auditar('resolver_titular', 'solicitud', p_id::text, jsonb_build_object('estado', p_estado));
+  return jsonb_build_object('ok', true);
+end $$;
+
 -- 16.5: los casos se reciben por la app, por correo, por WhatsApp y por el formulario público.
 create or replace function public.rpc_solicitud_titular(p jsonb) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare
   v_tipo text := p ->> 'tipo';
   v_persona uuid := nullif(p ->> 'persona_id', '')::uuid;
@@ -1163,12 +1225,17 @@ begin
           public.sumar_dias_habiles(current_date, v_dias))
   on conflict (id) do nothing;
   if v_persona is not null and v_tipo in ('revocatoria', 'supresion') then
-    update public.personas
-       set estado = case when v_tipo = 'supresion' then 'solicito_eliminacion' else 'no_contactar' end
-     where id = v_persona;
+    -- R-20: «No contactar» y la revocatoria de los contactos son inmediatas para cualquiera (nunca se bloquea un derecho).
+    update public.personas set estado = 'no_contactar' where id = v_persona and estado = 'activa';
     update public.consentimientos
        set estado = 'revocado', revocado_en = now(), revocado_motivo = 'Solicitud del titular (' || v_tipo || ')'
-     where persona_id = v_persona and estado = 'vigente' and (v_tipo = 'supresion' or proposito like 'contacto\_%');
+     where persona_id = v_persona and estado = 'vigente' and proposito like 'contacto\_%';
+    -- La supresión completa (ocultar y revocar todo) es inmediata si la registra el autor o el Director;
+    -- si la registra otro colaborador, la confirma el Director al resolver el caso (evita abusos).
+    if v_tipo = 'supresion' and (public.es_staff()
+        or exists (select 1 from public.personas where id = v_persona and creado_por = auth.uid())) then
+      perform public._aplicar_supresion(v_persona);
+    end if;
     perform public._vigilar_no_contactar(v_persona, v_tipo);
   end if;
   perform public.fn_auditar('solicitud_titular', 'persona', coalesce(v_persona::text, v_id::text),
@@ -1178,7 +1245,7 @@ end $$;
 
 -- 16.5: prueba de la autorización, a pedido del titular (sin datos de otras personas).
 create or replace function public.rpc_prueba_autorizacion(p_persona uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if not public.es_staff() then raise exception 'Solo el Director o el Administrador' using errcode = '42501'; end if;
   perform public.fn_auditar('prueba_autorizacion', 'persona', p_persona::text);
@@ -1195,7 +1262,7 @@ end $$;
 
 -- Borrado definitivo de una persona, ejecutado por el Administrador con verificación en dos pasos y con acta.
 create or replace function public.rpc_borrar_persona(p_id uuid, p_acta text) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if not public.es_admin() then raise exception 'Solo el Administrador' using errcode = '42501'; end if;
   perform public._exigir_aal2();
@@ -1206,7 +1273,15 @@ begin
   update public.solicitudes_titulares set nombre_solicitante = null, contacto = null
    where persona_id = p_id and estado in ('resuelta', 'rechazada');
   update public.solicitudes_titulares set persona_id = null where persona_id = p_id;
-  delete from public.personas where id = p_id;
+  -- Queda una «lápida» sin ningún dato personal: así los teléfonos reciben la señal y borran su copia (A5).
+  update public.personas set
+    primer_nombre = '(eliminado)', segundo_nombre = null, primer_apellido = '(eliminado)', segundo_apellido = null, apodo = null,
+    cedula_enc = null, cedula_hash = null, cedula_ult3 = null, fecha_nacimiento = null, sexo = null, ocupacion = null,
+    telefono_enc = null, telefono_ult4 = null, telefono_es_whatsapp = null, telefono2_enc = null, correo_enc = null,
+    correo_parcial = null, canal_preferido = null, mejor_horario = null, anios_en_pijao = null, vive_en_otra_ciudad = null,
+    vota_en_pijao = null, puesto_votacion = null, mesa_votacion = null, interes_info = null, voluntario = null, anfitrion = null,
+    temas_interes = null, simpatia_enc = null, estado = 'solicito_eliminacion', eliminado_en = now()
+   where id = p_id;
   perform public.fn_auditar('borrado_definitivo', 'persona', p_id::text, jsonb_build_object('acta', p_acta));
   return jsonb_build_object('ok', true);
 end $$;
@@ -1215,7 +1290,7 @@ end $$;
 -- seguir recibiendo información de participación ciudadana. Devuelve las rutas de fotos que hay que borrar del
 -- almacenamiento con tools/cierre_fotos.py (Supabase no permite borrar archivos desde SQL).
 create or replace function public.rpc_plan_cierre(p_confirmacion text) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_p int; v_c int; v_v int; v_h int; v_rutas jsonb; v_conservar uuid[];
 begin
   if not public.es_admin() then raise exception 'Solo el Administrador' using errcode = '42501'; end if;
@@ -1245,6 +1320,17 @@ begin
   update public.viviendas set direccion = null, complemento = null, nombre_finca = null, indicaciones = null, referencia = null,
          foto_principal_path = null, lat = round(lat::numeric, 3)::float8, lng = round(lng::numeric, 3)::float8;
   update public.necesidades set texto = null;
+  update public.visitas set motivo_manual = null;
+  update public.tareas set descripcion = null, nota_cierre = null;
+  update public.solicitudes_titulares set detalle = null where estado in ('resuelta', 'rechazada');
+  update public.alertas_calidad set detalle = '{}'::jsonb;
+  delete from public.errores_app;
+  update public.perfiles set contacto_emergencia_nombre = null, contacto_emergencia_celular = null, celular = null
+   where rol <> 'admin';
+  -- Quienes autorizaron seguir recibiendo información conservan solo nombre y contacto.
+  update public.personas set cedula_enc = null, cedula_hash = null, cedula_ult3 = null, fecha_nacimiento = null,
+         simpatia_enc = null, puesto_votacion = null, mesa_votacion = null
+   where id = any (v_conservar);
   update public.solicitudes_titulares set nombre_solicitante = null, contacto = null where estado in ('resuelta', 'rechazada');
   update public.invitaciones set nombre = '(eliminado)', celular = null, correo = null;
   delete from public.ubicaciones_jornada;
@@ -1261,7 +1347,7 @@ end $$;
 
 -- Latido del teléfono (N-12). Registra el dispositivo (máximo configurable, 4.10) y le dice si debe borrar sus datos (17.2).
 create or replace function public.rpc_latido(p jsonb) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_ident text := nullif(p ->> 'identificador', ''); v_d public.dispositivos; v_activos int;
 begin
   if auth.uid() is null then raise exception 'Sin sesión' using errcode = '42501'; end if;
@@ -1290,7 +1376,7 @@ begin
 end $$;
 
 create or replace function public.rpc_reportar_perdido(p_dispositivo uuid) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if auth.uid() is null then raise exception 'Sin sesión' using errcode = '42501'; end if;
   update public.dispositivos set activo = false, orden_borrado = true, reportado_perdido_en = now()
@@ -1316,7 +1402,7 @@ drop policy if exists sel_errores on public.errores_app;
 create policy sel_errores on public.errores_app for select to authenticated using (public.es_admin());
 
 create or replace function public.rpc_reportar_error(p jsonb) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 begin
   if auth.uid() is null then raise exception 'Sin sesión' using errcode = '42501'; end if;
   -- Límite para no llenar la base gratuita: 50 errores por usuario y día.
@@ -1332,7 +1418,7 @@ end $$;
 
 -- 8.11 / 9.6: consumo frente a los límites del plan gratuito.
 create or replace function public.rpc_uso_recursos() returns jsonb
-language plpgsql security definer set search_path = public, storage as $$
+language plpgsql security definer set search_path = public, storage, pg_temp as $$
 declare v_bd numeric; v_arch numeric; v_lim_bd numeric := public.cfg_num('limite_bd_mb', 500);
         v_lim_arch numeric := public.cfg_num('limite_archivos_mb', 1024); v_alerta numeric := public.cfg_num('alerta_uso_pct', 80);
 begin
@@ -1351,7 +1437,7 @@ end $$;
 -- ======================================================================= jornada (M7)
 
 create or replace function public.rpc_ubicaciones(p jsonb) returns jsonb
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_j uuid; v_n int := 0; v_pt jsonb; v_lat float8; v_lng float8;
 begin
   if public.mi_rol() is null then raise exception 'Cuenta no activa' using errcode = '42501'; end if;
@@ -1375,7 +1461,7 @@ begin
 end $$;
 
 create or replace function public._purgar_ubicaciones() returns int
-language plpgsql security definer set search_path = public as $$
+language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_n int;
 begin
   delete from public.ubicaciones_jornada
@@ -1399,8 +1485,9 @@ end $$;
 
 -- Se ejecuta SOLO desde el editor SQL del panel, por el Administrador: select public.admin_rotar_pii_key('<llave nueva>');
 -- Después, actualizar el secreto 'pii_key' de Vault con la llave nueva y guardar la anterior fuera de línea por si acaso.
+-- Hágalo en una VENTANA DE MANTENIMIENTO: entre este paso y el cambio en Vault, nadie puede descifrar.
 create or replace function public.admin_rotar_pii_key(p_nueva text) returns jsonb
-language plpgsql security definer set search_path = public, extensions as $$
+language plpgsql security definer set search_path = public, extensions, pg_temp as $$
 declare v_vieja text := public._pii_key(); v_n int;
 begin
   if length(coalesce(p_nueva, '')) < 32 then raise exception 'La llave nueva debe tener al menos 32 caracteres'; end if;

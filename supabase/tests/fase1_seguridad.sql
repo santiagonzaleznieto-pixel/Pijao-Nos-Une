@@ -188,7 +188,19 @@ select pg_temp.debe_fallar($q$select public.rpc_set_permiso('00000000-0000-0000-
 select pg_temp.debe_fallar($q$select public.rpc_set_permiso('00000000-0000-0000-0000-0000000000c2', 'O-01', true, now() + interval '200 days')$q$,
   'máximo', 'M3: O-01 a más de 90 días se rechaza');
 select public.rpc_set_permiso('00000000-0000-0000-0000-0000000000c2', 'O-01', true, now() + interval '30 days');
--- A5: una solicitud de supresión bloquea el descifrado y oculta a la persona.
+reset role;
+-- M4: si otro colaborador registra la supresión, la persona queda en «No contactar» de inmediato,
+-- pero la supresión completa espera la confirmación del Director.
+select pg_temp.como('00000000-0000-0000-0000-0000000000c2');
+set role authenticated;
+select public.rpc_solicitud_titular(jsonb_build_object('tipo', 'supresion', 'persona_id', '30000000-0000-0000-0000-000000000001',
+                                                       'canal', 'presencial'));
+reset role;
+select pg_temp.afirmar((select estado = 'no_contactar' from public.personas where id = '30000000-0000-0000-0000-000000000001'),
+                       'M4: la supresión registrada por otro colaborador queda pendiente del Director (No contactar ya)');
+select pg_temp.como('00000000-0000-0000-0000-0000000000d1');
+set role authenticated;
+-- A5: una solicitud de supresión del Director bloquea el descifrado y oculta a la persona.
 select public.rpc_solicitud_titular(jsonb_build_object('tipo', 'supresion', 'persona_id', '30000000-0000-0000-0000-000000000001',
                                                        'canal', 'whatsapp'));
 reset role;
@@ -199,6 +211,13 @@ select pg_temp.debe_fallar($q$select public.rpc_persona_completa('30000000-0000-
 create temp table _vista_dir as select nombre_visible from public.personas_v where id = '30000000-0000-0000-0000-000000000001';
 reset role;
 select pg_temp.afirmar((select nombre_visible is null from _vista_dir), 'A5: la vista ya no muestra su nombre');
+-- Una revocatoria posterior no la «revive».
+select pg_temp.como('00000000-0000-0000-0000-0000000000c2');
+set role authenticated;
+select public.rpc_solicitud_titular(jsonb_build_object('tipo', 'revocatoria', 'persona_id', '30000000-0000-0000-0000-000000000001'));
+reset role;
+select pg_temp.afirmar((select estado = 'solicito_eliminacion' from public.personas where id = '30000000-0000-0000-0000-000000000001'),
+                       'A5: una revocatoria posterior no vuelve a mostrar a quien pidió la eliminación');
 
 -- A6: el borrado definitivo exige Administrador con verificación en dos pasos.
 select pg_temp.como('00000000-0000-0000-0000-00000000000a');
@@ -212,9 +231,11 @@ select pg_temp.como('00000000-0000-0000-0000-00000000000a', 'aal2');
 set role authenticated;
 select public.rpc_borrar_persona('30000000-0000-0000-0000-000000000001', 'Acta 1');
 reset role;
-select pg_temp.afirmar(not exists (select 1 from public.personas where id = '30000000-0000-0000-0000-000000000001')
+select pg_temp.afirmar((select primer_nombre = '(eliminado)' and cedula_enc is null and cedula_hash is null and telefono_enc is null
+                                and eliminado_en is not null
+                           from public.personas where id = '30000000-0000-0000-0000-000000000001')
                        and not exists (select 1 from public.consentimientos where persona_id = '30000000-0000-0000-0000-000000000001'),
-                       'A6: el borrado definitivo elimina a la persona y sus autorizaciones');
+                       'A6: el borrado definitivo deja solo una lápida sin datos y elimina las autorizaciones');
 
 -- M5: la auditoría no se modifica, no se vacía y su cadena está íntegra.
 select pg_temp.debe_fallar($q$update public.auditoria set accion = 'x'$q$, 'no se puede', 'M5: la auditoría no se edita');
