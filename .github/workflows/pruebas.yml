@@ -28,6 +28,26 @@ jobs:
       - name: Pruebas unitarias y de interfaz emulada
         run: python -m unittest discover -s tests -t . -v
 
+  app:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Tipos de las reglas, los datos y los servicios
+        run: npx tsc --noEmit -p tsconfig.nucleo.json
+      - name: Pruebas de la app (reglas, sincronización y sesión)
+        run: npx jest --ci
+
   base-de-datos:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
