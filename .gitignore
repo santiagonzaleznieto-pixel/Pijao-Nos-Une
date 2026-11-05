@@ -1,0 +1,26 @@
+# Construcción de Android (Buildozer)
+.buildozer/
+bin/
+source/
+build.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Datos locales y secretos: nunca subirlos
+*.db
+*.sqlite
+errores.log
+.env
+.env.*
+service_role*
+*.keystore
+*.jks
+
+# Sistema
+.DS_Store
+__MACOSX/
+Thumbs.db
