@@ -1,0 +1,82 @@
+name: App Expo (APK de la Fase 1)
+
+# Construye el APK de la app nueva (app/) gratis en GitHub Actions, sin EAS ni servicios de pago, con el mapa de
+# Pijao sin conexión. Antes corre las pruebas y la revisión de tipos. Lo publica como pre-versión para descargarlo
+# desde el teléfono. No usa secretos: el APK de prueba se firma con la llave de depuración de la plantilla.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["fase-*/**"]
+    paths: ["app/**", ".github/workflows/app-apk.yml"]
+
+permissions:
+  contents: write   # solo para publicar la pre-versión
+
+jobs:
+  apk:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    defaults:
+      run:
+        working-directory: app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Mapa de Pijao sin conexión (OpenStreetMap · Protomaps · ODbL)
+        run: |
+          set -euo pipefail
+          VERSION=1.31.2
+          curl -sSL -o /tmp/pmtiles.tgz "https://github.com/protomaps/go-pmtiles/releases/download/v${VERSION}/go-pmtiles_${VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/pmtiles.tgz -C /tmp pmtiles
+          FUENTE=""
+          for i in $(seq 1 10); do
+            D=$(date -u -d "-$i day" +%Y%m%d)
+            if curl -sfI "https://build.protomaps.com/$D.pmtiles" >/dev/null; then FUENTE="https://build.protomaps.com/$D.pmtiles"; break; fi
+          done
+          if [ -z "$FUENTE" ]; then echo "::error::No se encontró una compilación reciente de Protomaps"; exit 1; fi
+          /tmp/pmtiles extract "$FUENTE" assets/pijao.pmtiles --bbox=-75.82,4.18,-75.55,4.45 --maxzoom=15
+          echo "MAPA_MB=$(du -m assets/pijao.pmtiles | cut -f1)" >> "$GITHUB_ENV"
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Pruebas y tipos
+        run: |
+          npx jest --ci
+          npx tsc --noEmit -p tsconfig.nucleo.json
+          npx expo-doctor
+
+      - name: Generar el proyecto Android (expo prebuild)
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Construir el APK
+        working-directory: app/android
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g"
+        run: ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a,armeabi-v7a --no-daemon
+
+      - name: Guardar el APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: pijao-app-fase1-apk
+          path: app/android/app/build/outputs/apk/release/*.apk
+          retention-days: 30
+
+      - name: Publicar como pre-versión
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ETIQUETA="app-fase1-${GITHUB_RUN_NUMBER}"
+          cp android/app/build/outputs/apk/release/app-release.apk "/tmp/pijao-nos-une-fase1-${GITHUB_RUN_NUMBER}.apk"
+          gh release create "$ETIQUETA" "/tmp/pijao-nos-une-fase1-${GITHUB_RUN_NUMBER}.apk" --prerelease --target "$GITHUB_SHA" \
+            --title "App Fase 1 (en construcción) #${GITHUB_RUN_NUMBER}" \
+            --notes "APK de prueba de la app nueva. Úsela en MODO PRÁCTICA hasta que la migración 0013 esté aplicada en Supabase y el abogado apruebe los textos. Mapa de Pijao incluido: ${MAPA_MB} MB."
