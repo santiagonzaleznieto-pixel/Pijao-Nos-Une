@@ -236,7 +236,7 @@ La app **nunca**:
 
 1. "Principal cabeza de alimentos" significa **principal sostén del hogar**: la persona que aporta el sustento principal.
 2. El Administrador es quien encarga este documento. Jaime González será el Director de Campaña.
-3. La app será móvil para el trabajo de campo, con un **panel web** para tareas pesadas del Director y del Administrador (informes, importaciones, permisos). **Actualización 1.1:** hoy solo existe para Android, sin panel web. iOS queda como secundario y solo se hará si el equipo lo necesita. La tecnología se decide en 23.1-17 (ver 24.5).
+3. La app será móvil para el trabajo de campo, con un **panel web** para tareas pesadas del Director y del Administrador (informes, importaciones, permisos). **Actualización 1.1:** hoy solo existe para Android, sin panel web. iOS queda fuera por costo (la cuenta de Apple cuesta US$ 99 al año). La tecnología se decide en 23.1-17 (ver 24.5).
 4. La base de datos y los archivos viven en Supabase.
 5. La app está en español de Colombia.
 6. La forma en que se inscribirá la candidatura (por partido, coalición o firmas) todavía no está definida (ver sección 23).
@@ -545,8 +545,8 @@ Ver 24.3, hallazgos A7 y A8.
 
 ## 4.10 Inicio de sesión y seguridad de acceso
 
-- **Ingreso:** celular con código por mensaje, o correo con contraseña. Después, huella o rostro del teléfono para volver a entrar rápido.
-- **Verificación en dos pasos:** obligatoria para Administrador y Director, y para cualquier colaborador con un permiso de riesgo alto.
+- **Ingreso:** correo con contraseña. Después, huella o rostro del teléfono para volver a entrar rápido. *(Actualización 1.1: sin código por SMS, porque exige un proveedor de pago.)*
+- **Verificación en dos pasos:** obligatoria para Administrador y Director, y para cualquier colaborador con un permiso de riesgo alto. Se hace con una **aplicación autenticadora** (TOTP), que es gratuita.
 - **Contraseña:** mínimo 10 caracteres, sin contraseñas comunes.
 - **Sesiones:** colaborador, 14 días sin actividad; Director, 7 días; Administrador, 12 horas.
 - **Dispositivos:** máximo dos por colaborador. Cada uno queda en una lista que el colaborador y el Administrador pueden ver y cerrar a distancia.
@@ -755,7 +755,7 @@ Ver sección 5.4 (GPS, duplicados, distancia). Se guardan las coordenadas reales
 
 - Obligatoria, salvo que la persona no autorice; en ese caso se marca "No autorizó la foto".
 - La app **estampa** la foto con fecha, hora, coordenadas e iniciales del colaborador en una franja inferior.
-- Se comprime a unos 1.280 píxeles de lado largo y unos 300 KB, y se guarda en espacio privado.
+- Se comprime a unos 1.024 píxeles de lado largo y unos 100 KB, con una miniatura de 20 KB, y se guarda en espacio privado. *(Ajustado en 1.1 para caber en el plan gratuito.)*
 - Hasta 6 fotos por visita, de estos tipos: **fachada** (una obligatoria), **entorno o referencia**, **problema** (por ejemplo un derrumbe o un hueco en la vía), **autorización firmada en papel** (evidencia restringida).
 - Si en la foto aparece una persona, la app pregunta si autorizó. Nunca niños.
 
@@ -1135,7 +1135,7 @@ La app genera **alertas** por descargas masivas, muchos accesos a datos completo
 
 ## 8.10 Respaldos y recuperación
 
-- Respaldo automático **diario** y, si el plan lo permite, recuperación a un punto exacto en el tiempo.
+- Respaldo **diario**. Como el plan gratuito no lo incluye, lo hace un script en el computador del Administrador, cifrado y nunca subido a GitHub (actualización 1.1).
 - Copia **semanal cifrada** guardada aparte por el Administrador.
 - **Prueba de restauración cada mes.**
 - Plan escrito de recuperación (quién hace qué), con la meta de restaurar el servicio en menos de 4 horas.
@@ -1144,7 +1144,7 @@ La app genera **alertas** por descargas masivas, muchos accesos a datos completo
 ## 8.11 Tamaño y costos
 
 - **Ejemplo para dimensionar:** 3.000 viviendas con 3 fotos de 300 KB son unos 2,7 GB; con visitas repetidas, entre 5 y 8 GB. La base de datos de texto es pequeña; lo que pesa son las fotos.
-- Conclusión: usar un **plan de pago** (no el gratuito, que pausa proyectos inactivos y tiene límites bajos). Verificar los planes y precios vigentes al contratar.
+- **Decisión 1.1: costo recurrente cero.** Se usa el **plan gratuito** (500 MB de base, 1 GB de archivos, 5 GB más 5 GB de tráfico al mes, sin respaldos automáticos y con pausa tras 7 días sin actividad). Las fotos se reducen a unos 100 KB, los respaldos los hace el Administrador y las descargas pesadas van por GitHub Releases. Detalle en `docs/Analisis-Costo-Cero.md`.
 - Alertas de uso al 80 % del almacenamiento y del plan.
 - **Ubicación del servidor:** la región más cercana a Colombia que ofrezca el proveedor. Como los datos quedarían alojados **fuera de Colombia**, esto debe decirse en el aviso de privacidad y revisarse con el abogado (sección 23).
 
@@ -1838,7 +1838,7 @@ Todo lo esencial funciona **sin señal**: ver el mapa descargado, registrar visi
 
 ## 17.5 Dispositivos y sistemas
 
-- **Android 8 o superior** (prioridad). **iOS 14 o superior**, solo si el equipo lo necesita (actualización 1.1: hoy la app se compila para Android 7 o superior y no tiene versión para iOS).
+- **Solo Android 8 o superior** (actualización 1.1: iOS queda fuera por el costo de la cuenta de Apple; hoy la app se compila para Android 7 o superior).
 - Cuando la campaña lo pida, Android 14 exige declarar el **servicio de ubicación en primer plano** para la jornada. La versión objetivo del sistema debe subir a la API 34 o más.
 - Teléfonos de gama media o baja (mínimo 2 GB de memoria) y pantallas pequeñas.
 - Uso vertical como principal; horizontal opcional. Tabletas, sin prioridad.
@@ -1949,7 +1949,7 @@ Todo lo esencial funciona **sin señal**: ver el mapa descargado, registrar visi
 | Distancia máxima de una ubicación manual | 100 m |
 | Ventana de edición del autor | 72 horas |
 | Fotos por visita | Máximo 6 |
-| Tamaño de la foto | 1.280 píxeles, unos 300 KB |
+| Tamaño de la foto | 1.024 píxeles, unos 100 KB, y miniatura de 20 KB (ajustado en 1.1 para el plan gratuito de Supabase) |
 | Vigencia de una invitación | 72 horas, un solo uso |
 | Duración de la sesión | Colaborador 14 días · Director 7 días · Administrador 12 horas |
 | Inactividad para suspensión automática | 30 días |
@@ -2346,16 +2346,16 @@ Ordenados por gravedad. Todos tienen corrección conocida. Los de nivel crítico
 | Migraciones | Se aplican a mano y hay un solo ambiente | Pasar a Supabase CLI y crear el ambiente de pruebas |
 | Pruebas de reglas | No hay pruebas automáticas de las reglas por fila según cada rol | Añadir pruebas pgTAP |
 | Construcción del APK (CI) | No corre las pruebas antes de compilar. La versión en el User-Agent sigue en 0.9 | Correr las pruebas primero y tomar la versión de un solo lugar |
-| Observabilidad | No hay forma de ver errores ni el estado de los teléfonos en campo | Agregar un reporte de errores sin datos personales (por ejemplo Sentry) y un panel de **salud de la flota**: versión, cola pendiente, última sincronización, espacio libre y batería |
+| Observabilidad | No hay forma de ver errores ni el estado de los teléfonos en campo | Agregar un reporte de errores sin datos personales (en una tabla propia de Supabase, sin servicios de pago) y un panel de **salud de la flota**: versión, cola pendiente, última sincronización, espacio libre y batería |
 | Mapas | Las capas de OpenStreetMap y Esri que se usan hoy **no permiten la descarga masiva para usar sin conexión** | Mapa propio de Pijao empaquetado (PMTiles o MBTiles) o un proveedor con licencia para uso sin conexión |
-| Respaldos | Falta el plan completo | Respaldo diario del plan pago, copia nocturna cifrada fuera de Supabase (base y fotos), prueba de restauración mensual y la **llave de cifrado de datos personales (`pii_key`) guardada fuera de línea**: sin ella las cédulas no se recuperan |
+| Respaldos | Falta el plan completo | Respaldo diario propio y cifrado en el computador del Administrador (el plan gratuito no trae respaldos), con base y fotos, prueba de restauración mensual y la **llave de cifrado de datos personales (`pii_key`) guardada fuera de línea**: sin ella las cédulas no se recuperan |
 
 ## 24.5 Recomendación de tecnología
 
-El servidor (Supabase) es sólido y **se conserva completo**. La app de Kivy funciona, pero varios requisitos del documento cuestan mucho o son frágiles en Kivy: notificaciones, GPS en segundo plano para la jornada y el SOS, huella o rostro, cifrado local, tiempo real, iOS y panel web. Por eso se recomienda **migrar la app móvil a React Native con Expo (TypeScript)** y hacer el **panel web en React**. Las razones:
+El servidor (Supabase) es sólido y **se conserva completo**. La app de Kivy funciona, pero varios requisitos del documento cuestan mucho o son frágiles en Kivy: notificaciones, GPS en segundo plano para la jornada y el SOS, huella o rostro, cifrado local, tiempo real y panel web. Por eso se recomienda **migrar la app móvil a React Native con Expo (TypeScript)** y hacer el **panel web en React**. Las razones:
 
 1. **Un solo lenguaje** para la app, el panel web y las funciones del servidor, que ya están en TypeScript.
-2. **Actualizaciones instantáneas (EAS Update):** los arreglos llegan a los 300 teléfonos sin reinstalar el APK, y se pueden revertir. En una campaña es decisivo.
+2. **Actualizaciones instantáneas** (`expo-updates` con un servidor propio en Supabase, sin costo): los arreglos llegan a los 300 teléfonos sin reinstalar el APK, y se pueden revertir. En una campaña es decisivo.
 3. Notificaciones, segundo plano, biometría, cifrado y mapas sin conexión (MapLibre) son librerías mantenidas.
 4. Las reglas de `pijao/core` y sus 87 pruebas se traducen casi una a una y sirven de especificación.
 
@@ -2423,7 +2423,7 @@ Si no pasa, o si al 15 de febrero de 2027 la app nueva no iguala a la v0.10.1, s
 | Versión | Fecha | Cambios |
 |---|---|---|
 | 1.0 | 13 de octubre de 2026 | Primera versión completa (secciones 1 a 23 y apéndices) |
-| 1.1 | 4 de noviembre de 2026 | **Calendario:** fechas oficiales de la Registraduría en 2.2, alerta por la recolección de firmas que ya está abierta y plan por fases con fechas en 22.2. **Contenido nuevo:** sección 24 (estado real del software, diferencias con el documento, 18 hallazgos de seguridad y calidad técnica), sección 25 (15 funciones nuevas), lista técnica de lanzamiento en 22.5 y decisiones 17 a 20 en 23.1. **Correcciones de fondo:** supuesto de la plataforma (2.5), registro por código de invitación (4.9), licencias de mapas sin conexión (5.14), estado del cifrado local (8.7 y 17.2), reglas de sincronización (17.3) y tecnología recomendada (Apéndice B). **Fases:** las fases 0 a 5 se reorganizan en cuatro (22.1): tres de construcción y una exclusiva de diseño visual, con el plan detallado y su anexo de trazabilidad en `docs/Plan-de-Construccion.md` |
+| 1.1 | 4 de noviembre de 2026 | **Calendario:** fechas oficiales de la Registraduría en 2.2, alerta por la recolección de firmas que ya está abierta y plan por fases con fechas en 22.2. **Contenido nuevo:** sección 24 (estado real del software, diferencias con el documento, 18 hallazgos de seguridad y calidad técnica), sección 25 (15 funciones nuevas), lista técnica de lanzamiento en 22.5 y decisiones 17 a 20 en 23.1. **Correcciones de fondo:** supuesto de la plataforma (2.5), registro por código de invitación (4.9), licencias de mapas sin conexión (5.14), estado del cifrado local (8.7 y 17.2), reglas de sincronización (17.3) y tecnología recomendada (Apéndice B). **Costo cero:** fotos de unos 100 KB, plan gratuito de Supabase, respaldos propios, ingreso sin SMS y solo Android (`docs/Analisis-Costo-Cero.md`). **Fases:** las fases 0 a 5 se reorganizan en cuatro (22.1): tres de construcción y una exclusiva de diseño visual, con el plan detallado y su anexo de trazabilidad en `docs/Plan-de-Construccion.md` |
 
 ---
 

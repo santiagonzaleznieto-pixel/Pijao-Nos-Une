@@ -7,6 +7,7 @@
 | Fecha | 4 de noviembre de 2026 |
 | Se basa en | Documento maestro v1.1 (`docs/Pijao-Nos-Une_Documento-Maestro_Fase1.md`) |
 | Punto de partida | App v0.10.1 · Fase 2, parte 1 (estado detallado en la sección 24 del documento maestro) |
+| Restricción de costo | **US$ 0 recurrentes:** solo herramientas gratuitas y de código abierto (ver `docs/Analisis-Costo-Cero.md`) |
 | Fecha límite | Domingo 31 de octubre de 2027 (elecciones). Cierre de datos hasta febrero de 2028 |
 | Alcance | **Todo** lo que describe el documento maestro: secciones 1 a 26, pantallas P-01 a P-53, reglas R-01 a R-45, permisos O-01 a O-22, catálogos C-01 a C-20, funciones nuevas N-01 a N-15, los 18 hallazgos de seguridad, las listas de lanzamiento de 22.4 y 22.5 y las decisiones y puntos legales de la sección 23. El anexo final asigna una fase a cada uno |
 
@@ -117,10 +118,10 @@ Una tarea solo cuenta como **terminada** si cumple todo esto:
 - [ ] Conseguir la **lista oficial de barrios y veredas** con sus límites (IGAC, DANE u OpenStreetMap).
 - [ ] Revisar con el Director los catálogos C-01 a C-20 y la lista de ejes del programa (11.3).
 - [ ] Validar con el Director el modelo de datos (sección 8) y la tabla de protección estándar (7.4).
-- [ ] Abrir las cuentas: Supabase en plan pago, en la región más cercana a Colombia (8.11), un servicio de reporte de errores sin datos personales, proveedor de mapas o paquete propio, dominio y correo.
+- [ ] Abrir solo cuentas gratuitas y sin tarjeta (ver `docs/Analisis-Costo-Cero.md`): Supabase en el **plan gratuito**, en la región más cercana a Colombia; Firebase (solo para las notificaciones push); una cuenta de Gmail de la campaña. No hay dominio propio: se usa un subdominio gratuito.
 - [ ] Integraciones externas de 8.13:
   - Ahora: geocodificación, notificaciones push y almacenamiento de respaldos.
-  - En la Fase 4: SMS, WhatsApp, correo y formatos del CNE.
+  - En la Fase 4: canal de difusión de WhatsApp, envío uno a uno desde el teléfono del colaborador, correo por SMTP de Gmail y formatos del CNE. No se usan APIs de SMS ni de WhatsApp Business, porque cobran por mensaje.
   - Solo enlace al sitio de la Registraduría.
   - Contratos de tratamiento de datos con cada proveedor (16.7 y 22.4-3).
 - [ ] Designar formalmente al **oficial de protección de datos** (16.2) y escribir el **manual interno** de políticas y procedimientos con el abogado.
@@ -142,7 +143,7 @@ Una tarea solo cuenta como **terminada** si cumple todo esto:
   - **Camino A (recomendado):** pasar a React Native con Expo y construir en el tramo 1B una versión que haga todo lo que hace hoy la v0.10.1. Las pruebas de `pijao/core` sirven de especificación.
   - **Camino B:** seguir con Kivy, sin notificaciones ni biometría y con jornada solo con la pantalla encendida.
 - [ ] Punto de control: si el 15 de febrero de 2027 el camino A no iguala a la v0.10.1, se vuelve al B. **Después de abril de 2027 no se cambia de tecnología.**
-- [ ] Si la decisión 23.1 lo pide, preparar también la versión para iOS (solo con el camino A).
+- [ ] **Sin iOS:** exige la cuenta de desarrollador de Apple, que cuesta US$ 99 al año. La app es solo para Android.
 - [ ] Subir la versión mínima de Android a la **8** (17.5; hoy es la 7) y la versión objetivo a la API 34 o más.
 
 ### 1.2 Infraestructura y entrega profesional
@@ -152,12 +153,14 @@ Una tarea solo cuenta como **terminada** si cumple todo esto:
 - [ ] Integración continua que corre pruebas, revisión estática y pruebas de reglas por fila (pgTAP) por cada rol y permiso **antes** de construir la app.
 - [ ] **Firma fija del APK de producción**, con la llave en los secretos de GitHub y una copia fuera de línea (24.3-B1). El APK de producción se construye solo al poner una etiqueta de versión.
 - [ ] Versión de la app en un solo lugar, con versionado semántico y versionCode tomado de la etiqueta. Corregir el User-Agent fijo en «0.9».
-- [ ] **Actualización instantánea con vuelta atrás:** EAS Update en el camino A, o en el B un aviso de nueva versión con enlace de descarga.
+- [ ] **Construcción y distribución sin costo:** el APK se construye en GitHub Actions con `expo prebuild` y Gradle, sin EAS Build. El APK y el mapa de Pijao se publican en GitHub Releases.
+- [ ] **Actualización instantánea con vuelta atrás:** en el camino A, servidor propio del protocolo de `expo-updates` en una función de servidor de Supabase, con los paquetes en GitHub Releases (EAS Update gratuito queda de respaldo). En el camino B, aviso de nueva versión con enlace de descarga.
 - [ ] **Versión mínima obligatoria** consultada al abrir la app (N-13 y 17.5).
-- [ ] Reporte de errores con limpieza de datos personales.
+- [ ] Reporte de errores en una **tabla propia de Supabase**, con limpieza de datos personales hecha en el teléfono. No se usa Sentry.
 - [ ] **Salud de la flota** (N-12): cada teléfono informa su versión, los registros por enviar, su última sincronización, el espacio libre y la batería. Se ve en el panel P-43.
 - [ ] **Respaldos (8.10):**
-  - Respaldo diario del plan pago (y recuperación a un punto en el tiempo, si el plan lo permite).
+  - **Respaldo propio**, porque el plan gratuito de Supabase no trae respaldos: `tools/respaldo.ps1` en el computador del Administrador, cada noche, con `pg_dump` de la base y descarga de los archivos, cifrado con `age`. **Nunca se sube a GitHub.**
+  - Tarea semanal en GitHub Actions para que el proyecto gratuito no se pause por inactividad.
   - Copia nocturna cifrada de la base y de las fotos fuera de Supabase.
   - Copia semanal guardada aparte por el Administrador.
   - Prueba de restauración mensual en el ambiente de pruebas.
@@ -308,7 +311,7 @@ Una tarea solo cuenta como **terminada** si cumple todo esto:
 
 - [ ] **Foto de fachada con la cámara.** Es la pieza bloqueante (24.1).
   - Sello con fecha, hora, coordenadas e iniciales del colaborador.
-  - Compresión a unos 1.280 píxeles y 300 KB, guardada en espacio privado.
+  - Compresión a unos **1.024 píxeles y 100 KB**, y miniatura de 20 KB hecha en el teléfono, para caber en el 1 GB gratuito. En la nube se guardan la fachada vigente, las fotos de problemas y las autorizaciones; las demás se quedan en el teléfono.
   - Miniaturas.
   - Hasta 6 fotos por visita (R-14), de los tipos fachada, entorno, problema y autorización en papel.
   - Si aparece una persona en la foto, se pregunta si autorizó, y nunca se fotografía a niños.
@@ -837,7 +840,7 @@ El sistema de diseño está publicado y las 53 pantallas están diseñadas con t
 
 ### 4.2 Comunicaciones (13.1 y 13.4)
 
-- [ ] Proveedor de SMS, WhatsApp o correo según la decisión 23.1-6. Revisar las políticas de las plataformas sobre contenido político (23.2-15).
+- [ ] **Canales sin costo** (decisión 23.1-6): canal de difusión de WhatsApp al que la gente se une por decisión propia, envío uno a uno desde el teléfono del colaborador con plantilla aprobada (enlace `wa.me` o de SMS, registrado en la app) y correo por SMTP de Gmail con límite diario. El envío masivo automático de SMS **no es posible a costo cero**. Revisar las políticas de las plataformas sobre contenido político (23.2-15).
 - [ ] **P-30 Comunicaciones (O-12):**
   - Plantillas aprobadas por el Director.
   - Destinatarios solo con autorización vigente **para ese canal** (R-34), elegidos por segmento.
@@ -948,7 +951,8 @@ El sistema de diseño está publicado y las 53 pantallas están diseñadas con t
 - **Separar los datos por campaña para reutilizar el sistema** (Apéndice B-12). El documento lo deja para el futuro.
 - **Funciones descartadas en 25.5:** transporte de votantes, seguimiento de la intención de voto individual, perfiles automáticos con inteligencia artificial y cruce con bases externas de personas.
 - **Datos ampliados sensibles**, como la discapacidad en el hogar (23.1-9), salvo que el Director y el abogado decidan otra cosa.
-- **Versión para iOS:** solo si la decisión 23.1 lo pide, y solo con el camino A (bloque 1.1).
+- **Versión para iOS:** fuera del alcance por costo (cuenta de Apple de US$ 99 al año).
+- **Servicios de pago:** cualquier servicio con suscripción, pago por uso o tarjeta obligatoria (ver `docs/Analisis-Costo-Cero.md`).
 
 ---
 
