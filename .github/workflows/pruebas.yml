@@ -65,8 +65,10 @@ jobs:
         run: npm ci
       - name: Pruebas y tipos del panel web y las páginas públicas
         run: |
-          npx vitest run
-          npx tsc --noEmit
+          set -o pipefail
+          # Las anotaciones son públicas: así se ve el error sin entrar a GitHub.
+          npx vitest run 2>&1 | tee /tmp/vitest.log || { grep -E "FAIL|Error|expected|✗|×" /tmp/vitest.log | head -n 15 | while IFS= read -r l; do echo "::error::${l:0:400}"; done; exit 1; }
+          npx tsc --noEmit 2>&1 | tee /tmp/tsc.log || { head -n 15 /tmp/tsc.log | while IFS= read -r l; do echo "::error::${l:0:400}"; done; exit 1; }
       - name: Construir el sitio
         run: npx vite build
 

@@ -45,8 +45,10 @@ export function haceCuanto(valor: string | null | undefined, ahora: Date = new D
 /** Fecha AAAA-MM-DD de hoy más n días, en Colombia. */
 export function diaMas(n: number, hoy: Date = new Date()): string {
   const d = new Date(hoy.getTime() + n * 86400000);
-  const partes = new Intl.DateTimeFormat("en-CA", { timeZone: ZONA, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
-  return partes; // en-CA da AAAA-MM-DD
+  // Se arma con las partes (no con el formato de un idioma, que cambia entre versiones de Node y navegadores).
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: ZONA, year: "numeric", month: "2-digit", day: "2-digit" })
+    .formatToParts(d).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day}`;
 }
 
 /** Fin del día (23:59:59 de Colombia, UTC-5 sin horario de verano) en ISO, para los vencimientos de permisos. */
