@@ -67,7 +67,7 @@ jobs:
         run: |
           set -o pipefail
           # Las anotaciones son públicas: así se ve el error sin entrar a GitHub.
-          npx vitest run 2>&1 | tee /tmp/vitest.log || { grep -E "FAIL|Error|expected|✗|×" /tmp/vitest.log | head -n 15 | while IFS= read -r l; do echo "::error::${l:0:400}"; done; exit 1; }
+          npx vitest run 2>&1 | tee /tmp/vitest.log || { sed 's/\x1b\[[0-9;]*m//g' /tmp/vitest.log | grep -v "^\s*$" | grep -A8 -E "FAIL|Error|expected" | head -n 25 | while IFS= read -r l; do echo "::error::${l:0:400}"; done; exit 1; }
           npx tsc --noEmit 2>&1 | tee /tmp/tsc.log || { head -n 15 /tmp/tsc.log | while IFS= read -r l; do echo "::error::${l:0:400}"; done; exit 1; }
       - name: Construir el sitio
         run: npx vite build

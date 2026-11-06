@@ -366,7 +366,7 @@ begin
   end if;
   if p_max_total is not null and (select count(*) from public.intentos_publicos
        where accion = p_accion and creado_en > now() - interval '1 hour') >= p_max_total then
-    raise exception 'El formulario recibe muchas solicitudes en este momento. Intente más tarde o escríbanos por correo o WhatsApp.'
+    raise exception 'Hay demasiadas consultas en este momento. Intente más tarde o escríbanos por correo o WhatsApp.'
       using errcode = 'P0001';
   end if;
   insert into public.intentos_publicos (huella, accion) values (v_huella, p_accion);

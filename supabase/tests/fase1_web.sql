@@ -270,7 +270,7 @@ update public.configuracion set valor = '8'::jsonb where clave = 'publico_max_ho
 select pg_temp.como_anonimo('200.7.7.7');
 set role anon;
 select pg_temp.debe_fallar($q$select public.rpc_publico_solicitud('{"tipo":"consulta","nombre":"Persona Tres","contacto":"3000000003","acepta":true}')$q$,
-                           'muchas solicitudes', 'P-50: el formulario se pausa al pasar el tope total por hora');
+                           'demasiadas consultas', 'P-50: el formulario se pausa al pasar el tope total por hora');
 reset role;
 update public.configuracion set valor = '40'::jsonb where clave = 'publico_max_hora';
 
