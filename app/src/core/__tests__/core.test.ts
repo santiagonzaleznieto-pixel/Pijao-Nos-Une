@@ -277,7 +277,9 @@ describe("A1: texto de autorización vigente (publicado en P-42)", () => {
       { tipo: "aviso_privacidad", version: "v9", vigente: true, es_borrador: false, creado_en: "2027-01-01" },
     ];
     expect(autorizacionVigente(filas)).toEqual({ version: "v2", contenido: "Soy {nombre}…" });
-    expect(autorizacionVigente([{ tipo: "autorizacion", version: "v1-borrador", vigente: 1, es_borrador: 1 }]).version).toBe("v1-borrador");
+    expect(autorizacionVigente([{ tipo: "autorizacion", version: "v3-borrador", vigente: 1, es_borrador: 1, contenido: "Texto" }]).version).toBe("v3-borrador");
+    // Sin el texto no se puede citar la versión nueva.
+    expect(autorizacionVigente([{ tipo: "autorizacion", version: "v4", vigente: true, es_borrador: false }]).version).toBe(VERSION_TEXTO_LOCAL);
   });
   it("sin copia local usa el texto que trae la app", () => {
     expect(autorizacionVigente([])).toEqual({ version: VERSION_TEXTO_LOCAL, contenido: null });

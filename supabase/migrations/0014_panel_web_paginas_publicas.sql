@@ -127,7 +127,7 @@ begin
     if p_clave = 'version_minima_app' and v_txt !~ '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$' then
       return 'La versión se escribe así: 0.11.0';
     end if;
-    if p_clave = 'canal_titulares_correo' and v_txt <> '' and v_txt !~ '^[^@\s]+@[^@\s]+\.[^@\s]+$' then
+    if p_clave = 'canal_titulares_correo' and v_txt <> '' and v_txt !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$' then
       return 'El correo no es válido';
     end if;
     if p_clave = 'canal_titulares_whatsapp' and v_txt <> '' and v_txt !~ '^\+?[0-9 ]{7,20}$' then
@@ -338,8 +338,13 @@ create or replace function public._huella_conexion() returns text
 language plpgsql stable security definer set search_path = public, extensions, pg_temp as $$
 declare v_ip text; v_sal text;
 begin
+  -- Primero las cabeceras que pone la red de Supabase (Cloudflare) y que el cliente no puede falsificar;
+  -- x-forwarded-for queda de último recurso porque su primer valor lo puede escribir quien llama.
   begin
-    v_ip := trim(split_part((current_setting('request.headers', true)::jsonb) ->> 'x-forwarded-for', ',', 1));
+    v_ip := coalesce(
+      nullif(trim((current_setting('request.headers', true)::jsonb) ->> 'cf-connecting-ip'), ''),
+      nullif(trim((current_setting('request.headers', true)::jsonb) ->> 'x-real-ip'), ''),
+      trim(split_part((current_setting('request.headers', true)::jsonb) ->> 'x-forwarded-for', ',', 1)));
   exception when others then
     v_ip := null;
   end;
@@ -482,6 +487,9 @@ declare
   v_dias int;
   v_interno date; v_legal date;
 begin
+  -- El límite va primero: ni la trampa para robots ni los errores de validación se saltan el cupo.
+  perform public._limite_publico('solicitud', public.cfg_num('publico_max_ip_hora', 5)::int,
+                                 public.cfg_num('publico_max_hora', 40)::int);
   if coalesce(p ->> 'sitio_web', '') <> '' then
     -- Un robot llenó el campo oculto: se responde igual que siempre, pero no se guarda nada.
     return jsonb_build_object('ok', true, 'numero_caso', public._numero_caso(v_id));
@@ -497,8 +505,6 @@ begin
   if (p ->> 'acepta') is distinct from 'true' then
     raise exception 'Debe aceptar que usemos estos datos solo para atender su solicitud';
   end if;
-  perform public._limite_publico('solicitud', public.cfg_num('publico_max_ip_hora', 5)::int,
-                                 public.cfg_num('publico_max_hora', 40)::int);
   v_dias := case when v_tipo in ('consulta', 'prueba_autorizacion') then 10 else 15 end;
   v_interno := public.sumar_dias_habiles(current_date, public.cfg_num('titulares_plazo_interno_dias', 5)::int);
   v_legal := public.sumar_dias_habiles(current_date, v_dias);
@@ -517,10 +523,12 @@ create or replace function public.rpc_publico_estado_caso(p_numero text, p_conta
 language plpgsql security definer set search_path = public, pg_temp as $$
 declare v public.solicitudes_titulares;
 begin
-  perform public._limite_publico('estado_caso', 10);
+  perform public._limite_publico('estado_caso', 10, 300);
   if coalesce(trim(p_numero), '') !~ '^[0-9A-Fa-f]{8}$' or length(coalesce(trim(p_contacto), '')) < 7 then
     return jsonb_build_object('encontrado', false);
   end if;
+  -- Máximo 5 consultas por hora sobre un mismo número de caso, vengan de donde vengan (adivinar el contacto).
+  perform public._limite_publico('caso:' || upper(trim(p_numero)), 1000, 5);
   select * into v from public.solicitudes_titulares
    where public._numero_caso(id) = upper(trim(p_numero))
      and lower(regexp_replace(coalesce(contacto, ''), '\s', '', 'g')) = lower(regexp_replace(p_contacto, '\s', '', 'g'))

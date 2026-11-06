@@ -56,8 +56,10 @@ export function autorizacionVigente(filas: readonly Record<string, unknown>[]): 
     .filter((t) => t.tipo === "autorizacion" && esVerdad(t.vigente) && typeof t.version === "string")
     .sort((a, b) => String(b.creado_en ?? "").localeCompare(String(a.creado_en ?? "")));
   const t = vigentes.find((x) => !esVerdad(x.es_borrador)) ?? vigentes[0];
-  return t ? { version: String(t.version), contenido: typeof t.contenido === "string" ? t.contenido : null }
-           : { version: VERSION_TEXTO_LOCAL, contenido: null };
+  // Si la copia local no trae el texto, no se puede citar esa versión: lo leído y lo registrado deben coincidir.
+  return t && typeof t.contenido === "string" && t.contenido.trim()
+    ? { version: String(t.version), contenido: t.contenido }
+    : { version: VERSION_TEXTO_LOCAL, contenido: null };
 }
 
 /** Canales de atención a titulares (16.5) desde la copia local de `configuracion`. */

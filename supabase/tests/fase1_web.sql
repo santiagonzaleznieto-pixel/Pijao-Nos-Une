@@ -229,6 +229,14 @@ reset role;
 select pg_temp.afirmar((select (bien ->> 'encontrado')::boolean and bien ->> 'estado' = 'recibida' and not (bien ? 'respuesta')
                                and not (mal ->> 'encontrado')::boolean from _est),
                        'P-50: el estado del caso se consulta con número y contacto, y no muestra la respuesta');
+select pg_temp.como_anonimo('200.6.6.6');
+set role anon;
+select public.rpc_publico_estado_caso((select r ->> 'numero_caso' from _sol), '3110000001');
+select public.rpc_publico_estado_caso((select r ->> 'numero_caso' from _sol), '3110000002');
+select public.rpc_publico_estado_caso((select r ->> 'numero_caso' from _sol), '3110000003');
+select pg_temp.debe_fallar(format($q$select public.rpc_publico_estado_caso(%L, '3110000004')$q$, (select r ->> 'numero_caso' from _sol)),
+                           'Demasiadas', 'P-50: un mismo número de caso admite pocas consultas por hora');
+reset role;
 
 -- Límite por conexión: la configuración permite 5 por hora desde la misma conexión.
 select pg_temp.como_anonimo('200.9.9.9');
@@ -247,8 +255,18 @@ select public.rpc_publico_solicitud('{"tipo":"queja","nombre":"Persona Dos","con
 reset role;
 select pg_temp.afirmar(true, 'P-50: otra conexión sigue pudiendo enviar');
 
--- Tope total por hora: con el tope en 7 (ya hay 7 solicitudes guardadas en la última hora), la siguiente se pausa.
-update public.configuracion set valor = '7'::jsonb where clave = 'publico_max_hora';
+-- La huella usa primero cf-connecting-ip: cambiar x-forwarded-for no da cupo nuevo.
+select set_config('request.headers', '{"cf-connecting-ip":"200.9.9.9","x-forwarded-for":"1.1.1.1"}', false);
+set role anon;
+select pg_temp.debe_fallar($q$select public.rpc_publico_solicitud('{"tipo":"consulta","nombre":"Persona Uno","contacto":"3000000001","acepta":true}')$q$,
+                           'Demasiadas solicitudes', 'P-50: falsificar x-forwarded-for no salta el límite');
+-- El campo trampa también gasta cupo.
+select pg_temp.debe_fallar($q$select public.rpc_publico_solicitud('{"tipo":"consulta","nombre":"Robot","contacto":"3000000000","acepta":true,"sitio_web":"x"}')$q$,
+                           'Demasiadas solicitudes', 'P-50: la trampa para robots no se salta el límite');
+reset role;
+
+-- Tope total por hora: con el tope en 8 (ya hay 8 usos guardados en la última hora), el siguiente se pausa.
+update public.configuracion set valor = '8'::jsonb where clave = 'publico_max_hora';
 select pg_temp.como_anonimo('200.7.7.7');
 set role anon;
 select pg_temp.debe_fallar($q$select public.rpc_publico_solicitud('{"tipo":"consulta","nombre":"Persona Tres","contacto":"3000000003","acepta":true}')$q$,
