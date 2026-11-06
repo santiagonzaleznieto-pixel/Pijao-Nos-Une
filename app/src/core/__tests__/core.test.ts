@@ -2,7 +2,7 @@
 import { randomUUID } from "node:crypto";
 import { claves, etiqueta } from "../catalogos";
 import { evaluarRegistro, ritmoSospechoso, saltoImposible } from "../calidad";
-import { evidenciaPara, nuevoConsentimiento, textoPara } from "../consentimiento";
+import { autorizacionVigente, canalesAtencion, evidenciaPara, nuevoConsentimiento, textoPara, VERSION_TEXTO_LOCAL } from "../consentimiento";
 import { aprobado, PREGUNTAS, puntaje } from "../curso";
 import { mascaraCedula, mascaraCorreo, mascaraTelefono, nombreCompleto, vistaParaPantalla } from "../enmascarado";
 import { panelCampana, panelPersonal, umbral } from "../estadisticas";
@@ -266,5 +266,26 @@ describe("estadísticas (9.3, R-28, R-29)", () => {
       tareas: [{ asignado_a: "u1", estado: "pendiente", fecha_limite: "2026-11-04T00:00:00Z" }],
     });
     expect(r).toMatchObject({ hoy: 1, total: 1, tareas_pendientes: 1, tareas_vencidas: 1, borradores: 1, por_enviar: 2 });
+  });
+});
+
+describe("A1: texto de autorización vigente (publicado en P-42)", () => {
+  it("usa la versión aprobada más reciente y, si no hay, la vigente en borrador", () => {
+    const filas = [
+      { tipo: "autorizacion", version: "v1-borrador", vigente: false, es_borrador: true, creado_en: "2026-10-01" },
+      { tipo: "autorizacion", version: "v2", vigente: true, es_borrador: false, contenido: "Soy {nombre}…", creado_en: "2026-12-01" },
+      { tipo: "aviso_privacidad", version: "v9", vigente: true, es_borrador: false, creado_en: "2027-01-01" },
+    ];
+    expect(autorizacionVigente(filas)).toEqual({ version: "v2", contenido: "Soy {nombre}…" });
+    expect(autorizacionVigente([{ tipo: "autorizacion", version: "v1-borrador", vigente: 1, es_borrador: 1 }]).version).toBe("v1-borrador");
+  });
+  it("sin copia local usa el texto que trae la app", () => {
+    expect(autorizacionVigente([])).toEqual({ version: VERSION_TEXTO_LOCAL, contenido: null });
+  });
+  it("el texto del servidor lleva el nombre y los canales de atención", () => {
+    const c = canalesAtencion([{ clave: "canal_titulares_correo", valor: "datos@pijao.co" }, { clave: "otra", valor: 3 }]);
+    expect(c).toEqual({ correo: "datos@pijao.co", whatsapp: "" });
+    expect(textoPara("Ana", c.correo, c.whatsapp, "Soy {nombre}. Escriba a {correo} o {whatsapp}."))
+      .toBe("Soy Ana. Escriba a datos@pijao.co o [número de atención].");
   });
 });

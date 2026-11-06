@@ -102,8 +102,10 @@ function Listar([string]$bucket, [string]$prefijo) {
     $offset += 1000
   } while ($items.Count -eq 1000)
 }
+$archivos = 0
 foreach ($bucket in @("fotos", "documentos")) {
   foreach ($ruta in (Listar $bucket "")) {
+    $archivos++
     $local = Join-Path $tmp "archivos\$bucket\$($ruta -replace '/', '\')"
     New-Item -ItemType Directory -Force (Split-Path $local) | Out-Null
     Invoke-WebRequest -Uri "$api/storage/v1/object/$bucket/$ruta" -Headers $h -OutFile $local -UseBasicParsing
@@ -119,4 +121,13 @@ Remove-Item -Recurse -Force $tmp, $zip
 
 # 4) Retención: 30 días en el disco del Administrador (la copia semanal a USB se hace a mano)
 Get-ChildItem $Destino -Filter "pijao_*.cifrado" | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item -Force
+
+# 5) Anotar el respaldo para que el Administrador lo vea en «Salud del sistema» (P-43). Solo tamaño y fecha.
+try {
+  $mb = [math]::Round((Get-Item $final).Length / 1MB, 1)
+  $cuerpo = @{ p = @{ mb = $mb; archivos = $archivos; equipo = $env:COMPUTERNAME } } | ConvertTo-Json -Depth 3
+  Invoke-RestMethod -Method Post -Uri "$api/rest/v1/rpc/rpc_respaldo_registrado" -Headers $h -ContentType "application/json" -Body $cuerpo | Out-Null
+} catch {
+  Write-Warning "El respaldo quedó hecho, pero no se pudo anotar en el panel: $($_.Exception.Message)"
+}
 Write-Host "Respaldo listo: $final"

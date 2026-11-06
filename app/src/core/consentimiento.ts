@@ -40,8 +40,33 @@ export interface Consentimiento {
   otorgado_en: string; lat: number | null; lng: number | null; evidencia: Record<string, unknown>; estado: "vigente" | "revocado";
 }
 
-export function textoPara(nombre: string, correo = "[correo de atención]", whatsapp = "[número de atención]"): string {
-  return TEXTO_CORTO.replace("{nombre}", nombre || "[nombre]").replace("{correo}", correo).replace("{whatsapp}", whatsapp);
+export function textoPara(nombre: string, correo = "[correo de atención]", whatsapp = "[número de atención]", plantilla = TEXTO_CORTO): string {
+  return plantilla.replace(/\{nombre\}/g, nombre || "[nombre]").replace(/\{correo\}/g, correo || "[correo de atención]")
+    .replace(/\{whatsapp\}/g, whatsapp || "[número de atención]");
+}
+
+export interface TextoVigente { version: string; contenido: string | null }
+
+const esVerdad = (v: unknown) => v === true || v === 1 || v === "true";
+
+/** Texto de autorización vigente según la copia local de `textos_legales` (lo publica el Administrador en P-42).
+ *  El servidor solo acepta registros con esa versión (A1); sin copia local se usa el texto que trae la app. */
+export function autorizacionVigente(filas: readonly Record<string, unknown>[]): TextoVigente {
+  const vigentes = filas
+    .filter((t) => t.tipo === "autorizacion" && esVerdad(t.vigente) && typeof t.version === "string")
+    .sort((a, b) => String(b.creado_en ?? "").localeCompare(String(a.creado_en ?? "")));
+  const t = vigentes.find((x) => !esVerdad(x.es_borrador)) ?? vigentes[0];
+  return t ? { version: String(t.version), contenido: typeof t.contenido === "string" ? t.contenido : null }
+           : { version: VERSION_TEXTO_LOCAL, contenido: null };
+}
+
+/** Canales de atención a titulares (16.5) desde la copia local de `configuracion`. */
+export function canalesAtencion(filas: readonly Record<string, unknown>[]): { correo: string; whatsapp: string } {
+  const valor = (clave: string) => {
+    const v = filas.find((f) => f.clave === clave)?.valor;
+    return typeof v === "string" ? v : "";
+  };
+  return { correo: valor("canal_titulares_correo"), whatsapp: valor("canal_titulares_whatsapp") };
 }
 
 /** Evidencia mínima por método, la misma que exige el servidor (0013, _consentimiento_valido). */

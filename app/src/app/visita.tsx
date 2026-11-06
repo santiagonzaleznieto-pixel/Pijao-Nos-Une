@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Image, Modal, Text, View } from "react-native";
 import { evaluarRegistro } from "@/core/calidad";
 import { claves, etiqueta, opciones, RESULTADOS_CON_CONTACTO, RESULTADOS_SOLO_PUNTO } from "@/core/catalogos";
-import { CANAL_A_PROPOSITO, evidenciaPara, nuevoConsentimiento, textoPara, TEXTO_SENSIBLE, VERSION_TEXTO_LOCAL, type Metodo } from "@/core/consentimiento";
+import { autorizacionVigente, CANAL_A_PROPOSITO, canalesAtencion, evidenciaPara, nuevoConsentimiento, textoPara, TEXTO_SENSIBLE, VERSION_TEXTO_LOCAL, type Metodo, type TextoVigente } from "@/core/consentimiento";
 import { zonaDePunto, type Geometria } from "@/core/geo";
 import { nuevoId } from "@/core/ids";
 import { param } from "@/core/reglas";
@@ -39,10 +39,15 @@ export default function Visita() {
   const [aut, setAut] = useState({ metodo: null as Metodo | null, registro: false, datos: false, contacto: false, simpatia: false, historia: false, firma: null as unknown, noVolver: false });
   const [guardado, setGuardado] = useState<{ color: string; motivos: string[] } | null>(null);
   const [vistas, setVistas] = useState(0);
+  // A1: versión y texto de autorización vigentes en el servidor (P-42); sin copia local, los que trae la app.
+  const [textoAut, setTextoAut] = useState<TextoVigente>({ version: VERSION_TEXTO_LOCAL, contenido: null });
+  const [canales, setCanales] = useState({ correo: "", whatsapp: "" });
 
   useEffect(() => {
     (async () => {
       setVistas((await app.almacen.getMeta<number>("vistas_antes_de_empezar")) ?? 0);
+      setTextoAut(autorizacionVigente(await app.almacen.listar("textos_legales")));
+      setCanales(canalesAtencion(await app.almacen.listar("configuracion")));
       if (q.borrador) { setB((await app.almacen.obtener("borradores", q.borrador)) as unknown as Borrador); return; }
       if (q.vivienda && app.usuarioId) {
         const v = await app.almacen.obtener("viviendas", q.vivienda);
@@ -110,7 +115,7 @@ export default function Visita() {
   }
 
   async function construirConsentimientos() {
-    const base = { versionTexto: VERSION_TEXTO_LOCAL, lat: bb.dispositivo.lat ?? null, lng: bb.dispositivo.lng ?? null, evidencia: evidenciaPara(aut.metodo!, { firma: aut.firma }) };
+    const base = { versionTexto: textoAut.version, lat: bb.dispositivo.lat ?? null, lng: bb.dispositivo.lng ?? null, evidencia: evidenciaPara(aut.metodo!, { firma: aut.firma }) };
     const cons = [nuevoConsentimiento("registro_vivienda", aut.metodo!, base)];
     for (const p of bb.personas) {
       if (aut.datos) cons.push(nuevoConsentimiento("datos_personales", aut.metodo!, { ...base, personaId: p.id }));
@@ -333,7 +338,7 @@ export default function Visita() {
 
       {paso === 10 ? (
         <>
-          <Tarjeta><Texto>{textoPara(app.perfil?.d.nombre ?? "")}</Texto></Tarjeta>
+          <Tarjeta><Texto>{textoPara(app.perfil?.d.nombre ?? "", canales.correo, canales.whatsapp, textoAut.contenido ?? undefined)}</Texto></Tarjeta>
           <Casilla texto="(a) Registrar la vivienda y los datos del hogar" valor={aut.registro} onCambio={(v) => setAut({ ...aut, registro: v })} />
           <Casilla texto="(b) Guardar los datos personales" valor={aut.datos} onCambio={(v) => setAut({ ...aut, datos: v })} />
           <Casilla texto="(c) Recibir información de la campaña por el canal elegido" valor={aut.contacto} onCambio={(v) => setAut({ ...aut, contacto: v })} />

@@ -1,0 +1,67 @@
+name: Panel web y páginas públicas (GitHub Pages)
+
+# Publica gratis en GitHub Pages el panel del Director y del Administrador y las páginas públicas «Mis datos» (P-50),
+# «Verificar un carnet» (P-52) y «Política de datos» (P-53), con el mapa de Pijao sin conexión para el panel.
+# Se publica desde main. Antes, una sola vez: Settings → Pages → Source: «GitHub Actions».
+on:
+  push:
+    branches: [main]
+    paths: ["web/**", "app/src/core/**", ".github/workflows/paginas.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: paginas
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Mapa de Pijao (OpenStreetMap · Protomaps · ODbL)
+        run: |
+          set -euo pipefail
+          VERSION=1.31.2
+          curl -sSL -o /tmp/pmtiles.tgz "https://github.com/protomaps/go-pmtiles/releases/download/v${VERSION}/go-pmtiles_${VERSION}_Linux_x86_64.tar.gz"
+          tar -xzf /tmp/pmtiles.tgz -C /tmp pmtiles
+          FUENTE=""
+          for i in $(seq 1 10); do
+            D=$(date -u -d "-$i day" +%Y%m%d)
+            if curl -sfI "https://build.protomaps.com/$D.pmtiles" >/dev/null; then FUENTE="https://build.protomaps.com/$D.pmtiles"; break; fi
+          done
+          if [ -z "$FUENTE" ]; then echo "::warning::Sin mapa base: el panel mostrará solo los puntos"; exit 0; fi
+          mkdir -p public/mapa
+          /tmp/pmtiles extract "$FUENTE" public/mapa/pijao.pmtiles --bbox=-75.82,4.18,-75.55,4.45 --maxzoom=15
+      - run: npm ci
+      - name: Pruebas, tipos y construcción
+        run: |
+          npx vitest run
+          npx tsc --noEmit
+          npx vite build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4

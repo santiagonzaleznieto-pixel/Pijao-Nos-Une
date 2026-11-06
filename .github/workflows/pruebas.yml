@@ -48,6 +48,28 @@ jobs:
       - name: Pruebas de la app (reglas, sincronización y sesión)
         run: npx jest --ci
 
+  web:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Pruebas y tipos del panel web y las páginas públicas
+        run: |
+          npx vitest run
+          npx tsc --noEmit
+      - name: Construir el sitio
+        run: npx vite build
+
   base-de-datos:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

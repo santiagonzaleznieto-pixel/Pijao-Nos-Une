@@ -1,0 +1,4 @@
+node_modules/
+dist/
+# El mapa sin conexión (OpenStreetMap · Protomaps) se genera en GitHub Actions al publicar.
+public/mapa/*.pmtiles

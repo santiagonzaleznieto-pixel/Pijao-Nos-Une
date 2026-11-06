@@ -6,6 +6,7 @@
 #
 # Requisitos: Docker. No usa ninguna cuenta ni servicio de pago.
 set -euo pipefail
+export LC_ALL=C   # orden fijo de los archivos: las pruebas dependen unas de otras (fase1_seguridad antes que fase1_web)
 
 IMAGEN="${PIJAO_IMAGEN_PG:-public.ecr.aws/supabase/postgres:17.6.1.054}"
 NOMBRE="pijao-pg-pruebas-$$"
