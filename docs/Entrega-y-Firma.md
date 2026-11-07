@@ -112,7 +112,7 @@ Aplicado en el proyecto `pijao-nos-une` con el conector de Supabase y verificado
 | Migración 0015 (permisos de los disparadores, aviso 0029 de Supabase) | ✅ |
 | Función `registrar-con-codigo` desplegada (versión 2, IP de cabeceras no falsificables) | ✅ Responde con el mensaje genérico |
 | Secreto `pii_key` en Vault | ✅ Existe |
-| Pasos 1, 2 y 3 de esta sección (registro abierto, contraseña de 12, TOTP) | ⏳ Los hace el Administrador en el panel de Supabase |
+| Pasos 1, 2 y 3 de esta sección (registro abierto, contraseña de 12, TOTP) | ✅ Registro abierto desactivado (un registro público de prueba responde `signup_disabled`; la función de registro usa la API de administración y no se ve afectada), contraseña mínima 12, TOTP activo y SMS apagado. «Limit duration of AAL1 sessions» queda apagado a propósito: cerraría la sesión de los colaboradores, que no usan verificación en dos pasos |
 | El Administrador y el Director inscriben su aplicación autenticadora | ⏳ Hoy ninguno la tiene: háganlo al primer ingreso al panel web |
 | Canales de atención (correo y WhatsApp) en Configuración → Integraciones | ⏸️ Por ahora la campaña no tiene; quedan vacíos y las páginas públicas ofrecen el formulario «Mis datos» y la atención en persona. Cuando existan, se fijan desde el panel |
 
