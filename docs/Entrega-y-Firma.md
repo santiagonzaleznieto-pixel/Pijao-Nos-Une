@@ -114,7 +114,7 @@ Aplicado en el proyecto `pijao-nos-une` con el conector de Supabase y verificado
 | Secreto `pii_key` en Vault | ✅ Existe |
 | Pasos 1, 2 y 3 de esta sección (registro abierto, contraseña de 12, TOTP) | ⏳ Los hace el Administrador en el panel de Supabase |
 | El Administrador y el Director inscriben su aplicación autenticadora | ⏳ Hoy ninguno la tiene: háganlo al primer ingreso al panel web |
-| Canales de atención (correo y WhatsApp) en Configuración → Integraciones | ⏳ Los fija el Administrador desde el panel |
+| Canales de atención (correo y WhatsApp) en Configuración → Integraciones | ⏸️ Por ahora la campaña no tiene; quedan vacíos y las páginas públicas ofrecen el formulario «Mis datos» y la atención en persona. Cuando existan, se fijan desde el panel |
 
 Avisos de Supabase revisados: las funciones `rpc_*` ejecutables y las vistas enmascaradas `personas_v` y `directorio_v` son intencionales (cada función valida quién llama y las vistas filtran por rol). «Leaked password protection» solo existe en el plan de pago; la función de registro rechaza las contraseñas comunes con una lista propia.
 
