@@ -120,6 +120,7 @@ Aplicado en el proyecto `pijao-nos-une` con el conector de Supabase y verificado
 | Migración 0014, aplicada en dos partes (`0014_panel_web_paginas_publicas_parte1..2`) | ✅ Las páginas públicas responden con la clave pública; esa clave no lee tablas |
 | Migración 0015 (permisos de los disparadores, aviso 0029 de Supabase) | ✅ |
 | Migración 0016 (cuentas y sesiones: R-33, suspensión automática, R-45, avisos de la cuenta) | ⏳ Probada en la integración continua; falta aplicarla |
+| Migración 0017 (guion y preguntas frecuentes, métricas del piloto, revisión mensual de permisos con la tarea `pijao_revision_permisos`) | ⏳ Probada en la integración continua; falta aplicarla |
 | Función `registrar-con-codigo` desplegada (versión 2, IP de cabeceras no falsificables) | ✅ Responde con el mensaje genérico |
 | Secreto `pii_key` en Vault | ✅ Existe |
 | Pasos 1, 2 y 3 de esta sección (registro abierto, contraseña de 12, TOTP) | ✅ Registro abierto desactivado (un registro público de prueba responde `signup_disabled`; la función de registro usa la API de administración y no se ve afectada), contraseña mínima 12, TOTP activo y SMS apagado. «Limit duration of AAL1 sessions» queda apagado a propósito: cerraría la sesión de los colaboradores, que no usan verificación en dos pasos |
