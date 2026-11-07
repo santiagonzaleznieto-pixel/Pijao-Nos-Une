@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../../config";
 import { mensajeDeError } from "../../logica/utiles";
 import type {
-  Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
+  CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
 } from "./tipos";
 
@@ -240,6 +240,26 @@ export class FuenteSupabase implements Fuente {
   }
 
   // ------------------------------------------------------------------------------------------- mapa
+
+  async casa(id: string): Promise<CasaPanel | null> {
+    const de = (tabla: string) => this.leer<Record<string, unknown>[]>(this.sb.from(tabla).select("*").eq("vivienda_id", id).is("eliminado_en", null));
+    const [viv, hogares, personas, visitas, necesidades, fotos] = await Promise.all([
+      this.leer<Record<string, unknown>[]>(this.sb.from("viviendas").select("*").eq("id", id).limit(1)),
+      de("hogares"), de("personas_v"), de("visitas"), de("necesidades"), de("fotos"),
+    ]);
+    if (!viv.length) return null;
+    // Solo fachada, entorno y problema: la foto de la autorización en papel tiene firma y datos personales.
+    const visibles = fotos.filter((f) => ["fachada", "entorno", "problema"].includes(String(f.tipo)) && f.subida !== false);
+    let urls: Record<string, string | null> = {};
+    if (visibles.length) {
+      const { data } = await this.sb.storage.from("fotos").createSignedUrls(visibles.map((f) => String(f.storage_path)), 600);
+      urls = Object.fromEntries((data ?? []).map((u) => [u.path ?? "", u.error ? null : u.signedUrl]));
+    }
+    return {
+      datos: { vivienda: viv[0], hogares, personas, visitas, necesidades, fotos },
+      fotos: visibles.map((f) => ({ id: String(f.id), tipo: String(f.tipo), url: urls[String(f.storage_path)] ?? null })),
+    };
+  }
 
   async puntosMapa() {
     // Supabase entrega máximo 1.000 filas por consulta: se pide por tramos (Pijao tiene unas pocas miles de viviendas).

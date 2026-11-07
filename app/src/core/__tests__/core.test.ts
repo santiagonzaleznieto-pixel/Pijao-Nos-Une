@@ -4,6 +4,7 @@ import { claves, etiqueta } from "../catalogos";
 import { evaluarRegistro, ritmoSospechoso, saltoImposible } from "../calidad";
 import { autorizacionVigente, canalesAtencion, evidenciaPara, nuevoConsentimiento, textoPara, VERSION_TEXTO_LOCAL } from "../consentimiento";
 import { aprobado, PREGUNTAS, puntaje } from "../curso";
+import { fechaCorta, fichaCompleta, resumenCasa } from "../ficha";
 import { mascaraCedula, mascaraCorreo, mascaraTelefono, nombreCompleto, vistaParaPantalla } from "../enmascarado";
 import { panelCampana, panelPersonal, umbral } from "../estadisticas";
 import { haversineM, puntoEnPoligono, zonaDePunto, type Geometria } from "../geo";
@@ -289,5 +290,54 @@ describe("A1: texto de autorización vigente (publicado en P-42)", () => {
     expect(c).toEqual({ correo: "datos@pijao.co", whatsapp: "" });
     expect(textoPara("Ana", c.correo, c.whatsapp, "Soy {nombre}. Escriba a {correo} o {whatsapp}."))
       .toBe("Soy Ana. Escriba a datos@pijao.co o [número de atención].");
+  });
+});
+
+describe("P-10 y P-13: ficha de la vivienda", () => {
+  const datos = {
+    vivienda: { id: "v1", direccion: "Calle 5 # 3-20", barrio_vereda: "El Centro", zona_urbana_rural: "urbana", estado: "visitada_conversacion",
+                tipo_vivienda: "casa_urbana", servicios: ["energia", "agua_acueducto"], lat: 4.333412, lng: -75.704501, fuente_ubicacion: "gps" },
+    hogares: [{ id: "h1", vivienda_id: "v1", total_personas: 4, sosten_persona_id: "p2", jefatura_femenina: true, edades: { "25-34": 2, "0-5": 1 } }],
+    personas: [
+      { id: "p1", vivienda_id: "v1", nombre_visible: "Carlos Ríos", edad_anios: 41, sexo: "hombre", estado: "activa" },
+      { id: "p2", vivienda_id: "v1", nombre_visible: "Luz Mery Ríos", edad_anios: 38, sexo: "mujer", ocupacion: "caficultor", estado: "activa", cedula_ult3: "123" },
+      { id: "p3", vivienda_id: "v1", nombre_visible: null, estado: "solicito_eliminacion" },
+    ],
+    visitas: [
+      { id: "x1", vivienda_id: "v1", fecha: "2026-10-01T15:00:00Z", resultado: "nadie_en_casa" },
+      { id: "x2", vivienda_id: "v1", fecha: "2026-11-05T15:00:00Z", resultado: "conversacion_completa", calidad: "verde", notas: "Muy amables" },
+    ],
+    necesidades: [{ id: "n1", tema: "vias_movilidad", prioridad: 1, texto: "La vía se daña con la lluvia" }, { id: "n2", tema: "vias_movilidad" }],
+    fotos: [{ id: "f1", tipo: "fachada", storage_path: "viviendas/v1/f1.jpg", tomada_en: "2026-11-05T15:00:00Z" }, { id: "f0", tipo: "problema", storage_path: "x" }],
+  };
+  it("la ficha rápida muestra la cabeza de familia primero, la última visita y la foto de fachada", () => {
+    const r = resumenCasa(datos);
+    expect(r.titulo).toBe("Calle 5 # 3-20");
+    expect(r.cabeza).toBe("Luz Mery Ríos");
+    expect(r.personas.map((p) => p.nombre)).toEqual(["Luz Mery Ríos", "Carlos Ríos"]);
+    expect(r.totalPersonas).toBe(4);
+    expect(r.ultimaVisita).toBe("5 nov 2026 · Conversación completa");
+    expect(r.necesidades).toEqual(["Vías, movilidad y conectividad"]);
+    expect(r.fotoFachada?.id).toBe("f1");
+  });
+  it("nunca muestra a quien pidió que borraran sus datos", () => {
+    const r = resumenCasa(datos);
+    expect(r.personas).toHaveLength(2);
+    expect(JSON.stringify(fichaCompleta(datos))).not.toContain("solicito");
+  });
+  it("la ficha completa trae la vivienda, el hogar, cada persona (enmascarada), necesidades y visitas", () => {
+    const s = fichaCompleta(datos);
+    expect(s.map((x) => x.titulo)).toEqual(["La vivienda", "El hogar", "Carlos Ríos", "Luz Mery Ríos · cabeza de familia", "Necesidades", "Historial de visitas"]);
+    const casa = Object.fromEntries(s[0].datos.map((d) => [d.etiqueta, d.valor]));
+    expect(casa["Servicios"]).toBe("Energía eléctrica, Agua del acueducto");
+    expect(casa["Coordenadas"]).toBe("4.333412, -75.704501");
+    expect(s[1].datos).toContainEqual({ etiqueta: "Cabeza de familia", valor: "Luz Mery Ríos" });
+    expect(s[3].datos).toContainEqual({ etiqueta: "Cédula", valor: "•••••123" });
+    expect(s[5].datos[0].etiqueta).toBe("5 nov 2026 · Conversación completa");
+  });
+  it("una casa sin nada registrado todavía", () => {
+    const r = resumenCasa({ vivienda: { id: "v9" }, hogares: [], personas: [], visitas: [], necesidades: [], fotos: [] });
+    expect(r).toMatchObject({ titulo: "Vivienda sin dirección", estado: "Por visitar", cabeza: null, ultimaVisita: null, fotoFachada: null });
+    expect(fechaCorta("2027-10-31")).toBe("31 oct 2027");
   });
 });

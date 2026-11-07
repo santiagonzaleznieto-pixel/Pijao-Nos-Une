@@ -58,6 +58,8 @@ interface ContextoApp {
   cambiarPractica: (activar: boolean) => Promise<void>;
   desbloquear: () => Promise<void>;
   avisarCambio: () => void;
+  /** Enlace temporal de una foto guardada en el servidor (P-10 y P-13). */
+  urlFoto: (ruta: string) => Promise<string | null>;
 }
 
 const Ctx = createContext<ContextoApp | null>(null);
@@ -196,7 +198,8 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     listo, practica, usuarioId, perfil: perfilDatos ? new Perfil(perfilDatos) : null, params, almacen, sesion, conectado, bloqueado,
     telefonoModificado, actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil,
     cambiarPractica, desbloquear, avisarCambio: () => { refrescarCola(); setVersion((v) => v + 1); },
-  } : null), [listo, practica, usuarioId, perfilDatos, params, almacen, sesion, conectado, bloqueado, telefonoModificado,
+    urlFoto: async (ruta: string) => (conectado && remoto.urlFoto ? remoto.urlFoto(ruta) : null),
+  } : null), [remoto, listo, practica, usuarioId, perfilDatos, params, almacen, sesion, conectado, bloqueado, telefonoModificado,
     actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil, cambiarPractica, desbloquear, refrescarCola]);
 
   if (!valor) return null;

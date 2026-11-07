@@ -14,10 +14,39 @@ function ejemplo(): Record<string, Record<string, unknown>[]> {
     direccion: `Calle de práctica ${i + 1}`, barrio_vereda: "Barrio de práctica", estado: estados[i % estados.length],
     calidad: i % 4 === 0 ? "amarillo" : "verde", actualizado_en: ahora(),
   }));
+  // Las casas ya visitadas traen hogar, personas, visitas y necesidades para practicar con la ficha (P-10 y P-13).
+  const nombres = [["Luz Mery", "Ríos", "mujer", 46], ["Carlos Andrés", "Ríos", "hombre", 49], ["Valentina", "Ríos", "mujer", 19],
+                   ["Gloria Inés", "Salazar", "mujer", 63], ["Hernán", "Vélez", "hombre", 35], ["Diana", "Cardona", "mujer", 28]] as const;
+  const temas = ["vias_movilidad", "agua_ambiente", "empleo_emprendimiento", "salud", "educacion"];
+  const hogares: Record<string, unknown>[] = [];
+  const personas: Record<string, unknown>[] = [];
+  const visitas: Record<string, unknown>[] = [];
+  const necesidades: Record<string, unknown>[] = [];
+  viviendas.forEach((v, i) => {
+    if (!["visitada_conversacion", "requiere_seguimiento", "no_contactar"].includes(v.estado)) return;
+    const hogar = `practica-h-${i}`;
+    const gente = [0, 1, 2].map((k) => {
+      const [nombre, apellido, sexo, edad] = nombres[(i + k) % nombres.length];
+      return { id: `practica-p-${i}-${k}`, vivienda_id: v.id, hogar_id: hogar, nombre_visible: `${nombre} ${apellido}`, edad_anios: edad, sexo,
+        ocupacion: k === 0 ? "caficultor" : k === 2 ? "estudiante" : "comerciante", cedula_ult3: String(100 + i * 7 + k).slice(-3),
+        telefono_ult4: String(4000 + i * 13 + k), vota_en_pijao: "si", interes_info: k === 0, estado: v.estado === "no_contactar" ? "no_contactar" : "activa",
+        tiene_contacto_autorizado: k === 0 && v.estado !== "no_contactar", actualizado_en: ahora() };
+    });
+    personas.push(...gente);
+    hogares.push({ id: hogar, vivienda_id: v.id, total_personas: 4, mujeres: 2, hombres: 2, edades: { "18-24": 1, "45-54": 2, "6-12": 1 },
+      sosten_persona_id: gente[0].id, sosten_relacion: "madre", jefatura_femenina: gente[0].sexo === "mujer", votantes_pijao_est: 3, actualizado_en: ahora() });
+    visitas.push({ id: `practica-x-${i}`, vivienda_id: v.id, hogar_id: hogar, fecha: new Date(Date.now() - i * 86400000).toISOString(),
+      resultado: v.estado === "requiere_seguimiento" ? "pidio_volver" : "conversacion_completa", calidad: v.calidad,
+      notas: "Visita de práctica", seguimiento_requerido: v.estado === "requiere_seguimiento", actualizado_en: ahora() });
+    necesidades.push({ id: `practica-n-${i}`, vivienda_id: v.id, hogar_id: hogar, tema: temas[i % temas.length], prioridad: 1 + (i % 3),
+      texto: "Necesidad de ejemplo contada por la familia", actualizado_en: ahora() });
+  });
   return {
     viviendas,
-    personas_v: [{ id: "practica-p-1", vivienda_id: "practica-v-1", nombre_visible: "Persona de ejemplo", edad_anios: 45,
-      cedula_ult3: "123", telefono_ult4: "4567", estado: "activa", tiene_contacto_autorizado: true, actualizado_en: ahora() }],
+    hogares,
+    visitas,
+    necesidades,
+    personas_v: personas,
     tareas: [{ id: "practica-t-1", titulo: "Visitar la casa 4 (práctica)", tipo: "visitar", estado: "pendiente", prioridad: "normal", actualizado_en: ahora() }],
     anuncios: [{ id: "practica-a-1", titulo: "Bienvenida al modo práctica", texto: "Aquí puede practicar sin tocar datos reales.", prioridad: "normal", actualizado_en: ahora() }],
     textos_legales: [],
@@ -46,4 +75,6 @@ export class RemotoPractica implements Remoto {
   }
 
   async subirFoto() { /* en práctica las fotos no salen del teléfono */ }
+
+  async urlFoto() { return null; }   // en práctica no hay fotos en el servidor
 }

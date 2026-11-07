@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CATALOGOS } from "@nucleo/catalogos";
 import type { PuntoMapa } from "../datos/tipos";
 import { Aviso, Encabezado, Estado, useCarga, usePanel } from "../ui";
+import { FichaRapida } from "./Vivienda";
 
 maplibregl.setWorkerUrl(urlTrabajador);
 let protocoloListo = false;
@@ -59,6 +60,7 @@ export default function Mapa() {
 function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean }) {
   const caja = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [sel, setSel] = useState<string | null>(null);
   const conteo = useMemo(() => {
     const c: Record<string, number> = {};
     for (const p of puntos) c[p.estado] = (c[p.estado] ?? 0) + 1;
@@ -83,7 +85,7 @@ function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean 
     mapa.on("load", () => {
       mapa.addSource("viviendas", {
         type: "geojson",
-        data: { type: "FeatureCollection", features: puntos.map((p) => ({ type: "Feature", properties: { estado: p.estado }, geometry: { type: "Point", coordinates: [p.lng, p.lat] } })) },
+        data: { type: "FeatureCollection", features: puntos.map((p) => ({ type: "Feature", properties: { estado: p.estado, id: p.id }, geometry: { type: "Point", coordinates: [p.lng, p.lat] } })) },
       });
       mapa.addLayer({
         id: "viviendas", type: "circle", source: "viviendas",
@@ -93,6 +95,13 @@ function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean 
           "circle-stroke-color": "#FFFFFF", "circle-stroke-width": 1,
         },
       });
+      // P-10: clic en una casa → ficha rápida con foto, cabeza de familia, personas y última visita.
+      mapa.on("click", "viviendas", (e) => {
+        const id = e.features?.[0]?.properties?.id;
+        if (id) setSel(String(id));
+      });
+      mapa.on("mouseenter", "viviendas", () => { mapa.getCanvas().style.cursor = "pointer"; });
+      mapa.on("mouseleave", "viviendas", () => { mapa.getCanvas().style.cursor = ""; });
       if (puntos.length) {
         const b = new maplibregl.LngLatBounds();
         puntos.forEach((p) => b.extend([p.lng, p.lat]));
@@ -111,7 +120,13 @@ function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean 
         <div className="tarjeta"><div className="suave">Por visitar</div><div className="cifra">{conteo.por_visitar ?? 0}</div></div>
       </div>
       {!hayBase && <Aviso tipo="alerta">El mapa base de Pijao se agrega al publicar el sitio. Por ahora solo se ven los puntos.</Aviso>}
-      {error ? <Aviso tipo="error">{error}</Aviso> : <div ref={caja} className="mapa" role="region" aria-label="Mapa de viviendas por estado" />}
+      {error ? <Aviso tipo="error">{error}</Aviso> : (
+        <div className="mapa-envoltura">
+          <div ref={caja} className="mapa" role="region" aria-label="Mapa de viviendas por estado. Haga clic en una casa para ver su ficha." />
+          {sel && <FichaRapida key={sel} id={sel} cerrar={() => setSel(null)} />}
+        </div>
+      )}
+      <p className="suave pequeno">Haga clic en una casa para ver lo que se recogió de ella.</p>
       <div className="leyenda" aria-label="Leyenda">
         {Object.entries(COLOR).filter(([k]) => conteo[k]).map(([k, c]) => (
           <span key={k}><i style={{ background: c }} />{ETIQUETA[k] ?? k}: {conteo[k]}</span>

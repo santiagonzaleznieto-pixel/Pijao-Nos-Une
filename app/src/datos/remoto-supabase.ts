@@ -67,6 +67,15 @@ export class RemotoSupabase implements Remoto {
     return (r.data ?? []) as Record<string, unknown>[];
   }
 
+  async urlFoto(ruta: string): Promise<string | null> {
+    try {
+      const r = await this.cliente.storage.from("fotos").createSignedUrl(ruta, 600);
+      return r.error ? null : r.data?.signedUrl ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   async subirFoto(ruta: string, archivo: string) {
     let datos: ArrayBuffer;
     try { datos = await new File(archivo).arrayBuffer(); } catch { throw new ErrorRemoto(400, "La foto ya no existe en el teléfono"); }

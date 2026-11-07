@@ -67,6 +67,8 @@ export interface Remoto {
   /** Filas cambiadas después de (desde, desdeId), en orden (actualizado_en, clave). */
   cambios(tabla: string, clave: string, desde: string | null, desdeId: string | null, limite: number): Promise<Record<string, unknown>[]>;
   subirFoto(ruta: string, archivo: string): Promise<void>;
+  /** Enlace temporal (10 minutos) para ver una foto del servidor; null si no hay conexión o no tiene permiso. */
+  urlFoto?(ruta: string): Promise<string | null>;
 }
 
 export const TRANSITORIOS = new Set([408, 425, 429, 500, 502, 503, 504]);

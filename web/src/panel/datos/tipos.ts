@@ -76,6 +76,11 @@ export interface Dispositivo {
   ultima_sincronizacion: string | null; espacio_libre_mb: number | null; bateria_pct: number | null;
 }
 
+import type { DatosCasa } from "@nucleo/ficha";
+
+/** Todo lo de una vivienda (P-10 y P-13) y enlaces temporales a sus fotos visibles. */
+export interface CasaPanel { datos: DatosCasa; fotos: { id: string; tipo: string; url: string | null }[] }
+
 export interface PuntoMapa { id: string; lat: number; lng: number; estado: string; zona_id: string | null }
 
 export interface Resumen {
@@ -150,4 +155,5 @@ export interface Fuente {
   resolverSolicitud(id: string, estado: string, respuesta: string): Promise<void>;
   // mapa del avance
   puntosMapa(): Promise<PuntoMapa[]>;
+  casa(id: string): Promise<CasaPanel | null>;
 }

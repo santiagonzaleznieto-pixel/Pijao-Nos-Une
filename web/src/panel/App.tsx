@@ -11,6 +11,7 @@ import { FichaColaborador } from "./paginas/FichaColaborador";
 import { Inicio } from "./paginas/Inicio";
 import { Salud } from "./paginas/Salud";
 import { Titulares } from "./paginas/Titulares";
+import { Vivienda } from "./paginas/Vivienda";
 import { ContextoPanel, esAdmin, useCarga } from "./ui";
 
 // El mapa (MapLibre) pesa: se descarga solo cuando se abre esa sección.
@@ -95,12 +96,14 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
   ];
 
   let vista;
+  let vivienda = false;
   switch (pagina) {
     case "colaboradores": vista = <Colaboradores />; break;
     case "colaborador": vista = <FichaColaborador id={param ?? ""} />; break;
     case "titulares": vista = <Titulares />; break;
     case "auditoria": vista = <Auditoria />; break;
     case "mapa": vista = <Suspense fallback={<p className="suave">Cargando el mapa…</p>}><Mapa /></Suspense>; break;
+    case "vivienda": vivienda = true; vista = <Vivienda id={param ?? ""} />; break;
     case "configuracion": vista = <Configuracion pestanaInicial={param} />; break;
     case "salud": vista = <Salud />; break;
     default: vista = <Inicio resumen={resumen} />;
@@ -113,7 +116,7 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
         <nav className="lateral" aria-label="Secciones">
           <a className="marca" href="#/inicio">Pijao <span>Nos Une</span></a>
           {menu.map(([ruta, texto, n]) => (
-            <a key={ruta} className="nav" href={`#/${ruta}`} aria-current={pagina === ruta || (ruta === "colaboradores" && pagina === "colaborador") ? "page" : undefined}>
+            <a key={ruta} className="nav" href={`#/${ruta}`} aria-current={pagina === ruta || (ruta === "colaboradores" && pagina === "colaborador") || (ruta === "mapa" && vivienda) ? "page" : undefined}>
               {texto}{n ? <span className="insignia-num" aria-label={`${n} pendientes`}>{n}</span> : null}
             </a>
           ))}

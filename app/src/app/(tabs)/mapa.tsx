@@ -1,12 +1,14 @@
-// P-09 Mapa (5.1-5.8, 5.16) y P-10 Ficha rápida. Mapa de Pijao sin conexión (PMTiles de OpenStreetMap), puntos agrupados,
+// P-09 Mapa (5.1-5.8, 5.16) y P-10 Ficha rápida (foto, cabeza de familia, personas, última visita y necesidades). Mapa de Pijao sin conexión (PMTiles de OpenStreetMap), puntos agrupados,
 // nunca nombres en el mapa. Mantener presionado ofrece la ubicación manual (5.5).
 import { Asset } from "expo-asset";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Linking, Pressable, Text, View } from "react-native";
+import { Linking, Pressable, ScrollView, Text, View } from "react-native";
 import { Camera, GeoJSONSource, Layer, Map } from "@maplibre/maplibre-react-native";
-import { etiqueta } from "@/core/catalogos";
+import { resumenCasa, type DatosCasa } from "@/core/ficha";
+import { cargarCasa } from "@/servicios/casa";
 import { useApp } from "@/servicios/contexto";
+import { FotoCasa } from "@/ui/FotoCasa";
 import { Boton, Fila, Opciones } from "@/ui/componentes";
 import { CENTRO_PIJAO, estiloPijao } from "@/ui/estiloMapa";
 import { color, colorEstado, espacio, letra, radio } from "@/ui/tema";
@@ -23,6 +25,7 @@ export default function Mapa() {
   const [zonas, setZonas] = useState<Record<string, unknown>[]>([]);
   const [filtro, setFiltro] = useState("todas");
   const [sel, setSel] = useState<V | null>(null);
+  const [casa, setCasa] = useState<DatosCasa | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,6 +40,15 @@ export default function Mapa() {
       setZonas(await app.almacen.listar("zonas"));
     })();
   }, [app.almacen, app.version]);
+
+  // P-10: al tocar una casa se carga lo que se recogió de ella (desde el teléfono, funciona sin señal).
+  useEffect(() => {
+    let vivo = true;
+    setCasa(null);
+    if (sel) cargarCasa(app.almacen, sel.id).then((d) => { if (vivo) setCasa(d); });
+    return () => { vivo = false; };
+  }, [sel, app.almacen, app.version]);
+  const resumen = useMemo(() => (casa ? resumenCasa(casa) : null), [casa]);
 
   const visibles = useMemo(() => viviendas.filter((v) => {
     if (filtro === "mias") return v.creado_por === app.usuarioId;
@@ -92,16 +104,48 @@ export default function Mapa() {
       </View>
 
       {sel ? (
-        <View accessibilityViewIsModal style={{ position: "absolute", left: 0, right: 0, bottom: 0, backgroundColor: color.tarjeta, borderTopLeftRadius: radio.l, borderTopRightRadius: radio.l, padding: espacio.l, gap: espacio.s, elevation: 8 }}>
-          <Text style={{ fontSize: letra.mediana, fontWeight: "700", color: color.azul }}>{String(sel.direccion ?? "Vivienda sin dirección")}</Text>
-          <Text style={{ fontSize: letra.normal, color: color.texto }}>{etiqueta("C-01", sel.estado ?? "")}{sel.barrio_vereda ? ` · ${String(sel.barrio_vereda)}` : ""}</Text>
-          {sel.estado === "no_contactar" ? <Text style={{ color: color.rojo, fontWeight: "700" }}>No volver: la familia pidió no ser contactada.</Text> : null}
-          <Fila>
-            <Boton texto="Ver detalle" variante="secundario" onPress={() => { setSel(null); router.push(`/vivienda/${sel.id}`); }} />
-            {sel.estado !== "no_contactar" ? <Boton texto="Agregar visita" onPress={() => { setSel(null); router.push({ pathname: "/visita", params: { vivienda: sel.id } }); }} /> : null}
-            <Boton texto="Cómo llegar" variante="suave" onPress={() => Linking.openURL(`geo:${sel.lat},${sel.lng}?q=${sel.lat},${sel.lng}`)} />
-          </Fila>
-          <Pressable accessibilityRole="button" onPress={() => setSel(null)}><Text style={{ textAlign: "center", color: color.textoSuave, padding: espacio.s }}>Cerrar</Text></Pressable>
+        <View accessibilityViewIsModal style={{ position: "absolute", left: 0, right: 0, bottom: 0, maxHeight: "70%", backgroundColor: color.tarjeta, borderTopLeftRadius: radio.l, borderTopRightRadius: radio.l, padding: espacio.l, elevation: 8 }}>
+          <ScrollView contentContainerStyle={{ gap: espacio.s }}>
+            <View style={{ flexDirection: "row", gap: espacio.m }}>
+              <FotoCasa vivienda={casa?.vivienda ?? sel} foto={resumen?.fotoFachada ?? null} estilo={{ width: 88, height: 88 }} />
+              <View style={{ flex: 1, gap: 2 }}>
+                <Text style={{ fontSize: letra.mediana, fontWeight: "700", color: color.azul }}>{resumen?.titulo ?? String(sel.direccion ?? "Vivienda")}</Text>
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+                  <View style={{ width: 12, height: 12, borderRadius: 6, backgroundColor: colorEstado[sel.estado ?? "por_visitar"] ?? color.grisPunto }} />
+                  <Text style={{ fontSize: letra.normal, color: color.texto }}>{resumen?.estado ?? ""}</Text>
+                </View>
+                {resumen?.lugar ? <Text style={{ fontSize: letra.pequena, color: color.textoSuave }}>{resumen.lugar}</Text> : null}
+              </View>
+            </View>
+            {resumen?.noContactar ? <Text style={{ color: color.rojo, fontWeight: "700" }}>No volver: la familia pidió no ser contactada.</Text> : null}
+            {resumen ? (
+              <View style={{ gap: 4 }}>
+                <Text style={{ fontSize: letra.normal, color: color.texto }}>
+                  <Text style={{ fontWeight: "700" }}>Cabeza de familia: </Text>{resumen.cabeza ?? "sin registrar"}
+                </Text>
+                <Text style={{ fontSize: letra.normal, color: color.texto }}>
+                  <Text style={{ fontWeight: "700" }}>Personas: </Text>
+                  {resumen.personas.length
+                    ? resumen.personas.slice(0, 3).map((p) => p.nombre).join(", ") + (resumen.totalPersonas > 3 ? ` y ${resumen.totalPersonas - 3} más` : "")
+                    : resumen.totalPersonas ? `${resumen.totalPersonas} (sin nombres registrados)` : "sin registrar"}
+                </Text>
+                <Text style={{ fontSize: letra.normal, color: color.texto }}>
+                  <Text style={{ fontWeight: "700" }}>Última visita: </Text>{resumen.ultimaVisita ?? "ninguna todavía"}
+                </Text>
+                {resumen.necesidades.length ? (
+                  <Text style={{ fontSize: letra.normal, color: color.texto }}>
+                    <Text style={{ fontWeight: "700" }}>Necesidades: </Text>{resumen.necesidades.join(", ")}
+                  </Text>
+                ) : null}
+              </View>
+            ) : <Text style={{ color: color.textoSuave }}>Cargando la información de la casa…</Text>}
+            <Boton texto="Ver detalles de la casa" onPress={() => { const id = sel.id; setSel(null); router.push(`/vivienda/${id}`); }} />
+            <Fila>
+              {sel.estado !== "no_contactar" ? <Boton texto="Agregar visita" variante="secundario" onPress={() => { const id = sel.id; setSel(null); router.push({ pathname: "/visita", params: { vivienda: id } }); }} /> : null}
+              <Boton texto="Cómo llegar" variante="suave" onPress={() => Linking.openURL(`geo:${sel.lat},${sel.lng}?q=${sel.lat},${sel.lng}`)} />
+            </Fila>
+            <Pressable accessibilityRole="button" onPress={() => setSel(null)}><Text style={{ textAlign: "center", color: color.textoSuave, padding: espacio.s }}>Cerrar</Text></Pressable>
+          </ScrollView>
         </View>
       ) : null}
     </View>

@@ -83,3 +83,13 @@ dialog::backdrop { background: rgba(10, 20, 30, 0.45); }
 .leyenda { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 8px 0; font-size: 0.9rem; }
 .leyenda i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; border: 1px solid rgba(0,0,0,0.25); }
 code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.9em; }
+
+/* P-10 ficha rápida sobre el mapa y P-13 detalle de la vivienda */
+.mapa-envoltura { position: relative; }
+.ficha-rapida { position: absolute; top: 12px; left: 12px; width: min(360px, calc(100% - 24px)); max-height: calc(100% - 24px); overflow: auto; margin: 0; z-index: 5; box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
+.cerrar-ficha { position: absolute; top: 6px; right: 8px; border: 0; background: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--texto-suave); min-width: 36px; min-height: 36px; }
+@media (max-width: 600px) { .ficha-rapida { top: auto; bottom: 8px; left: 8px; width: calc(100% - 16px); max-height: 65%; } }
+.casa-cabecera { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+@media (max-width: 760px) { .casa-cabecera { grid-template-columns: minmax(0, 1fr); } }
+.secciones-casa { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 0 12px; margin-top: 12px; }
+.secciones-casa .dato { grid-template-columns: 170px 1fr; }

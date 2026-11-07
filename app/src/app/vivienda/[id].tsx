@@ -1,60 +1,81 @@
-// P-13 Detalle de vivienda: foto, dirección, estado, hogares y personas (enmascaradas), historial de visitas (6.6).
+// P-13 Detalle de vivienda: toda la información que se recogió de la casa (vivienda, hogar, personas enmascaradas,
+// necesidades e historial de visitas) y sus fotos. Funciona sin señal con lo que hay en el teléfono (6.6).
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Image, Linking } from "react-native";
-import { etiqueta } from "@/core/catalogos";
+import { useEffect, useMemo, useState } from "react";
+import { Linking, Pressable, ScrollView, Text, View } from "react-native";
+import { fichaCompleta, resumenCasa, type DatosCasa, type FilaDato } from "@/core/ficha";
+import { cargarCasa } from "@/servicios/casa";
 import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Cargando, Fila, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
+import { FotoCasa } from "@/ui/FotoCasa";
+import { color, espacio, letra } from "@/ui/tema";
 
-type F = Record<string, any>;
+// Las fotos de la autorización en papel no se muestran aquí: tienen firma y datos personales.
+const TIPOS_VISIBLES = new Set(["fachada", "entorno", "problema"]);
 
 export default function Vivienda() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const app = useApp();
   const router = useRouter();
-  const [v, setV] = useState<F | null>(null);
-  const [visitas, setVisitas] = useState<F[]>([]);
-  const [personas, setPersonas] = useState<F[]>([]);
-  const [hogares, setHogares] = useState<F[]>([]);
+  const [casa, setCasa] = useState<DatosCasa | null | undefined>(undefined);
 
   useEffect(() => {
-    (async () => {
-      const a = app.almacen;
-      setV(await a.obtener("viviendas", id));
-      setVisitas(((await a.listar("visitas")) as F[]).filter((x) => x.vivienda_id === id).sort((x, y) => String(y.fecha).localeCompare(String(x.fecha))));
-      setPersonas(((await a.listar("personas")) as F[]).filter((x) => x.vivienda_id === id));
-      setHogares(((await a.listar("hogares")) as F[]).filter((x) => x.vivienda_id === id));
-    })();
+    let vivo = true;
+    cargarCasa(app.almacen, id).then((d) => { if (vivo) setCasa(d); });
+    return () => { vivo = false; };
   }, [id, app.almacen, app.version]);
 
-  if (!v) return <Cargando />;
-  const noContactar = v.estado === "no_contactar";
+  const resumen = useMemo(() => (casa ? resumenCasa(casa) : null), [casa]);
+  const secciones = useMemo(() => (casa ? fichaCompleta(casa) : []), [casa]);
+  const otrasFotos = useMemo(() => (casa?.fotos ?? []).filter((f) => TIPOS_VISIBLES.has(String(f.tipo)) && f.id !== resumen?.fotoFachada?.id && !f.eliminado_en), [casa, resumen]);
+
+  if (casa === undefined) return <Cargando />;
+  if (!casa || !resumen) return <Pantalla titulo="Vivienda"><Aviso tipo="alerta" texto="Esta vivienda no está en el teléfono. Sincronice e intente de nuevo." /></Pantalla>;
+  const v = casa.vivienda;
+
   return (
-    <Pantalla titulo={v.direccion ?? "Vivienda"}>
-      {v.foto_local ? <Image source={{ uri: v.foto_local }} style={{ width: "100%", aspectRatio: 3 / 4 }} accessibilityLabel="Foto de fachada" /> : null}
-      {noContactar ? <Aviso tipo="error" texto="No volver: la familia pidió no ser contactada (R-21)." /> : null}
+    <Pantalla titulo={resumen.titulo}>
+      <FotoCasa vivienda={v} foto={resumen.fotoFachada} estilo={{ width: "100%", aspectRatio: 4 / 3 }} />
+      {otrasFotos.length ? (
+        <ScrollView horizontal contentContainerStyle={{ gap: espacio.s }}>
+          {otrasFotos.map((f: FilaDato) => (
+            <View key={String(f.id)} style={{ alignItems: "center" }}>
+              <FotoCasa vivienda={{}} foto={f} estilo={{ width: 96, height: 96 }} />
+              <Text style={{ fontSize: letra.pequena, color: color.textoSuave }}>{f.tipo === "problema" ? "Problema" : "Entorno"}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      ) : null}
+      {resumen.noContactar ? <Aviso tipo="error" texto="No volver: la familia pidió no ser contactada (R-21)." /> : null}
+
       <Tarjeta>
-        <Texto>{etiqueta("C-01", v.estado)} · {v.barrio_vereda ?? "sin barrio o vereda"}</Texto>
-        <Texto suave>{etiqueta("C-03", v.tipo_vivienda, "")} {v.nombre_finca ? `· finca ${v.nombre_finca}` : ""}</Texto>
-        {v.indicaciones ? <Texto suave>Cómo llegar: {v.indicaciones}</Texto> : null}
-        {v.calidad ? <Texto suave>Calidad del registro: {v.calidad}</Texto> : null}
+        <Texto negrita tam="mediana">{resumen.estado}</Texto>
+        {resumen.lugar ? <Texto suave>{resumen.lugar}</Texto> : null}
+        <Texto>Cabeza de familia: {resumen.cabeza ?? "sin registrar"}</Texto>
+        <Texto>Personas: {resumen.totalPersonas || "sin registrar"}</Texto>
+        <Texto>Última visita: {resumen.ultimaVisita ?? "ninguna todavía"}</Texto>
+        {resumen.calidad ? <Texto suave>Calidad del registro: {resumen.calidad}</Texto> : null}
       </Tarjeta>
       <Fila>
-        {!noContactar ? <Boton texto="Agregar visita" onPress={() => router.push({ pathname: "/visita", params: { vivienda: id } })} /> : null}
+        {!resumen.noContactar ? <Boton texto="Agregar visita" onPress={() => router.push({ pathname: "/visita", params: { vivienda: id } })} /> : null}
         <Boton texto="Cómo llegar" variante="suave" onPress={() => Linking.openURL(`geo:${v.lat},${v.lng}?q=${v.lat},${v.lng}`)} />
       </Fila>
-      {hogares.map((h) => (
-        <Tarjeta key={h.id}><Texto negrita>Hogar</Texto><Texto>{h.total_personas} persona(s){h.jefatura_femenina ? " · jefatura femenina" : ""}</Texto></Tarjeta>
+
+      {secciones.map((s) => (
+        <Tarjeta key={s.titulo}>
+          {s.personaId ? (
+            <Pressable accessibilityRole="button" onPress={() => router.push(`/persona/${s.personaId}`)}>
+              <Text style={{ fontSize: letra.mediana, fontWeight: "700", color: color.azulOceano }}>{s.titulo} ›</Text>
+            </Pressable>
+          ) : <Texto negrita tam="mediana">{s.titulo}</Texto>}
+          {s.datos.length ? s.datos.map((d, i) => (
+            <View key={`${d.etiqueta}-${i}`} style={{ paddingVertical: 4, borderBottomWidth: i < s.datos.length - 1 ? 1 : 0, borderBottomColor: color.borde }}>
+              <Text style={{ fontSize: letra.pequena, color: color.textoSuave }}>{d.etiqueta}</Text>
+              <Text style={{ fontSize: letra.normal, color: color.texto }}>{d.valor}</Text>
+            </View>
+          )) : <Texto suave>No se registraron datos.</Texto>}
+        </Tarjeta>
       ))}
-      <Tarjeta>
-        <Texto negrita>Personas ({personas.length})</Texto>
-        {personas.map((p) => <Boton key={p.id} variante="suave" texto={`${p.nombre_visible ?? "Persona"}${p.edad_anios ? ` · ${p.edad_anios} años` : ""}`} onPress={() => router.push(`/persona/${p.id}`)} />)}
-      </Tarjeta>
-      <Tarjeta>
-        <Texto negrita>Historial de visitas</Texto>
-        {visitas.map((x) => <Texto key={x.id}>{new Date(x.fecha).toLocaleDateString("es-CO")} · {etiqueta("C-02", x.resultado)} · {x.calidad ?? ""}</Texto>)}
-        {!visitas.length ? <Texto suave>Sin visitas registradas en este teléfono.</Texto> : null}
-      </Tarjeta>
     </Pantalla>
   );
 }

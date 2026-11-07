@@ -7,7 +7,7 @@ import { PARAMS_POR_DEFECTO } from "@nucleo/reglas";
 import { diaMas } from "../../logica/utiles";
 import { ErrorPanel } from "./supabase";
 import type {
-  Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
+  CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Rol, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
 } from "./tipos";
 
@@ -31,6 +31,17 @@ function colaborador(id: string, nombre: string, rol: Rol, estado: string, extra
     motivo_estado: null, ultimo_acceso: estado === "activo" ? haceDias(azar() * 5) : null, creado_en: haceDias(30 + azar() * 20),
     ...extra,
   };
+}
+
+// Dibujo de una fachada de ejemplo (la demostración no tiene fotos reales).
+function fotoEjemplo(i: number): string {
+  const paredes = ["#F2E3C6", "#CFE3F2", "#F6D3CF", "#DDEFD0"][i % 4];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240"><rect width="320" height="240" fill="#BFE0F5"/>` +
+    `<rect y="190" width="320" height="50" fill="#7DB93F"/><rect x="70" y="100" width="180" height="110" fill="${paredes}" stroke="#8a7a5c"/>` +
+    `<polygon points="55,105 160,45 265,105" fill="#B5523B"/><rect x="140" y="150" width="40" height="60" fill="#6B4A2B"/>` +
+    `<rect x="90" y="125" width="34" height="30" fill="#FFFFFF" stroke="#6B4A2B"/><rect x="196" y="125" width="34" height="30" fill="#FFFFFF" stroke="#6B4A2B"/>` +
+    `<text x="160" y="232" font-size="14" text-anchor="middle" fill="#1F2933">Foto de ejemplo</text></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
 export class FuenteDemo implements Fuente {
@@ -418,4 +429,31 @@ export class FuenteDemo implements Fuente {
   }
 
   async puntosMapa() { await espera(); return [...this.puntos]; }
+
+  async casa(id: string): Promise<CasaPanel | null> {
+    await espera();
+    const i = this.puntos.findIndex((p) => p.id === id);
+    if (i < 0) return null;
+    const p = this.puntos[i];
+    const urbano = p.zona_id === "z-centro";
+    const vivienda = { id, lat: p.lat, lng: p.lng, estado: p.estado, zona_urbana_rural: urbano ? "urbana" : "rural",
+      direccion: urbano ? `Calle ${3 + (i % 9)} # ${2 + (i % 7)}-${10 + (i % 40)}` : null, nombre_finca: urbano ? null : ["La Esperanza", "El Mirador", "Buenavista"][i % 3],
+      barrio_vereda: urbano ? "El Centro" : "Vereda La Mina", tipo_vivienda: urbano ? "casa_urbana" : "finca_rural", tenencia: ["propia", "arrendada"][i % 2],
+      servicios: urbano ? ["agua_acueducto", "energia", "alcantarillado", "internet"] : ["agua_nacimiento", "energia", "pozo_septico"],
+      via_acceso: urbano ? "pavimentada" : "destapada", fuente_ubicacion: "gps", precision_m: 6 + (i % 9) };
+    if (p.estado === "por_visitar") return { datos: { vivienda, hogares: [], personas: [], visitas: [], necesidades: [], fotos: [] }, fotos: [] };
+    const familia = [["María Elena", "Ospina", "mujer", 52, "caficultor"], ["José Gildardo", "Ospina", "hombre", 55, "jornalero"],
+                     ["Juliana", "Ospina", "mujer", 21, "estudiante"], ["Samuel", "Ospina", "hombre", 9, null]] as const;
+    const personas = familia.map(([n, a, s, e, o], k) => ({ id: `${id}-p${k}`, vivienda_id: id, nombre_visible: `${n} ${a}`, edad_anios: e, sexo: s,
+      ocupacion: o, cedula_ult3: e >= 18 ? String(200 + i + k).slice(-3) : null, telefono_ult4: k === 0 ? String(3000 + i) : null,
+      vota_en_pijao: e >= 18 ? "si" : null, interes_info: k === 0, tiene_contacto_autorizado: k === 0, estado: p.estado === "no_contactar" ? "no_contactar" : "activa" }));
+    const hogares = [{ id: `${id}-h`, vivienda_id: id, total_personas: 4, mujeres: 2, hombres: 2, edades: { "6-12": 1, "18-24": 1, "45-54": 1, "55-64": 1 },
+      sosten_persona_id: personas[0].id, sosten_relacion: "madre", jefatura_femenina: true, votantes_pijao_est: 3, futuros_primeros_votantes: 0 }];
+    const visitas = [{ id: `${id}-x1`, vivienda_id: id, fecha: new Date(Date.now() - (i % 20) * 86400000).toISOString(),
+      resultado: p.estado === "visitada_sin_contacto" ? "nadie_en_casa" : p.estado === "requiere_seguimiento" ? "pidio_volver" : "conversacion_completa",
+      calidad: ["verde", "verde", "amarillo"][i % 3], notas: "Familia amable; pidió información sobre el programa.", seguimiento_requerido: p.estado === "requiere_seguimiento" }];
+    const necesidades = [{ id: `${id}-n1`, vivienda_id: id, tema: ["vias_movilidad", "agua_ambiente", "empleo_emprendimiento", "salud"][i % 4], prioridad: 1,
+      texto: "La familia lo contó durante la visita (ejemplo).", estado: "recibida" }];
+    return { datos: { vivienda, hogares, personas, visitas, necesidades, fotos: [] }, fotos: [{ id: `${id}-f`, tipo: "fachada", url: fotoEjemplo(i) }] };
+  }
 }
