@@ -23,6 +23,7 @@ export default function Inicio() {
   const router = useRouter();
   const [p, setP] = useState<ReturnType<typeof panelPersonal> | null>(null);
   const [c, setC] = useState<ReturnType<typeof panelCampana> | null>(null);
+  const [errorAviso, setErrorAviso] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -40,6 +41,18 @@ export default function Inicio() {
 
   return (
     <Pantalla titulo={`Hola, ${app.perfil?.d.nombre?.split(" ")[0] ?? ""}`}>
+      {app.avisos.map((a) => (
+        <Tarjeta key={a.id}>
+          <Aviso tipo={a.tipo === "dispositivo_nuevo" ? "alerta" : "info"} texto={a.mensaje} />
+          <Fila>
+            <Boton texto="Fui yo, entendido" variante="suave" onPress={() => app.descartarAviso(a.id)} estilo={{ flex: 1 }} />
+            <Boton texto="No fui yo" variante="secundario" estilo={{ flex: 1 }} onPress={async () => {
+              try { await app.noFuiYo(a); router.push("/recuperar"); } catch (e) { setErrorAviso((e as Error).message); }
+            }} />
+          </Fila>
+        </Tarjeta>
+      ))}
+      {errorAviso ? <Aviso tipo="error" texto={errorAviso} /> : null}
       {app.telefonoModificado ? <Aviso tipo="error" texto="Este teléfono parece modificado (rooteado). Por seguridad, avise al Administrador." /> : null}
       {necesita2fa ? <Aviso tipo="alerta" texto="Active la verificación en dos pasos para usar sus permisos de riesgo alto." /> : null}
       {necesita2fa ? <Boton texto="Activar verificación" variante="secundario" onPress={() => router.push("/verificacion")} /> : null}

@@ -4,13 +4,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { debeAceptarAcuerdos } from "@/core/acceso";
 import { ProveedorApp, useApp } from "@/servicios/contexto";
 import { Boton, Cargando, Pantalla, Texto } from "@/ui/componentes";
 import { color, espacio, letra } from "@/ui/tema";
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
-const PUBLICAS = new Set(["entrar", "registro"]);
+const PUBLICAS = new Set(["entrar", "registro", "recuperar"]);
 
 function Guardian() {
   const app = useApp();
@@ -22,12 +23,14 @@ function Guardian() {
     if (!app.listo) return;
     SplashScreen.hideAsync().catch(() => undefined);
     if (!app.usuarioId) { if (!PUBLICAS.has(ruta)) router.replace("/entrar"); return; }
+    if (ruta === "recuperar") return;   // P-07: al verificar el código ya hay sesión, pero falta poner la contraseña nueva
     if (!app.perfil) return;
     const estado = app.perfil.d.estado;
     if (!app.practica && (estado === "pendiente" || estado === "suspendido" || estado === "baja")) { if (ruta !== "cuenta") router.replace("/cuenta"); return; }
     if (!app.practica && estado === "aprobado") { if (ruta !== "ingreso") router.replace("/ingreso"); return; }
-    if (PUBLICAS.has(ruta) || ruta === "cuenta" || ruta === "ingreso") router.replace("/inicio");
-  }, [app.listo, app.usuarioId, app.perfil, app.practica, ruta, router]);
+    if (!app.practica && debeAceptarAcuerdos(app.perfil.d, app.conectado)) { if (ruta !== "acuerdos") router.replace("/acuerdos"); return; }
+    if (PUBLICAS.has(ruta) || ruta === "cuenta" || ruta === "ingreso" || ruta === "acuerdos") router.replace("/inicio");
+  }, [app.listo, app.usuarioId, app.perfil, app.practica, app.conectado, ruta, router]);
 
   if (!app.listo) return <Cargando />;
 
@@ -62,6 +65,8 @@ function Guardian() {
         <Stack.Screen name="registro" options={{ title: "Crear cuenta" }} />
         <Stack.Screen name="cuenta" options={{ headerShown: false }} />
         <Stack.Screen name="ingreso" options={{ title: "Ingreso al equipo" }} />
+        <Stack.Screen name="acuerdos" options={{ title: "Acuerdos", headerBackVisible: false }} />
+        <Stack.Screen name="recuperar" options={{ title: "Recuperar el acceso" }} />
         <Stack.Screen name="verificacion" options={{ title: "Verificación en dos pasos" }} />
         <Stack.Screen name="registrar" options={{ title: "Registrar aquí" }} />
         <Stack.Screen name="visita" options={{ title: "Nueva visita" }} />

@@ -7,10 +7,18 @@ export default function Cuenta() {
   const estado = perfil?.d.estado;
   const texto = estado === "pendiente"
     ? "Su cuenta está pendiente de aprobación del Director. Le avisaremos cuando esté lista."
-    : estado === "suspendido" ? "Su cuenta está suspendida. Hable con el Director." : "Su cuenta ya no está activa.";
+    : estado === "suspendido"
+      ? perfil?.d.suspension_automatica
+        ? "Su cuenta se suspendió automáticamente porque pasaron muchos días sin usarla. Pida al Director que la reactive."
+        : "Su cuenta está suspendida. Hable con el Director."
+      : "Su cuenta ya no está activa.";
   return (
     <Pantalla titulo={`Hola, ${perfil?.d.nombre ?? ""}`}>
       <Aviso tipo={estado === "pendiente" ? "info" : "alerta"} texto={texto} />
+      {perfil?.d.motivo_estado && !perfil.d.suspension_automatica ? <Texto>Motivo: {perfil.d.motivo_estado}</Texto> : null}
+      {perfil?.d.suspension_automatica ? (
+        <Texto>Las visitas que tenga sin enviar siguen guardadas y cifradas en este teléfono. Se enviarán cuando la cuenta vuelva a estar activa. No desinstale la app.</Texto>
+      ) : null}
       {estado === "pendiente" ? (
         <>
           <Texto>Mientras tanto puede practicar con datos de ejemplo. Nada de lo que haga en práctica se envía.</Texto>

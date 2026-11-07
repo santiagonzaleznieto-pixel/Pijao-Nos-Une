@@ -1,23 +1,17 @@
 // P-05 y P-06: acuerdos (leídos hasta el final) y curso de ingreso con evaluación (10.6, R-03, R-45).
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { aprobado, LECCIONES, PREGUNTAS, puntaje, VERSION_ACUERDOS } from "@/core/curso";
 import { param } from "@/core/reglas";
 import { cliente, useApp } from "@/servicios/contexto";
-import { Aviso, Boton, Casilla, Opciones, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
-import { color, espacio, letra } from "@/ui/tema";
-
-const ACUERDOS = [
-  { titulo: "Acuerdo de confidencialidad", texto: "Me comprometo a mantener en reserva toda la información de personas y hogares a la que acceda por la app, a no compartir capturas ni listas, a no usar los datos para fines propios y a reportar cualquier pérdida del teléfono." },
-  { titulo: "Código de conducta", texto: "Respeto a toda persona. Nada de compra de votos ni ofrecimiento de favores. No presionar ni amenazar. No desinformar ni atacar la vida privada. No compartir capturas ni listas. No fotografiar menores. Identificarme siempre. Cumplir las normas electorales y denunciar irregularidades. No portar armas ni consumir alcohol durante la jornada." },
-  { titulo: "Política de seguridad y tratamiento de datos", texto: "Solo registro datos con autorización. Uso la app solo en mi teléfono, con bloqueo de pantalla. No anoto datos sensibles en las notas. Reporto de inmediato si pierdo el teléfono." },
-];
+import { Aviso, Boton, Opciones, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
+import { LectorAcuerdos } from "@/ui/LectorAcuerdos";
+import { color, letra } from "@/ui/tema";
 
 export default function Ingreso() {
   const { params, recargarPerfil } = useApp();
   const [paso, setPaso] = useState<"acuerdos" | "lecciones" | "evaluacion" | "resultado">("acuerdos");
-  const [leidoHastaFinal, setLeidoHastaFinal] = useState(false);
-  const [acepto, setAcepto] = useState(false);
+  const [versionAcuerdos, setVersionAcuerdos] = useState(VERSION_ACUERDOS);
   const [leccion, setLeccion] = useState(0);
   const [respuestas, setRespuestas] = useState<Record<number, number>>({});
   const [resultado, setResultado] = useState<number | null>(null);
@@ -32,7 +26,7 @@ export default function Ingreso() {
     if (!aprobado(p, minimo)) return;
     setEnviando(true);
     try {
-      const { error: e } = await cliente.rpc("rpc_completar_ingreso", { p_puntaje: p, p_acuerdos_version: VERSION_ACUERDOS });
+      const { error: e } = await cliente.rpc("rpc_completar_ingreso", { p_puntaje: p, p_acuerdos_version: versionAcuerdos });
       if (e) throw new Error(e.message);
       await recargarPerfil();
     } catch {
@@ -42,19 +36,8 @@ export default function Ingreso() {
 
   if (paso === "acuerdos") {
     return (
-      <Pantalla titulo="1. Acuerdos" desplazable={false}
-        pie={<>
-          <Casilla texto="Leí y acepto los acuerdos" valor={acepto} onCambio={setAcepto} detalle={leidoHastaFinal ? undefined : "Lea hasta el final para poder aceptar."} />
-          <Boton texto="Continuar al curso" onPress={() => setPaso("lecciones")} deshabilitado={!acepto || !leidoHastaFinal} />
-        </>}>
-        <ScrollView onScroll={({ nativeEvent: n }) => { if (n.layoutMeasurement.height + n.contentOffset.y >= n.contentSize.height - 24) setLeidoHastaFinal(true); }}
-          scrollEventThrottle={200} contentContainerStyle={{ gap: espacio.m }}>
-          {ACUERDOS.map((a) => (
-            <Tarjeta key={a.titulo}><Texto negrita>{a.titulo}</Texto><Texto>{a.texto}</Texto></Tarjeta>
-          ))}
-          <Texto suave>Versión de los textos: {VERSION_ACUERDOS}. Los textos definitivos los revisa el abogado.</Texto>
-        </ScrollView>
-      </Pantalla>
+      <LectorAcuerdos titulo="1. Acuerdos" textoBoton="Continuar al curso"
+        onAceptar={(v) => { setVersionAcuerdos(v); setPaso("lecciones"); }} />
     );
   }
 

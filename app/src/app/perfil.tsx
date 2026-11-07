@@ -18,10 +18,14 @@ export default function Perfil() {
   }, [app.usuarioId, app.practica]);
 
   async function cambiarClave() {
-    if (clave.length < 12) { setMensaje({ tipo: "error", texto: "La contraseña debe tener al menos 12 caracteres." }); return; }
-    const { error } = await cliente.auth.updateUser({ password: clave });
-    setMensaje(error ? { tipo: "error", texto: "No se pudo cambiar. Revise la conexión." } : { tipo: "ok", texto: "Contraseña cambiada." });
-    setClave("");
+    // P-07 y 4.10: valida la contraseña (longitud y comunes) y cierra la sesión en los demás teléfonos.
+    try {
+      await app.sesion.cambiarClave(clave);
+      setMensaje({ tipo: "ok", texto: "Contraseña cambiada. Cerramos la sesión en sus otros teléfonos." });
+      setClave("");
+    } catch (e) {
+      setMensaje({ tipo: "error", texto: (e as Error).message });
+    }
   }
   async function perdido(id: string) {
     const { error } = await cliente.rpc("rpc_reportar_perdido", { p_dispositivo: id });

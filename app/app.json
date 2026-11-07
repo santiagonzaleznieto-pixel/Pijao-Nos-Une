@@ -2,14 +2,14 @@
   "expo": {
     "name": "Pijao Nos Une",
     "slug": "pijao-nos-une",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "pijao",
     "userInterfaceStyle": "light",
     "android": {
       "package": "co.pijao.nosune",
-      "versionCode": 11,
+      "versionCode": 12,
       "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#1C3D72",
@@ -24,14 +24,22 @@
         "POST_NOTIFICATIONS",
         "USE_BIOMETRIC"
       ],
-      "blockedPermissions": ["android.permission.RECORD_AUDIO", "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE"],
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ],
       "predictiveBackGestureEnabled": false
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
-        { "backgroundColor": "#FFFFFF", "image": "./assets/images/splash-icon.png", "imageWidth": 120 }
+        {
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 120
+        }
       ],
       "expo-secure-store",
       "expo-asset",
@@ -45,13 +53,18 @@
       ],
       [
         "expo-camera",
-        { "cameraPermission": "Pijao nos une usa la cámara para la foto de fachada de cada vivienda." }
+        {
+          "cameraPermission": "Pijao nos une usa la cámara para la foto de fachada de cada vivienda."
+        }
       ],
       [
         "expo-local-authentication",
-        { "faceIDPermission": "Pijao nos une usa su huella o rostro para volver a entrar de forma segura." }
+        {
+          "faceIDPermission": "Pijao nos une usa su huella o rostro para volver a entrar de forma segura."
+        }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      "expo-build-properties"
     ],
     "extra": {
       "supabaseUrl": "https://hxodqzorvvlkzensrsjr.supabase.co",

@@ -9,6 +9,14 @@ language sql stable as $$
 $$;
 grant execute on function auth.jwt() to public;
 
+-- Sesiones de Supabase Auth (las crea GoTrue). Solo las columnas que usa la tarea de R-33 de la migración 0016.
+create table if not exists auth.sessions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
 -- Columnas que el servicio de almacenamiento agrega con sus propias migraciones.
 alter table storage.buckets add column if not exists public boolean default false;
 alter table storage.objects add column if not exists metadata jsonb;

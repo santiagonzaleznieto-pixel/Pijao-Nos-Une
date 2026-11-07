@@ -3,6 +3,7 @@
 // - Registro con código de invitación por la función de servidor (las reglas las valida el servidor: A7, A8).
 // - Señal periódica del teléfono: salud de la flota, límite de dispositivos, versión mínima y borrado remoto.
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { limpiarCodigo, mensajeRecuperacion, problemaClave, type AvisoCuenta } from "../core/acceso";
 import { limpiarDatosPersonales } from "../core/privacidad";
 import { perfilDesdeRpc, type PerfilDatos } from "../core/permisos";
 import type { Almacen } from "../datos/tipos";
@@ -16,7 +17,10 @@ export interface DatosRegistro {
 
 export interface Latido {
   ok: boolean; motivo?: string; mensaje?: string; activo?: boolean; borrar_datos?: boolean; version_minima?: string | null;
+  dispositivo_id?: string;
 }
+
+export interface TextoAcuerdo { tipo: string; version: string; contenido: string; borrador: boolean }
 
 /** Compara versiones «1.2.3». Devuelve true si a < b. */
 export function versionMenor(a: string, b: string | null | undefined): boolean {
@@ -60,6 +64,60 @@ export class ServicioSesion {
   /** Cierra la sesión. Lo pendiente de envío queda cifrado y marcado con su usuario (C2); nunca sale con otra cuenta. */
   async salir(): Promise<void> {
     await this.cliente.auth.signOut();
+  }
+
+  // ------------------------------------------------------------ P-07 recuperar el acceso con un código por correo
+  /** Pide el código. Responde igual exista o no la cuenta (A7): Supabase no revela qué correos están registrados. */
+  async pedirCodigoRecuperacion(correo: string): Promise<void> {
+    const { error } = await this.cliente.auth.resetPasswordForEmail(correo.trim().toLowerCase());
+    if (error) throw new Error(mensajeRecuperacion(error));
+  }
+
+  /** Verifica el código, pone la contraseña nueva y cierra la sesión en los demás teléfonos. */
+  async recuperarConCodigo(correo: string, codigo: string, claveNueva: string): Promise<void> {
+    const problema = problemaClave(claveNueva);
+    if (problema) throw new Error(problema);
+    const { error } = await this.cliente.auth.verifyOtp({ email: correo.trim().toLowerCase(), token: limpiarCodigo(codigo), type: "recovery" });
+    if (error) throw new Error(mensajeRecuperacion(error));
+    await this.cambiarClave(claveNueva);
+  }
+
+  /** Cambia la contraseña con la sesión abierta y cierra las sesiones de los demás teléfonos (P-07 y 4.10). */
+  async cambiarClave(claveNueva: string): Promise<void> {
+    const problema = problemaClave(claveNueva);
+    if (problema) throw new Error(problema);
+    const { error } = await this.cliente.auth.updateUser({ password: claveNueva });
+    if (error) throw new Error(mensajeRecuperacion(error));
+    await this.cliente.auth.signOut({ scope: "others" }).catch(() => undefined);
+  }
+
+  // ------------------------------------------------------------ R-45 acuerdos y avisos de la cuenta (4.10)
+  async acuerdosVigentes(): Promise<{ version: string | null; textos: TextoAcuerdo[] }> {
+    const { data, error } = await this.cliente.rpc("rpc_acuerdos_vigentes");
+    if (error) throw error.message?.match(/network|fetch/i) ? new SinConexion() : new ErrorRemoto(400, "No se pudieron leer los acuerdos.");
+    const d = (data ?? {}) as { version?: string | null; textos?: TextoAcuerdo[] };
+    return { version: d.version ?? null, textos: d.textos ?? [] };
+  }
+
+  async aceptarAcuerdos(version: string): Promise<void> {
+    const { error } = await this.cliente.rpc("rpc_aceptar_acuerdos", { p_version: version });
+    if (error) throw new Error(/cambiaron/i.test(error.message) ? error.message : "No se pudo guardar la aceptación. Revise la conexión.");
+  }
+
+  async avisos(): Promise<AvisoCuenta[]> {
+    const { data, error } = await this.cliente.rpc("rpc_mis_avisos");
+    if (error) return [];
+    return (data as AvisoCuenta[] | null) ?? [];
+  }
+
+  async avisoLeido(id: string): Promise<void> {
+    await this.cliente.rpc("rpc_aviso_leido", { p_id: id });
+  }
+
+  /** «No fui yo»: cierra a distancia el teléfono del aviso; sus datos se borran en su próxima conexión (17.2). */
+  async cerrarDispositivo(dispositivoId: string): Promise<void> {
+    const { error } = await this.cliente.rpc("rpc_reportar_perdido", { p_dispositivo: dispositivoId });
+    if (error) throw new Error("No se pudo cerrar ese teléfono. Revise la conexión o avise al Administrador.");
   }
 
   async registrarConCodigo(d: DatosRegistro): Promise<string> {

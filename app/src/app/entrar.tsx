@@ -32,7 +32,8 @@ export default function Entrar() {
       {error ? <Aviso tipo="error" texto={error} /> : null}
       <Boton texto="Entrar" onPress={entrar} cargando={cargando} deshabilitado={!correo || !clave} />
       <Link href="/registro" asChild><Boton texto="Tengo un código de invitación" variante="suave" onPress={() => undefined} /></Link>
-      <Texto suave tam="pequena">¿Olvidó su contraseña? Pida al Director o al Administrador un código nuevo. Versión {VERSION_APP}.</Texto>
+      <Link href="/recuperar" asChild><Boton texto="Olvidé mi contraseña" variante="suave" onPress={() => undefined} /></Link>
+      <Texto suave tam="pequena">Por seguridad, la sesión vence cada cierto tiempo (14 días para el equipo de campo) y hay que volver a entrar. Lo que no se ha enviado se conserva. Versión {VERSION_APP}.</Texto>
     </Pantalla>
   );
 }

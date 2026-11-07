@@ -99,6 +99,15 @@ En el panel de Supabase:
 
 **Importante:** desde la 0013, el Director y el Administrador necesitan la verificación en dos pasos para ver datos completos y para las acciones destructivas.
 
+### Pasos después de aplicar la 0016 (cuentas y sesiones)
+
+1. **Correo de la campaña para recuperar el acceso (P-07).** Sin un servidor de correo propio, Supabase solo envía correos a los miembros del equipo del proyecto, así que la recuperación no le llegaría a un colaborador. Es gratis con Gmail:
+   1. En la cuenta de Gmail de la campaña, active la verificación en dos pasos y cree una **contraseña de aplicación** (Cuenta de Google → Seguridad → Contraseñas de aplicaciones).
+   2. En Supabase, **Authentication → Emails → SMTP Settings:** active *Custom SMTP* con host `smtp.gmail.com`, puerto `465`, usuario = el correo de la campaña, contraseña = la contraseña de aplicación, remitente «Pijao Nos Une».
+   3. Gmail permite unos 500 correos al día: de sobra para recuperar contraseñas.
+2. **Plantilla del correo de recuperación:** en **Authentication → Emails → Reset password**, el correo debe mostrar el código `{{ .Token }}`, porque la app pide el código y no usa enlaces. Asunto sugerido: «Su código para entrar a Pijao Nos Une».
+3. La tarea `pijao_cuentas` de pg_cron corre cada hora (minuto 20): cierra las sesiones vencidas (R-33) y suspende a los colaboradores sin actividad (4.9). Los valores se cambian en P-42 (`sesion_horas_*`, `inactividad_suspension_dias`, `acuerdos_vigencia_dias`).
+
 ### Estado de producción (7 de noviembre de 2026)
 
 Aplicado en el proyecto `pijao-nos-une` con el conector de Supabase y verificado:
@@ -110,6 +119,7 @@ Aplicado en el proyecto `pijao-nos-une` con el conector de Supabase y verificado
 | Migración 0013, aplicada en tres partes (`0013_seguridad_fase1_parte1..3`), mismo contenido que el archivo | ✅ 18 de 18 funciones, cadena de auditoría y políticas de fotos |
 | Migración 0014, aplicada en dos partes (`0014_panel_web_paginas_publicas_parte1..2`) | ✅ Las páginas públicas responden con la clave pública; esa clave no lee tablas |
 | Migración 0015 (permisos de los disparadores, aviso 0029 de Supabase) | ✅ |
+| Migración 0016 (cuentas y sesiones: R-33, suspensión automática, R-45, avisos de la cuenta) | ⏳ Probada en la integración continua; falta aplicarla |
 | Función `registrar-con-codigo` desplegada (versión 2, IP de cabeceras no falsificables) | ✅ Responde con el mensaje genérico |
 | Secreto `pii_key` en Vault | ✅ Existe |
 | Pasos 1, 2 y 3 de esta sección (registro abierto, contraseña de 12, TOTP) | ✅ Registro abierto desactivado (un registro público de prueba responde `signup_disabled`; la función de registro usa la API de administración y no se ve afectada), contraseña mínima 12, TOTP activo y SMS apagado. «Limit duration of AAL1 sessions» queda apagado a propósito: cerraría la sesión de los colaboradores, que no usan verificación en dos pasos |

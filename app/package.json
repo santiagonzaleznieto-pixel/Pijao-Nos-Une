@@ -1,6 +1,6 @@
 {
   "name": "pijao-nos-une",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/ui": "~58.0.27",
@@ -10,6 +10,7 @@
     "expo": "~58.0.23",
     "expo-asset": "~58.0.20",
     "expo-battery": "~58.0.3",
+    "expo-build-properties": "~58.0.12",
     "expo-camera": "~58.0.14",
     "expo-constants": "~58.0.15",
     "expo-crypto": "~58.0.7",

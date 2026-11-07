@@ -60,6 +60,12 @@ export interface PermisoActivo { zonas: string[] | null; vence_en: string | null
 export interface PerfilDatos {
   id: string; nombre: string; rol: Rol; estado: EstadoCuenta; permisos: Record<string, PermisoActivo>;
   zonas: string[]; aal: "aal1" | "aal2"; curso_aprobado: boolean; acuerdos_ok: boolean;
+  /** R-45 (0016): false si hay que volver a aceptar. Sin el dato (servidor o perfil guardado antiguos) no se exige. */
+  acuerdos_vigentes?: boolean;
+  acuerdos_version?: string | null;
+  motivo_estado?: string | null;
+  suspension_automatica?: boolean;
+  sesion_horas?: number;
 }
 
 /** Convierte la respuesta de rpc_mi_perfil. */
@@ -72,6 +78,11 @@ export function perfilDesdeRpc(d: Record<string, unknown> | null | undefined): P
     id: String(d?.id ?? ""), nombre: String(d?.nombre ?? ""), rol: (d?.rol as Rol) ?? "colaborador",
     estado: (d?.estado as EstadoCuenta) ?? "pendiente", permisos, zonas: (d?.zonas as string[]) ?? [],
     aal: d?.aal === "aal2" ? "aal2" : "aal1", curso_aprobado: Boolean(d?.curso_aprobado), acuerdos_ok: Boolean(d?.acuerdos_ok),
+    ...(typeof d?.acuerdos_vigentes === "boolean" ? { acuerdos_vigentes: d.acuerdos_vigentes } : {}),
+    ...(d && "acuerdos_version" in d ? { acuerdos_version: (d.acuerdos_version as string | null) ?? null } : {}),
+    ...(d?.motivo_estado ? { motivo_estado: String(d.motivo_estado) } : {}),
+    ...(d?.suspension_automatica ? { suspension_automatica: true } : {}),
+    ...(typeof d?.sesion_horas === "number" ? { sesion_horas: d.sesion_horas } : {}),
   };
 }
 

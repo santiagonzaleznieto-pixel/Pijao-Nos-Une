@@ -1,5 +1,6 @@
 // Pruebas de las reglas de negocio. Son la especificación: traducen y amplían tests/test_core.py de la app en Python.
 import { randomUUID } from "node:crypto";
+import { avisosVisibles, CLAVE_MINIMA, debeAceptarAcuerdos, limpiarCodigo, mensajeRecuperacion, problemaClave, type AvisoCuenta } from "../acceso";
 import { claves, etiqueta } from "../catalogos";
 import { evaluarRegistro, ritmoSospechoso, saltoImposible } from "../calidad";
 import { autorizacionVigente, canalesAtencion, evidenciaPara, nuevoConsentimiento, textoPara, VERSION_TEXTO_LOCAL } from "../consentimiento";
@@ -339,5 +340,56 @@ describe("P-10 y P-13: ficha de la vivienda", () => {
     const r = resumenCasa({ vivienda: { id: "v9" }, hogares: [], personas: [], visitas: [], necesidades: [], fotos: [] });
     expect(r).toMatchObject({ titulo: "Vivienda sin dirección", estado: "Por visitar", cabeza: null, ultimaVisita: null, fotoFachada: null });
     expect(fechaCorta("2027-10-31")).toBe("31 oct 2027");
+  });
+});
+
+describe("acceso a la cuenta (bloque 1.5)", () => {
+  const base = { id: "u1", nombre: "Ana", rol: "colaborador", estado: "activo", permisos: [], zonas: [], aal: "aal1", curso_aprobado: true, acuerdos_ok: true };
+
+  it("4.10: contraseña de al menos 12 caracteres, no común y repetida igual", () => {
+    expect(problemaClave("corta")).toMatch(/12 caracteres/);
+    expect(problemaClave("PijaoNosUne1")).toMatch(/muy común/);
+    expect(problemaClave("aaaaaaaaaaaaaa")).toMatch(/muy común/);
+    expect(problemaClave("el cafe de la tarde", "el cafe de la noche")).toMatch(/no coinciden/);
+    expect(problemaClave("el cafe de la tarde", "el cafe de la tarde")).toBeNull();
+    expect(CLAVE_MINIMA).toBe(12);
+  });
+
+  it("P-07: el código solo conserva los dígitos y los errores no revelan si la cuenta existe", () => {
+    expect(limpiarCodigo(" 123 456 ")).toBe("123456");
+    expect(mensajeRecuperacion(new Error("Token has expired or is invalid"))).toMatch(/no es válido o ya venció/);
+    expect(mensajeRecuperacion(new Error("For security purposes, you can only request this after 40 seconds."))).toMatch(/hace poco/);
+    expect(mensajeRecuperacion(new Error("New password should be different from the old password."))).toMatch(/distinta/);
+    expect(mensajeRecuperacion(new Error("TypeError: Network request failed"))).toMatch(/Sin conexión/);
+    expect(mensajeRecuperacion("algo raro")).toMatch(/No se pudo completar/);
+  });
+
+  it("R-45: el perfil trae si los acuerdos siguen vigentes y solo se exige con conexión", () => {
+    const vencidos = perfilDesdeRpc({ ...base, acuerdos_vigentes: false, acuerdos_version: "v2", sesion_horas: 336 });
+    expect(vencidos).toMatchObject({ acuerdos_vigentes: false, acuerdos_version: "v2", sesion_horas: 336 });
+    expect(debeAceptarAcuerdos(vencidos, true)).toBe(true);
+    expect(debeAceptarAcuerdos(vencidos, false)).toBe(false);
+    expect(debeAceptarAcuerdos(perfilDesdeRpc({ ...base, acuerdos_vigentes: true }), true)).toBe(false);
+    // Un perfil guardado por una versión anterior no trae el dato: no bloquea.
+    expect(debeAceptarAcuerdos(perfilDesdeRpc(base), true)).toBe(false);
+    expect(debeAceptarAcuerdos(perfilDesdeRpc({ ...base, estado: "suspendido", acuerdos_vigentes: false }), true)).toBe(false);
+    expect(debeAceptarAcuerdos(null, true)).toBe(false);
+  });
+
+  it("4.9: el perfil distingue la suspensión automática y muestra el motivo", () => {
+    const p = perfilDesdeRpc({ ...base, estado: "suspendido", suspension_automatica: true, motivo_estado: "Suspensión automática: 30 días sin actividad." });
+    expect(p.suspension_automatica).toBe(true);
+    expect(p.motivo_estado).toMatch(/30 días/);
+    expect(perfilDesdeRpc(base)).not.toHaveProperty("suspension_automatica");
+  });
+
+  it("4.10: el aviso de teléfono nuevo no se muestra en el propio teléfono nuevo", () => {
+    const avisos: AvisoCuenta[] = [
+      { id: "a1", tipo: "dispositivo_nuevo", mensaje: "Teléfono nuevo", creado_en: "2026-11-07T10:00:00Z", datos: { dispositivo_id: "d-nuevo" } },
+      { id: "a2", tipo: "clave_cambiada", mensaje: "Contraseña cambiada", creado_en: "2026-11-07T11:00:00Z", datos: {} },
+    ];
+    expect(avisosVisibles(avisos, "d-nuevo").map((a) => a.id)).toEqual(["a2"]);
+    expect(avisosVisibles(avisos, "d-viejo").map((a) => a.id)).toEqual(["a1", "a2"]);
+    expect(avisosVisibles(avisos, null)).toHaveLength(2);
   });
 });

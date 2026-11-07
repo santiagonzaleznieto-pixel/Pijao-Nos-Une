@@ -9,6 +9,7 @@ import * as SecureStore from "expo-secure-store";
 import JailMonkey from "jail-monkey";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AppState } from "react-native";
+import { avisosVisibles, type AvisoCuenta } from "../core/acceso";
 import { configurarGeneradorId } from "../core/ids";
 import { Perfil, type PerfilDatos } from "../core/permisos";
 import { param, type Params } from "../core/reglas";
@@ -60,6 +61,11 @@ interface ContextoApp {
   avisarCambio: () => void;
   /** Enlace temporal de una foto guardada en el servidor (P-10 y P-13). */
   urlFoto: (ruta: string) => Promise<string | null>;
+  /** 4.10 y P-07: avisos de la cuenta (teléfono nuevo, contraseña cambiada) sin leer. */
+  avisos: AvisoCuenta[];
+  descartarAviso: (id: string) => Promise<void>;
+  /** «No fui yo»: cierra el teléfono del aviso y lo marca como leído. */
+  noFuiYo: (aviso: AvisoCuenta) => Promise<void>;
 }
 
 const Ctx = createContext<ContextoApp | null>(null);
@@ -84,6 +90,8 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const [ultimaSyncEn, setUltimaSyncEn] = useState<string | null>(null);
   const [actualizacionObligatoria, setActualizacionObligatoria] = useState(false);
   const [version, setVersion] = useState(0);
+  const [avisos, setAvisos] = useState<AvisoCuenta[]>([]);
+  const miDispositivo = useRef<string | null>(null);
   const enSegundoPlanDesde = useRef<number | null>(null);
   const uidRef = useRef<string | null>(null);
   uidRef.current = usuarioId;
@@ -146,7 +154,11 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
         const c = await almacen.contarCola(usuarioId);
         const l = await sesion.latido({ colaPendiente: c.pendientes + c.cuarentena, ultimaSincronizacion: ultimaSyncEn, modelo: Device.modelName ?? undefined });
         setActualizacionObligatoria(sesion.necesitaActualizar(l.version_minima));
-        if (l.borrar_datos) { setUsuarioId(null); setVersion((v) => v + 1); }
+        if (l.borrar_datos) { setUsuarioId(null); setAvisos([]); setVersion((v) => v + 1); }
+        else {
+          if (l.dispositivo_id) miDispositivo.current = l.dispositivo_id;
+          setAvisos(avisosVisibles(await sesion.avisos(), miDispositivo.current));
+        }
       } catch { /* sin conexión: se intenta en la próxima */ }
     }
     return r;
@@ -194,13 +206,26 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     setListo(true);
   }, []);
 
+  const descartarAviso = useCallback(async (id: string) => {
+    setAvisos((a) => a.filter((x) => x.id !== id));
+    await sesion?.avisoLeido(id).catch(() => undefined);
+  }, [sesion]);
+
+  const noFuiYo = useCallback(async (aviso: AvisoCuenta) => {
+    if (!sesion) return;
+    if (aviso.datos?.dispositivo_id) await sesion.cerrarDispositivo(aviso.datos.dispositivo_id);
+    await descartarAviso(aviso.id);
+  }, [sesion, descartarAviso]);
+
   const valor = useMemo<ContextoApp | null>(() => (almacen && sesion ? {
     listo, practica, usuarioId, perfil: perfilDatos ? new Perfil(perfilDatos) : null, params, almacen, sesion, conectado, bloqueado,
     telefonoModificado, actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil,
     cambiarPractica, desbloquear, avisarCambio: () => { refrescarCola(); setVersion((v) => v + 1); },
     urlFoto: async (ruta: string) => (conectado && remoto.urlFoto ? remoto.urlFoto(ruta) : null),
+    avisos: practica ? [] : avisos, descartarAviso, noFuiYo,
   } : null), [remoto, listo, practica, usuarioId, perfilDatos, params, almacen, sesion, conectado, bloqueado, telefonoModificado,
-    actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil, cambiarPractica, desbloquear, refrescarCola]);
+    actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil, cambiarPractica, desbloquear, refrescarCola,
+    avisos, descartarAviso, noFuiYo]);
 
   if (!valor) return null;
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>;
