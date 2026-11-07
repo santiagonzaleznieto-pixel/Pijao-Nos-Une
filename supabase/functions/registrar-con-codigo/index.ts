@@ -20,8 +20,13 @@ const COMUNES = new Set([
   "000000000000", "111111111111", "123123123123", "iloveyou1234", "admin1234567", "teamo1234567",
 ]);
 
+// Primero las cabeceras que pone la red de Supabase y que quien llama no puede falsificar; x-forwarded-for queda de
+// último recurso porque su primer valor lo puede escribir el cliente (así no se salta el límite de intentos).
 function ipDe(req: Request): string {
-  return (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "desconocida";
+  return req.headers.get("cf-connecting-ip")?.trim()
+    || req.headers.get("x-real-ip")?.trim()
+    || (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim()
+    || "desconocida";
 }
 
 Deno.serve(async (req) => {

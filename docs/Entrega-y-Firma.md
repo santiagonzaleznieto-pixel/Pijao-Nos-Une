@@ -99,6 +99,25 @@ En el panel de Supabase:
 
 **Importante:** desde la 0013, el Director y el Administrador necesitan la verificación en dos pasos para ver datos completos y para las acciones destructivas.
 
+### Estado de producción (7 de noviembre de 2026)
+
+Aplicado en el proyecto `pijao-nos-une` con el conector de Supabase y verificado:
+
+| Paso | Estado |
+|---|---|
+| Migraciones 0001 a 0012 (más una `0012b` que ya está incluida en la 0012 del repositorio) | ✅ Estaban |
+| pg_cron activado (`0012c_extensiones_pg_cron`) y borrado nocturno de ubicaciones programado | ✅ |
+| Migración 0013, aplicada en tres partes (`0013_seguridad_fase1_parte1..3`), mismo contenido que el archivo | ✅ 18 de 18 funciones, cadena de auditoría y políticas de fotos |
+| Migración 0014, aplicada en dos partes (`0014_panel_web_paginas_publicas_parte1..2`) | ✅ Las páginas públicas responden con la clave pública; esa clave no lee tablas |
+| Migración 0015 (permisos de los disparadores, aviso 0029 de Supabase) | ✅ |
+| Función `registrar-con-codigo` desplegada (versión 2, IP de cabeceras no falsificables) | ✅ Responde con el mensaje genérico |
+| Secreto `pii_key` en Vault | ✅ Existe |
+| Pasos 1, 2 y 3 de esta sección (registro abierto, contraseña de 12, TOTP) | ⏳ Los hace el Administrador en el panel de Supabase |
+| El Administrador y el Director inscriben su aplicación autenticadora | ⏳ Hoy ninguno la tiene: háganlo al primer ingreso al panel web |
+| Canales de atención (correo y WhatsApp) en Configuración → Integraciones | ⏳ Los fija el Administrador desde el panel |
+
+Avisos de Supabase revisados: las funciones `rpc_*` ejecutables y las vistas enmascaradas `personas_v` y `directorio_v` son intencionales (cada función valida quién llama y las vistas filtran por rol). «Leaked password protection» solo existe en el plan de pago; la función de registro rechaza las contraseñas comunes con una lista propia.
+
 ---
 
 ## 4. Respaldos (el plan gratuito no los incluye)
