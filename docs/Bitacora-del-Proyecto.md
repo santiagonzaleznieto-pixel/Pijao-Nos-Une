@@ -83,8 +83,8 @@ Este archivo guarda el contexto de las conversaciones con Claude Code, para que 
 |---|---|
 | Migraciones 0001 a 0015 y función `registrar-con-codigo` v2 | ✅ Aplicadas |
 | Auth: registro cerrado, contraseña de 12, TOTP | ✅ |
-| Migraciones 0016 y 0017 | ⏳ Probadas en la integración continua. Al intentar aplicarlas, el control de seguridad de la herramienta pidió la autorización expresa del dueño |
-| Panel y páginas en GitHub Pages | ⏳ `main` todavía no tiene los últimos cambios de la rama; falta la aprobación para subir a `main` y activar Pages |
+| Migraciones 0016 y 0017 | ✅ Aplicadas el 7 nov 2026 con la autorización del dueño, y verificadas (tareas `pijao_cuentas`, `pijao_purgar_ubicaciones` y `pijao_revision_permisos`) |
+| Panel y páginas en GitHub Pages | ✅ La rama se unió a `main` el 7 nov 2026 con la aprobación del dueño; Pages publica desde `main` |
 | Cuentas en producción | Solo el Administrador y el Director, sin colaboradores todavía |
 
 ## 7. Notas técnicas para la próxima sesión
@@ -184,4 +184,14 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
   - **Panel:** la página «Métricas del piloto» y los avisos en Inicio.
   - **Pruebas:** `supabase/tests/fase1_zz_cierre.sql`, `app/src/core/__tests__/cierre.test.ts` (81 pruebas de jest en total) y 26 pruebas del sitio. Todas pasaron en GitHub.
   - **Documentos:** `docs/Pendientes-del-Equipo.md`, esta bitácora y la tabla de avance del plan.
-- Quedó pendiente la autorización expresa del dueño para aplicar la 0016 y la 0017 en producción y para subir la rama a `main`.
+- El dueño aprobó el rumbo de la opción C animada («el mensaje después se editará») y autorizó poner la Fase 1 en producción: «quiero que la fase 1 salgamos ya de eso y nos dediquemos netamente a la fase 2». Se aplicaron la 0016 y la 0017 y la rama se unió a `main`.
+
+### Resumen 5 (7 de noviembre de 2026, noche): arranque de la Fase 2
+
+- Tres propuestas de la pantalla Inicio en un lienzo de Claude Design: A Institucional, B Territorio y C Pulso, todas claras y con los dos logos (el de texto con degradado y el circular ilustrado).
+- El dueño eligió la **C** y pidió perfeccionarla: que no parezca diseño genérico de IA, elegante, con presencia y organización, con animaciones fluidas en todo y una animación de entrada limpia con un mensaje corto, inspirada en un video de referencia (una app de domicilios cuya ilustración entra desde un lado, revela el nombre y da paso a un panel que baja).
+- Se hizo el prototipo «C refinada»:
+  - entrada de unos 4 segundos: anillo de cuatro colores, el logo circular que llega desde la izquierda, «PIJAO NOS UNE» revelado por líneas con brillo y el mensaje provisional «Juntos, casa por casa.»;
+  - el Inicio entra en cascada, con cifras que cuentan, barras que se llenan, botón con destello, pestaña con indicador deslizante y velo de «Ocultar pantalla»;
+  - ritmo común: 0,18 s al tocar, 0,35 a 0,6 s para los elementos y una curva suave igual en toda la pantalla, con modo calmado si el teléfono tiene las animaciones apagadas.
+- Enlace del lienzo (privado): https://claude.ai/artifact/ReqX728bukSmmqzNM7wUct

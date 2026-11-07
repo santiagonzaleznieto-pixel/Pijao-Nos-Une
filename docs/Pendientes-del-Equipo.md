@@ -27,7 +27,6 @@ Se hacen a su ritmo, pero las marcadas con ⏰ tienen fecha. Cuando termine una,
   1. Una vez, en el computador del Administrador: `powershell -ExecutionPolicy Bypass -File tools/respaldo.ps1 -Configurar`. Pide la cadena de conexión y la clave `service_role`, que nunca se suben a GitHub.
   2. Programe la tarea nocturna en el Programador de tareas de Windows.
   3. Cada semana, copie la carpeta a una USB guardada aparte.
-- [ ] **Activar GitHub Pages**, para publicar el panel web y las páginas públicas «Mis datos», el carnet y la política: Settings → Pages → Source: **GitHub Actions**. Si prefiere, autorice a Claude a hacerlo desde Chrome con su sesión.
 
 ### 2. Abogado (antes del piloto del 1 de febrero de 2027)
 
@@ -81,5 +80,5 @@ Se hacen a su ritmo, pero las marcadas con ⏰ tienen fecha. Cuando termine una,
 ### Lo que Claude ya dejó hecho o hace sin usted
 
 - Toda la construcción de la Fase 1: app, servidor, panel web y páginas públicas, con pruebas automáticas en cada cambio.
-- Aplicar las migraciones en producción y publicar cada versión de la app en GitHub Releases.
+- Aplicar las migraciones en producción (la 0016 y la 0017 quedaron aplicadas el 7 de noviembre de 2026) y publicar cada versión de la app en GitHub Releases.
 - Mantener al día `docs/Plan-de-Construccion.md`, `docs/Entrega-y-Firma.md` y la bitácora `docs/Bitacora-del-Proyecto.md`.
