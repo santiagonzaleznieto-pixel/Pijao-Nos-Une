@@ -1,0 +1,28 @@
+<!-- @dsCard group="Contenido" height=330 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 100%">
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+  <div class="pj-cifra pj-cifra--azul"><div class="pj-cifra__cabeza"><span>Visitas hoy</span><span class="pj-cifra__chip" style="color: var(--marca-azul)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span></div><div class="pj-cifra__valor" data-n="6">6</div></div>
+  <div class="pj-cifra pj-cifra--turquesa"><div class="pj-cifra__cabeza"><span>Esta semana</span><span class="pj-cifra__chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19H2"></path></svg></span></div><div class="pj-cifra__valor" data-n="23">23</div></div>
+  <div class="pj-cifra pj-cifra--verde"><div class="pj-cifra__cabeza"><span>Completas</span><span class="pj-cifra__chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></span></div><div class="pj-cifra__valor" data-n="19">19</div><div class="pj-cifra__nota">3 por revisar · 1 incompleta</div></div>
+  <div class="pj-cifra pj-cifra--naranja"><div class="pj-cifra__cabeza"><span>Por enviar</span><span class="pj-cifra__chip"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></span></div><div class="pj-cifra__valor" data-n="2">2</div><div class="pj-cifra__nota">Se envían solas con señal</div></div>
+</div>
+
+</div>
+<script>
+
+// Conteo desde cero (1 s, curva suave). Con «reducir movimiento» muestra el valor de una vez.
+const reducir = matchMedia('(prefers-reduced-motion: reduce)').matches;
+document.querySelectorAll('[data-n]').forEach((el) => {
+  const meta = Number(el.dataset.n);
+  if (reducir) return;
+  const t0 = performance.now();
+  const paso = (t) => {
+    const x = Math.min(1, (t - t0) / 1000), e = 1 - Math.pow(1 - x, 3);
+    el.textContent = Math.round(meta * e).toLocaleString('es-CO');
+    if (x < 1) requestAnimationFrame(paso);
+  };
+  requestAnimationFrame(paso);
+});
+
+</script>

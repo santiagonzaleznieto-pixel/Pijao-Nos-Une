@@ -1,0 +1,28 @@
+<!-- @dsCard group="Panel web" height=330 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 100%">
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center">
+  <button type="button" class="pj-chip pj-toque" aria-pressed="true">Activas</button>
+  <button type="button" class="pj-chip pj-toque" aria-pressed="false">Por aprobar</button>
+  <button type="button" class="pj-chip pj-toque" aria-pressed="false">Suspendidas</button>
+</div>
+<div class="pj-tabla-caja">
+  <table class="pj-tabla">
+    <thead><tr><th scope="col">Colaborador</th><th scope="col">Zona</th><th scope="col">Visitas</th><th scope="col">Estado</th></tr></thead>
+    <tbody>
+      <tr><td>Carolina R.</td><td>Casco urbano · Centro</td><td class="pj-num">148</td><td><span class="pj-insignia" style="background: var(--tinte-verde); color: var(--texto-verde)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg> Activa</span></td></tr>
+      <tr><td>Andrés M.</td><td>Vereda La Mina</td><td class="pj-num">96</td><td><span class="pj-insignia" style="background: var(--tinte-verde); color: var(--texto-verde)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg> Activa</span></td></tr>
+      <tr><td>Luz Dary P.</td><td>Vereda La Carnicería</td><td class="pj-num">12</td><td><span class="pj-insignia" style="background: var(--tinte-naranja); color: var(--texto-naranja)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6"></path><path d="M12 17h.01"></path></svg> Sin actividad 25 días</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+<script>
+
+document.querySelectorAll('.pj-chip').forEach((c) => c.addEventListener('click', () => {
+  document.querySelectorAll('.pj-chip').forEach((x) => x.setAttribute('aria-pressed', 'false'));
+  c.setAttribute('aria-pressed', 'true');
+}));
+
+</script>

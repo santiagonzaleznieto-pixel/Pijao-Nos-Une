@@ -1,0 +1,28 @@
+<!-- @dsCard group="Navegación" height=160 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 100%">
+
+<nav class="pj-barra" aria-label="Secciones">
+  <div class="pj-barra__pastilla" id="pastilla" aria-hidden="true"></div>
+  <button type="button" class="pj-barra__item pj-toque" aria-current="page" data-i="0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg>Inicio</button>
+  <button type="button" class="pj-barra__item pj-toque" data-i="1"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14"></path><path d="M15 6v14"></path></svg>Mapa</button>
+  <span style="display: flex; justify-content: center"><button type="button" class="pj-central pj-toque" aria-label="Registrar aquí" style="width: 54px; height: 54px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></button></span>
+  <button type="button" class="pj-barra__item pj-toque" data-i="3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"></path></svg>Tareas</button>
+  <button type="button" class="pj-barra__item pj-toque" data-i="4"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>Más</button>
+</nav>
+<p style="margin: 0; font: 400 13px/18px var(--font-texto); color: var(--tinta-suave)">Toque Mapa, Tareas o Más: la pastilla se desliza.</p>
+
+</div>
+<script>
+
+const barra = document.querySelector('.pj-barra');
+const pastilla = document.getElementById('pastilla');
+barra.addEventListener('click', (e) => {
+  const b = e.target.closest('.pj-barra__item');
+  if (!b) return;
+  barra.querySelectorAll('.pj-barra__item').forEach((x) => x.removeAttribute('aria-current'));
+  b.setAttribute('aria-current', 'page');
+  const ancho = barra.clientWidth / 5;
+  pastilla.style.transform = 'translateX(' + (Number(b.dataset.i) * ancho + (ancho - 56) / 2 - 8) + 'px)';
+});
+
+</script>

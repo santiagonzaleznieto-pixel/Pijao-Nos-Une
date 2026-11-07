@@ -1,0 +1,19 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-07T19:55:00Z" },
+  "title": "Pijao Nos Une · tres propuestas de diseño",
+  "launch": { "view": "focused", "file": "Pulso-animado.dc.html" },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 1180, "title": "A · Institucional", "radius": 28 },
+    "Territorio.dc.html": { "x": 470, "y": 0, "w": 390, "h": 1180, "title": "B · Territorio", "radius": 28 },
+    "Pulso.dc.html": { "x": 940, "y": 0, "w": 390, "h": 1180, "title": "C · Pulso", "radius": 28 },
+    "Pulso-animado.dc.html": { "x": 0, "y": 1600, "w": 390, "h": 844, "title": "C refinada · entrada e Inicio animados", "radius": 44, "is_interactive": true }
+  },
+  "order": ["Main.dc.html", "Territorio.dc.html", "Pulso.dc.html", "Pulso-animado.dc.html"],
+  "notes": {
+    "titulo": { "x": 0, "y": -300, "text": "Inicio de la app en tres direcciones", "kind": "title1", "maxW": 1330 },
+    "titulo-c": { "x": 0, "y": 1300, "text": "Opción C refinada, con movimiento", "kind": "title1", "maxW": 1330 }
+  },
+  "designSystems": []
+}

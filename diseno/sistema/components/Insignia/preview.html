@@ -1,0 +1,21 @@
+<!-- @dsCard group="Contenido" height=220 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 100%">
+
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+  <span class="pj-insignia" style="background: var(--tinte-verde); color: var(--texto-verde)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg> Completo</span>
+  <span class="pj-insignia" style="background: var(--tinte-naranja); color: var(--texto-naranja)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6"></path><path d="M12 17h.01"></path></svg> Por revisar</span>
+  <span class="pj-insignia" style="background: var(--tinte-rojo); color: var(--texto-rojo)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7l10 10"></path><path d="M17 7L7 17"></path></svg> No contactar</span>
+  <span class="pj-insignia" style="background: var(--tinte-azul); color: var(--texto-azul)">Seguimiento</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px" role="group" aria-label="Filtros del mapa">
+  <button type="button" class="pj-chip pj-toque" aria-pressed="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5h18l-7 8v6l-4 2v-8z"></path></svg> Solo lo mío</button>
+  <button type="button" class="pj-chip pj-toque" aria-pressed="false">Pendientes</button>
+  <button type="button" class="pj-chip pj-toque" aria-pressed="false">Seguimientos</button>
+</div>
+
+</div>
+<script>
+
+document.querySelectorAll('.pj-chip').forEach((c) => c.addEventListener('click', () => c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true')));
+
+</script>

@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Pijao Nos Une · entrada e Inicio animados</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1D4E9E}a:hover{color:#14325E}
+.pj{--e-suave:cubic-bezier(.22,1,.36,1);--e-afilado:cubic-bezier(.4,0,.2,1);--e-rebote:cubic-bezier(.34,1.56,.64,1);--t-rapido:.18s;--t-normal:.35s;--t-lento:.6s;--t-pausado:1s}
+.pj *{box-sizing:border-box}
+.marca{background:linear-gradient(100deg,#163F86 0%,#1D5FB0 22%,#1AA0C8 46%,#5DB246 70%,#F39A1E 92%,#F39A1E 100%);background-size:220% 100%;background-position:100% 0;-webkit-background-clip:text;background-clip:text;color:transparent}
+.num{font-variant-numeric:tabular-nums}
+.toque{transition:transform var(--t-rapido) var(--e-suave),box-shadow var(--t-rapido) var(--e-suave)}
+.toque:active{transform:scale(.965)}
+.toque:focus-visible{outline:3px solid #1AA0C8;outline-offset:2px}
+.arco{stroke-dasharray:100;stroke-dashoffset:100;animation:traza var(--t-lento) var(--e-suave) forwards}
+.halo{animation:halo 1.1s var(--e-suave) .35s both,respira 3.2s ease-in-out 1.5s infinite}
+.llega{animation:llega 1s var(--e-suave) .45s both}
+.linea{display:block;overflow:hidden;padding:0 2px}
+.linea>span{display:block;animation:subeMascara .8s var(--e-suave) both}
+.linea>span.marca{animation:subeMascara .8s var(--e-suave) both,barre 1.6s var(--e-suave) 1.5s both}
+.mensaje{animation:aparece var(--t-lento) var(--e-suave) 2.15s both}
+.trazo{transform-origin:center;animation:crece .9s var(--e-suave) 2.3s both}
+.saliendo .escena{animation:sale .55s var(--e-afilado) forwards}
+.saliendo .escena-texto{animation:saleArriba .5s var(--e-afilado) .05s forwards}
+.panel{animation:baja .75s var(--e-suave) both}
+.entra{animation:aparece .6s var(--e-suave) both}
+.llena{transform-origin:left center;animation:crece 1.1s var(--e-suave) both}
+.barra-nav{animation:subeBarra .7s var(--e-suave) .5s both}
+.indicador{transition:transform .45s var(--e-rebote)}
+.cta{position:relative;overflow:hidden}
+.cta::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.28),rgba(255,255,255,0));transform:translateX(-140%) skewX(-18deg);animation:destello 1.4s var(--e-suave) 1.8s 1 both}
+.pulso{position:absolute;inset:0;border-radius:50%;background:#3F9A2C;animation:onda 2s var(--e-suave) infinite}
+.onda-deco{animation:deriva 9s ease-in-out infinite alternate}
+.aviso{animation:aviso var(--t-normal) var(--e-suave) both}
+.velo{animation:velo var(--t-normal) var(--e-suave) both}
+.acerca{animation:acerca .45s var(--e-rebote) both}
+@keyframes traza{to{stroke-dashoffset:0}}
+@keyframes halo{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes respira{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes llega{0%{opacity:0;transform:translateX(-190px) rotate(-16deg) scale(.82)}62%{opacity:1;transform:translateX(9px) rotate(2deg) scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes subeMascara{from{transform:translateY(108%)}to{transform:none}}
+@keyframes barre{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes aparece{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes crece{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes sale{to{opacity:0;transform:translateX(70px) scale(.94)}}
+@keyframes saleArriba{to{opacity:0;transform:translateY(-14px)}}
+@keyframes baja{from{transform:translateY(-104%)}to{transform:none}}
+@keyframes subeBarra{from{opacity:0;transform:translateY(140%)}to{opacity:1;transform:none}}
+@keyframes destello{to{transform:translateX(360%) skewX(-18deg)}}
+@keyframes onda{0%{opacity:.55;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
+@keyframes deriva{from{transform:translateX(0)}to{transform:translateX(-26px)}}
+@keyframes aviso{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes velo{from{opacity:0}to{opacity:1}}
+@keyframes acerca{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+.pj *,.pj *::after{animation-duration:.15s!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.15s!important}
+.llega,.entra,.panel,.barra-nav,.aviso,.acerca,.mensaje{transform:none!important}
+}
+</style>
+</helmet>
+<div class="pj {{claseFase}}" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #FFFFFF; font-family: Inter, system-ui, sans-serif; color: #14253D">
+
+  <sc-if value="{{enEntrada}}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #FFFFFF">
+      <div class="escena" style="position: relative; width: 220px; height: 220px">
+        <div class="halo" aria-hidden="true" style="position: absolute; inset: 18px; border-radius: 50%; background: radial-gradient(circle at 50% 45%, #E3F4F8 0%, #EEF6E8 55%, rgba(255,255,255,0) 72%)"></div>
+        <svg aria-hidden="true" width="220" height="220" viewBox="0 0 220 220" fill="none" style="position: absolute; inset: 0">
+          <path class="arco" pathLength="100" d="M115.02 14.13 A96 96 0 0 1 205.87 104.98" stroke="#1D4E9E" stroke-width="5" stroke-linecap="round" style="animation-delay: 0.05s"></path>
+          <path class="arco" pathLength="100" d="M205.87 115.02 A96 96 0 0 1 115.02 205.87" stroke="#1AA0C8" stroke-width="5" stroke-linecap="round" style="animation-delay: 0.2s"></path>
+          <path class="arco" pathLength="100" d="M104.98 205.87 A96 96 0 0 1 14.13 115.02" stroke="#6DB33F" stroke-width="5" stroke-linecap="round" style="animation-delay: 0.35s"></path>
+          <path class="arco" pathLength="100" d="M14.13 104.98 A96 96 0 0 1 104.98 14.13" stroke="#F39A1E" stroke-width="5" stroke-linecap="round" style="animation-delay: 0.5s"></path>
+        </svg>
+        <div class="llega" style="position: absolute; left: 35px; top: 35px; width: 150px; height: 150px; border-radius: 50%; overflow: hidden; background: #FFFFFF; box-shadow: 0 14px 34px rgba(22,63,134,0.16)">
+          <img src="/_blob/5a2ac738ff19a06d95894bc857668f72" alt="" style="position: absolute; width: 183px; height: 183px; left: -17px; top: -14px">
+        </div>
+      </div>
+      <div class="escena-texto" style="margin-top: 30px; display: flex; flex-direction: column; align-items: center">
+        <div role="img" aria-label="Pijao Nos Une" style="display: flex; flex-direction: column; align-items: center; font-family: Montserrat, sans-serif; line-height: 1">
+          <span class="linea"><span class="marca" style="font-size: 46px; font-weight: 900; letter-spacing: 0.02em; animation-delay: 1.1s, 1.5s">PIJAO</span></span>
+          <span class="linea"><span style="font-size: 20px; font-weight: 600; letter-spacing: 0.32em; color: #163F86; margin: 6px 0 4px 0.32em; animation-delay: 1.22s">NOS</span></span>
+          <span class="linea"><span class="marca" style="font-size: 46px; font-weight: 900; letter-spacing: 0.02em; animation-delay: 1.34s, 1.62s">UNE</span></span>
+        </div>
+        <div class="trazo" aria-hidden="true" style="width: 120px; height: 3px; border-radius: 2px; margin-top: 22px; background: linear-gradient(90deg, #1D4E9E, #1AA0C8, #6DB33F, #F39A1E)"></div>
+        <p class="mensaje" style="margin: 16px 0 0; font-family: Montserrat, sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.04em; color: #3B4B63">Juntos, casa por casa.</p>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{enInicio}}" hint-placeholder-val="{{ false }}">
+    <div style="position: absolute; inset: 0; display: flex; flex-direction: column">
+
+      <header class="panel" style="position: relative; background: #EEF3F9; border-radius: 0 0 30px 30px; padding: 14px 18px 22px; overflow: hidden; flex: none">
+        <svg class="onda-deco" aria-hidden="true" width="440" height="150" viewBox="0 0 440 150" fill="none" style="position: absolute; left: 0; bottom: -18px; opacity: 0.55">
+          <path d="M0 110 C70 78 120 96 180 74 S300 40 440 70" stroke="#C9DBEE" stroke-width="1.4"></path>
+          <path d="M0 126 C80 94 130 112 192 92 S310 58 440 88" stroke="#CDE7EC" stroke-width="1.4"></path>
+          <path d="M0 142 C90 110 140 128 204 110 S320 76 440 106" stroke="#D7EBCB" stroke-width="1.4"></path>
+        </svg>
+        <div style="position: relative; display: flex; align-items: center; justify-content: space-between">
+          <button type="button" class="toque" onClick="{{repetir}}" aria-label="Pijao Nos Une. Repetir la animación de entrada" style="border: 0; background: none; padding: 6px 0; min-height: 44px; font-family: Montserrat, sans-serif; font-size: 15px; font-weight: 900; letter-spacing: 0.04em; cursor: pointer">
+            <span class="marca" style="background-position: 0 0">PIJAO</span><span style="color: #163F86; font-weight: 600; letter-spacing: 0.18em; margin: 0 6px; font-size: 11px">NOS</span><span class="marca" style="background-position: 0 0">UNE</span>
+          </button>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <button type="button" class="toque" onClick="{{ocultar}}" aria-label="Ocultar pantalla" style="width: 44px; height: 44px; border-radius: 50%; border: 1px solid #D9E2EE; background: #FFFFFF; color: #163F86; display: flex; align-items: center; justify-content: center; cursor: pointer">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"></path><path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path><path d="M9.9 5.1A10 10 0 0 1 12 5c5 0 9 4.5 10 7a13 13 0 0 1-3.2 4.2"></path><path d="M6.1 6.1A13 13 0 0 0 2 12c1 2.5 5 7 10 7a9.6 9.6 0 0 0 4.2-1"></path></svg>
+            </button>
+            <div aria-label="Carolina" style="width: 44px; height: 44px; border-radius: 50%; background: #163F86; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font: 700 15px Montserrat, sans-serif">CR</div>
+          </div>
+        </div>
+        <div class="entra" style="position: relative; margin-top: 14px; animation-delay: 0.3s">
+          <div style="font: 600 12px Montserrat, sans-serif; letter-spacing: 0.14em; color: #5A6B80">VIERNES 7 DE NOVIEMBRE</div>
+          <h1 style="margin: 6px 0 0; font: 800 30px/1.1 Montserrat, sans-serif; letter-spacing: -0.01em; color: #122B52">Hola, Carolina</h1>
+        </div>
+        <div class="entra" style="position: relative; display: inline-flex; align-items: center; gap: 10px; margin-top: 14px; background: #FFFFFF; border: 1px solid #DCE5F0; border-radius: 999px; padding: 7px 14px 7px 12px; font-size: 13px; font-weight: 500; color: #24364F; animation-delay: 0.42s">
+          <span aria-hidden="true" style="position: relative; width: 8px; height: 8px"><span class="pulso"></span><span style="position: absolute; inset: 0; border-radius: 50%; background: #3F9A2C"></span></span>
+          Conectado · 2 visitas por enviar
+        </div>
+      </header>
+
+      <main style="flex: 1; overflow-y: auto; padding: 20px 18px 120px; display: flex; flex-direction: column; gap: 18px">
+
+        <section>
+          <div class="entra" style="display: flex; justify-content: space-between; align-items: baseline; animation-delay: 0.5s">
+            <h2 style="margin: 0; font: 700 12px Montserrat, sans-serif; letter-spacing: 0.14em; color: #5A6B80">SU TRABAJO</h2>
+            <a href="#" class="toque" style="font-size: 14px; font-weight: 600; text-decoration: none; padding: 10px 0">Ver pendientes</a>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 6px">
+            <div class="entra" style="background: #EDF3FB; border-radius: 20px; padding: 16px; animation-delay: 0.58s">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <span style="font: 600 13px Montserrat, sans-serif; color: #1F4E8C">Visitas hoy</span>
+                <span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 9px; background: #FFFFFF; color: #1D4E9E; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span>
+              </div>
+              <div class="num" style="font: 800 40px/1 Montserrat, sans-serif; color: #122B52; margin-top: 12px">{{hoy}}</div>
+            </div>
+            <div class="entra" style="background: #E8F6F8; border-radius: 20px; padding: 16px; animation-delay: 0.64s">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <span style="font: 600 13px Montserrat, sans-serif; color: #0E5F69">Esta semana</span>
+                <span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 9px; background: #FFFFFF; color: #12808F; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9"></path><path d="M10 19V5"></path><path d="M16 19v-7"></path><path d="M22 19H2"></path></svg></span>
+              </div>
+              <div class="num" style="font: 800 40px/1 Montserrat, sans-serif; color: #0B4C54; margin-top: 12px">{{semana}}</div>
+            </div>
+            <div class="entra" style="background: #EEF6E8; border-radius: 20px; padding: 16px; animation-delay: 0.7s">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <span style="font: 600 13px Montserrat, sans-serif; color: #2F6B1E">Completas</span>
+                <span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 9px; background: #FFFFFF; color: #3F8A2A; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"></path></svg></span>
+              </div>
+              <div class="num" style="font: 800 40px/1 Montserrat, sans-serif; color: #24531A; margin-top: 12px">{{verdes}}</div>
+              <div style="font-size: 12px; color: #3C5E2F; margin-top: 6px">3 por revisar · 1 incompleta</div>
+            </div>
+            <div class="entra" style="background: #FDF2E4; border-radius: 20px; padding: 16px; animation-delay: 0.76s">
+              <div style="display: flex; align-items: center; justify-content: space-between">
+                <span style="font: 600 13px Montserrat, sans-serif; color: #8A4A05">Por enviar</span>
+                <span aria-hidden="true" style="width: 28px; height: 28px; border-radius: 9px; background: #FFFFFF; color: #B8620A; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></span>
+              </div>
+              <div class="num" style="font: 800 40px/1 Montserrat, sans-serif; color: #6E3A04; margin-top: 12px">{{porEnviar}}</div>
+              <div style="font-size: 12px; color: #7A4A1C; margin-top: 6px">Se envían solas con señal</div>
+            </div>
+          </div>
+        </section>
+
+        <button type="button" class="toque cta entra" onClick="{{registrar}}" style="display: flex; align-items: center; justify-content: space-between; min-height: 66px; padding: 0 18px 0 12px; border: 0; border-radius: 22px; background: #122B52; color: #FFFFFF; font: 700 17px Montserrat, sans-serif; box-shadow: 0 12px 26px rgba(18,43,82,0.22); cursor: pointer; animation-delay: 0.86s">
+          <span style="display: flex; align-items: center; gap: 14px">
+            <span style="width: 44px; height: 44px; border-radius: 14px; background: #F39A1E; color: #2A1A05; display: flex; align-items: center; justify-content: center">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>
+            </span>
+            Registrar aquí
+          </span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+        </button>
+
+        <section class="entra" style="border: 1px solid #E3E9F1; border-radius: 22px; padding: 18px 16px; animation-delay: 0.96s">
+          <div style="display: flex; justify-content: space-between; align-items: baseline">
+            <h2 style="margin: 0; font: 700 12px Montserrat, sans-serif; letter-spacing: 0.14em; color: #5A6B80">CAMPAÑA EN PIJAO</h2>
+            <span style="font-size: 12px; color: #6B7A8E">Hace 3 min</span>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 10px">
+            <span class="num" style="font: 800 44px/1 Montserrat, sans-serif; color: #122B52">{{cobertura}} %</span>
+            <span style="font-size: 14px; color: #5A6B80">de cobertura</span>
+          </div>
+          <div aria-hidden="true" style="height: 12px; border-radius: 6px; overflow: hidden; background: #EEF2F7; margin-top: 12px">
+            <div class="llena" style="width: 38%; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #163F86, #1AA0C8 45%, #6DB33F 75%, #F39A1E); animation-delay: 1.1s"></div>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px">
+            <div><div class="num" style="font: 800 22px Montserrat, sans-serif; color: #122B52">{{viviendas}}</div><div style="font-size: 13px; color: #5A6B80">viviendas conocidas</div></div>
+            <div><div class="num" style="font: 800 22px Montserrat, sans-serif; color: #122B52">{{hogares}}</div><div style="font-size: 13px; color: #5A6B80">hogares</div></div>
+          </div>
+          <div aria-hidden="true" style="height: 1px; background: #EEF2F7; margin: 16px 0 14px"></div>
+          <div style="font: 700 14px Montserrat, sans-serif; color: #14253D">Lo que más piden</div>
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 12px">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Vías y movilidad</span><span class="num" style="font-weight: 600; color: #122B52">412</span></div>
+              <div aria-hidden="true" style="height: 6px; border-radius: 3px; background: #EEF2F7; margin-top: 6px"><div class="llena" style="width: 100%; height: 6px; border-radius: 3px; background: #1D4E9E; animation-delay: 1.25s"></div></div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Agua y ambiente</span><span class="num" style="font-weight: 600; color: #122B52">318</span></div>
+              <div aria-hidden="true" style="height: 6px; border-radius: 3px; background: #EEF2F7; margin-top: 6px"><div class="llena" style="width: 77%; height: 6px; border-radius: 3px; background: #1AA0C8; animation-delay: 1.35s"></div></div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 14px"><span>Empleo y emprendimiento</span><span class="num" style="font-weight: 600; color: #122B52">276</span></div>
+              <div aria-hidden="true" style="height: 6px; border-radius: 3px; background: #EEF2F7; margin-top: 6px"><div class="llena" style="width: 67%; height: 6px; border-radius: 3px; background: #5DA238; animation-delay: 1.45s"></div></div>
+            </div>
+          </div>
+          <p style="margin: 14px 0 0; font-size: 12px; color: #5A6B80; line-height: 1.45">Solo cuentan los registros completos. Los grupos pequeños se muestran como «menos de 5».</p>
+        </section>
+
+        <a href="#" class="toque entra" style="display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 18px; background: #F5F8FC; text-decoration: none; color: #122B52; font: 600 15px Montserrat, sans-serif; animation-delay: 1.06s">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2z"></path><path d="M8 7h6"></path><path d="M8 11h6"></path></svg>
+          Guion de visita y preguntas frecuentes
+        </a>
+      </main>
+
+      <sc-if value="{{hayAviso}}" hint-placeholder-val="{{ false }}">
+        <div class="aviso" role="status" style="position: absolute; left: 24px; right: 24px; bottom: 100px; background: #122B52; color: #FFFFFF; border-radius: 16px; padding: 14px 16px; font-size: 14px; line-height: 1.4; box-shadow: 0 12px 28px rgba(18,43,82,0.25)">{{textoAviso}}</div>
+      </sc-if>
+
+      <nav class="barra-nav" aria-label="Secciones" style="position: absolute; left: 14px; right: 14px; bottom: 16px; height: 70px; background: #FFFFFF; border-radius: 26px; box-shadow: 0 14px 34px rgba(18,43,82,0.16); border: 1px solid #EDF1F6">
+        <div class="indicador" aria-hidden="true" style="position: absolute; top: 9px; left: 8px; width: 56px; height: 50px; border-radius: 16px; background: #EDF3FB; {{estiloIndicador}}"></div>
+        <div style="position: relative; height: 100%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; font: 600 11px Montserrat, sans-serif">
+          <button type="button" class="toque" onClick="{{tab0}}" style="border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 52px; justify-content: center; color: {{color0}}; font: inherit; cursor: pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg>Inicio</button>
+          <button type="button" class="toque" onClick="{{tab1}}" style="border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 52px; justify-content: center; color: {{color1}}; font: inherit; cursor: pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14"></path><path d="M15 6v14"></path></svg>Mapa</button>
+          <button type="button" class="toque" onClick="{{registrar}}" aria-label="Registrar aquí" style="border: 0; background: none; display: flex; justify-content: center; cursor: pointer">
+            <span style="width: 54px; height: 54px; border-radius: 18px; background: #F39A1E; color: #2A1A05; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 18px rgba(243,154,30,0.35)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg>
+            </span></button>
+          <button type="button" class="toque" onClick="{{tab3}}" style="border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 52px; justify-content: center; color: {{color3}}; font: inherit; cursor: pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"></path></svg>Tareas</button>
+          <button type="button" class="toque" onClick="{{tab4}}" style="border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 52px; justify-content: center; color: {{color4}}; font: inherit; cursor: pointer">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>Más</button>
+        </div>
+      </nav>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{oculto}}" hint-placeholder-val="{{ false }}">
+    <div class="velo" style="position: absolute; inset: 0; background: rgba(246,249,253,0.86); backdrop-filter: blur(22px); -webkit-backdrop-filter: blur(22px); display: flex; align-items: center; justify-content: center">
+      <div class="acerca" style="display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; padding: 24px">
+        <div style="width: 96px; height: 96px; border-radius: 50%; overflow: hidden; position: relative; box-shadow: 0 12px 28px rgba(22,63,134,0.16)">
+          <img src="/_blob/5a2ac738ff19a06d95894bc857668f72" alt="" style="position: absolute; width: 117px; height: 117px; left: -11px; top: -9px">
+        </div>
+        <div style="font: 800 20px Montserrat, sans-serif; color: #122B52">Pantalla oculta</div>
+        <div style="font-size: 14px; color: #4A5A70; max-width: 240px; line-height: 1.45">Nadie puede ver los datos. Para volver, confirme que es usted.</div>
+        <button type="button" class="toque" onClick="{{volver}}" style="min-height: 52px; padding: 0 28px; border: 0; border-radius: 999px; background: #122B52; color: #FFFFFF; font: 700 15px Montserrat, sans-serif; cursor: pointer">Volver con huella o rostro</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { fase: 'entrada', saliendo: false, p: 0, tab: 0, oculto: false, aviso: null };
+    this.timers = [];
+  }
+  componentDidMount() {
+    this.reducido = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.entrada();
+  }
+  componentWillUnmount() { this.limpiar(); }
+  limpiar() {
+    this.timers.forEach(function (t) { clearTimeout(t); });
+    this.timers = [];
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+  entrada() {
+    this.limpiar();
+    var r = this.reducido;
+    var self = this;
+    this.setState({ fase: 'entrada', saliendo: false, p: 0, tab: 0, oculto: false, aviso: null });
+    this.timers.push(setTimeout(function () { self.setState({ saliendo: true }); }, r ? 700 : 3700));
+    this.timers.push(setTimeout(function () { self.inicio(); }, r ? 900 : 4250));
+  }
+  inicio() {
+    var self = this;
+    this.setState({ fase: 'inicio', saliendo: false, p: this.reducido ? 1 : 0 });
+    if (this.reducido) return;
+    var t0 = performance.now() + 700;
+    var paso = function (ahora) {
+      var x = Math.min(1, Math.max(0, (ahora - t0) / 1200));
+      self.setState({ p: x });
+      if (x < 1) self.raf = requestAnimationFrame(paso);
+    };
+    this.raf = requestAnimationFrame(paso);
+  }
+  avisar(texto) {
+    var self = this;
+    this.setState({ aviso: texto });
+    this.timers.push(setTimeout(function () { self.setState({ aviso: null }); }, 2400));
+  }
+  renderVals() {
+    var s = this.state;
+    var self = this;
+    var e = 1 - Math.pow(1 - s.p, 3);
+    var cuenta = function (n) { return Math.round(n * e).toLocaleString('es-CO'); };
+    var activo = '#122B52', apagado = '#6B7A8E';
+    var irA = function (i, nombre) {
+      return function () {
+        self.setState({ tab: i });
+        if (i !== 0) self.avisar('Esta maqueta muestra solo el Inicio. ' + nombre + ' se diseña en la siguiente pasada.');
+      };
+    };
+    return {
+      enEntrada: s.fase === 'entrada',
+      enInicio: s.fase === 'inicio',
+      claseFase: s.saliendo ? 'saliendo' : '',
+      oculto: s.oculto,
+      hoy: cuenta(6), semana: cuenta(23), verdes: cuenta(19), porEnviar: cuenta(2),
+      cobertura: cuenta(38), viviendas: cuenta(1284), hogares: cuenta(1102),
+      estiloIndicador: 'transform: translateX(' + (s.tab * 72.4).toFixed(1) + 'px)',
+      color0: s.tab === 0 ? activo : apagado, color1: s.tab === 1 ? activo : apagado,
+      color3: s.tab === 3 ? activo : apagado, color4: s.tab === 4 ? activo : apagado,
+      tab0: irA(0, 'Inicio'), tab1: irA(1, 'El mapa'), tab3: irA(3, 'Tareas'), tab4: irA(4, 'El menú Más'),
+      registrar: function () { self.avisar('Registrar aquí abre el GPS y la visita de 12 pasos.'); },
+      hayAviso: Boolean(s.aviso), textoAviso: s.aviso || '',
+      ocultar: function () { self.setState({ oculto: true }); },
+      volver: function () { self.setState({ oculto: false }); },
+      repetir: function () { self.entrada(); }
+    };
+  }
+}
+</script>
+</body>
+</html>

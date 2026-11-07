@@ -509,6 +509,15 @@ Todos los hallazgos críticos y altos de 24.3 están cerrados y verificados. La 
   - Accesibilidad: `ecc:a11y-architect` y `frontend-a11y`.
   - Demostraciones: `ui-demo`.
 
+**Avance al 7 de noviembre de 2026** (rama `fase-2/diseno`; la campaña adelantó la fase). Copia de todo en `diseno/` (ver `diseno/LEEME.md`):
+
+| Bloque | Estado | Detalle |
+|---|---|---|
+| 2.1 Dirección de arte | 🟡 Elegida | Tres propuestas de Inicio (A Institucional, B Territorio y C Pulso). La campaña eligió la **C**: blanca, con presencia, la tipografía del logo y un color de la marca por tarjeta. Faltan las fotos reales de Pijao y los hallazgos del piloto |
+| 2.3 Sistema de diseño | 🟡 Primera versión publicada | Claude Design · Design System, privado. Medidas base: colores en **claro, oscuro y modo sol** (7:1), Montserrat e Inter con 16 px de mínimo, grupo de **letra grande ×1,25**, espacios, radios, sombras, tiempos y curvas de animación. **19 componentes** con guía y muestra viva: botones, «Registrar aquí», franja de estado, barra inferior, «Ocultar pantalla», tarjeta de cifra, tarjeta de sección, avisos, insignias y chips, campo, casilla de autorización, asistente por pasos, semáforo, precisión del GPS, anillo de avance, hoja inferior, diálogo, los cinco estados de pantalla, entrada animada y tabla del panel. **Faltan:** lienzo de firma, visor de cámara con sello, notificaciones y gráficos (`dataviz`) |
+| 2.7 Movimiento | 🟡 Prototipo aprobado | Entrada de la app y cascada del Inicio con el ritmo común de 180, 350, 600 y 1.000 ms; respeta «reducir movimiento». El mensaje de entrada es provisional («Juntos, casa por casa.») |
+| 2.2 Identidad | ⏳ Falta el vector | Los colores se tomaron de las imágenes de los logos; con el archivo vectorial se ajustan con cuentagotas |
+
 ### 2.1 Dirección de arte
 
 - [ ] Tablero de inspiración con **fotografías reales de Pijao** tomadas por el equipo, con permiso de quienes aparezcan (3.4): café, montaña, río, pueblo y veredas.

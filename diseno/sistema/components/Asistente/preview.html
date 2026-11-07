@@ -1,0 +1,22 @@
+<!-- @dsCard group="Formularios" height=230 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 100%">
+
+<div style="display: flex; justify-content: space-between; align-items: baseline">
+  <span class="pj-etiqueta">Paso <span id="paso" class="pj-num">4</span> de 12</span>
+  <span style="font: 400 14px/20px var(--font-texto); color: var(--tinta-suave)">Resultado de la visita</span>
+</div>
+<div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" id="lleno" style="transform: scaleX(0.333)"></div></div>
+<div style="display: flex; gap: 10px">
+  <button type="button" class="pj-boton pj-boton--suave pj-toque" id="atras" style="flex: 1">Atrás</button>
+  <button type="button" class="pj-boton pj-boton--solido pj-toque" id="sig" style="flex: 1">Siguiente</button>
+</div>
+
+</div>
+<script>
+
+let n = 4;
+const pinta = () => { document.getElementById('paso').textContent = n; document.getElementById('lleno').style.transform = 'scaleX(' + (n / 12) + ')'; };
+document.getElementById('sig').onclick = () => { n = Math.min(12, n + 1); pinta(); };
+document.getElementById('atras').onclick = () => { n = Math.max(1, n - 1); pinta(); };
+
+</script>

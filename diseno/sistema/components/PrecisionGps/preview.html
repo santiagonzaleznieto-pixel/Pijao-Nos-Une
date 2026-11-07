@@ -1,0 +1,20 @@
+<!-- @dsCard group="Campo" height=220 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 14px; min-height: 100%">
+
+<div class="pj-seccion" style="display: flex; flex-direction: column; gap: 10px">
+  <div style="display: flex; align-items: center; gap: 10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3"></path><path d="M12 19v3"></path><path d="M2 12h3"></path><path d="M19 12h3"></path><circle cx="12" cy="12" r="7"></circle></svg><strong style="font: 700 17px/24px var(--font-titulos)">Tomando ubicación…</strong></div>
+  <div style="display: flex; justify-content: space-between; font: 400 15px/22px var(--font-texto)"><span>Precisión</span><strong class="pj-num" id="m">±18 m · regular</strong></div>
+  <div aria-hidden="true" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px">
+    <span style="height: 8px; border-radius: 4px; background: var(--texto-rojo)"></span>
+    <span id="b2" style="height: 8px; border-radius: 4px; background: var(--marca-naranja)"></span>
+    <span id="b3" style="height: 8px; border-radius: 4px; background: var(--superficie-panel); transition: background 350ms"></span>
+  </div>
+  <span style="font: 400 14px/20px var(--font-texto); color: var(--tinta-suave)">Débil (más de 20 m) · regular · buena (menos de 10 m)</span>
+</div>
+
+</div>
+<script>
+
+setTimeout(() => { document.getElementById('m').textContent = '±7 m · buena'; document.getElementById('b3').style.background = 'var(--texto-verde)'; }, 1600);
+
+</script>

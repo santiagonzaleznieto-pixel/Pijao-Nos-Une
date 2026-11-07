@@ -195,3 +195,10 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
   - el Inicio entra en cascada, con cifras que cuentan, barras que se llenan, botón con destello, pestaña con indicador deslizante y velo de «Ocultar pantalla»;
   - ritmo común: 0,18 s al tocar, 0,35 a 0,6 s para los elementos y una curva suave igual en toda la pantalla, con modo calmado si el teléfono tiene las animaciones apagadas.
 - Enlace del lienzo (privado): https://claude.ai/artifact/ReqX728bukSmmqzNM7wUct
+- El dueño dijo que la entrada y el Inicio animados van por buen camino («el mensaje después se editará») y pidió empezar ya con el sistema de diseño: «Si, empieza ya con eso».
+- **Sistema de diseño, primera versión** (Claude Design · Design System, privado: https://claude.ai/artifact/QRhRen1fKqyW9bvE4i7pMy), en la rama `fase-2/diseno`, con copia en `diseno/sistema/`:
+  - colores en tres modos: claro, oscuro y modo sol de alto contraste, con todo texto a 7:1 o más;
+  - tipos Montserrat (títulos, cifras, botones) e Inter (lectura, 16 px de mínimo) y un grupo de letra grande ×1,25;
+  - espacios, radios por función, sombras solo para lo que flota, y tiempos y curvas de animación;
+  - 19 componentes con guía y muestra viva, el manual de marca (voz «usted», sin emojis, nada solo por color, una sola acción naranja por pantalla) y la portada;
+  - faltan el lienzo de firma, el visor de cámara, las notificaciones y los gráficos.

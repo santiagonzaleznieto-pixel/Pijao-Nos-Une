@@ -1,0 +1,37 @@
+<!-- @dsCard height=288 -->
+<style>
+.portada { position: relative; width: 960px; height: 288px; background: var(--fondo); overflow: hidden; font-family: var(--font-titulos); }
+.b-azul { fill: var(--marca-azul); } .b-turquesa { fill: var(--marca-turquesa); } .b-verde { fill: var(--marca-verde); }
+.b-naranja { fill: var(--marca-naranja); } .b-tinte { fill: var(--tinte-naranja); } .b-fondo { fill: var(--fondo); }
+.a-azul { stroke: var(--marca-azul); } .a-turquesa { stroke: var(--marca-turquesa); } .a-verde { stroke: var(--marca-verde); } .a-naranja { stroke: var(--marca-naranja); }
+.r-seccion { rx: var(--radio-seccion); } .r-tarjeta { rx: var(--radio-tarjeta); }
+.nombre { position: absolute; left: 40px; bottom: 44px; width: 440px; margin: 0; font-size: 84px; line-height: 0.95; font-weight: 900; color: var(--tinta); letter-spacing: -0.01em; }
+.lema { position: absolute; left: 42px; bottom: 20px; margin: 0; font: 500 14px/18px var(--font-texto); color: var(--tinta-suave); }
+</style>
+<div class="portada">
+  <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true" style="position: absolute; inset: 0">
+    <!--
+      Bloques: marca-azul (losa 160×288, sangra arriba y abajo), marca-turquesa y marca-verde (144×136 cada uno, radio-seccion),
+               marca-naranja (disco r=64), tinte-naranja (144×128, radio-tarjeta) para alivio.
+      Disposición: una losa alta con satélites a la derecha de x=480, separados 16 px (espacio-4).
+      Patrón: el anillo del logo, cuatro cuartos de círculo en los colores de la marca sobre el tinte, porque la entrada de la app
+              dibuja ese mismo anillo; se repite como arco recortado sobre la losa azul.
+      Escalas: separación espacio-4 (16 px), radios radio-seccion (22) y radio-tarjeta (20), trazo 6 px como en la entrada.
+    -->
+    <rect class="b-azul" x="496" y="-8" width="160" height="304"></rect>
+    <path class="b-fondo" d="M656 288 A80 80 0 0 0 576 208 L576 288 Z" opacity="0.18"></path>
+    <rect class="b-turquesa r-seccion" x="672" y="0" width="144" height="136"></rect>
+    <rect class="b-verde r-seccion" x="672" y="152" width="144" height="136"></rect>
+    <circle class="b-naranja" cx="896" cy="64" r="64"></circle>
+    <rect class="b-tinte r-tarjeta" x="832" y="152" width="144" height="128"></rect>
+    <g fill="none" stroke-width="6" stroke-linecap="round">
+      <path class="a-azul" d="M906 172 A44 44 0 0 1 948 214"></path>
+      <path class="a-turquesa" d="M948 222 A44 44 0 0 1 906 264"></path>
+      <path class="a-verde" d="M898 264 A44 44 0 0 1 856 222"></path>
+      <path class="a-naranja" d="M856 214 A44 44 0 0 1 898 172"></path>
+    </g>
+  </svg>
+  <p class="nombre">Pijao<br>Nos Une</p>
+  <p class="lema">Presencia, orden y calma, casa por casa.</p>
+</div>
+<script></script>
