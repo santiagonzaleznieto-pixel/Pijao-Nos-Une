@@ -7,6 +7,7 @@ import { PARAMS_POR_DEFECTO } from "@nucleo/reglas";
 import { diaMas } from "../../logica/utiles";
 import { ErrorPanel } from "./supabase";
 import type {
+  AvisoPanel, MetricasPiloto,
   CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Rol, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
 } from "./tipos";
@@ -66,6 +67,10 @@ export class FuenteDemo implements Fuente {
   private solicitudesL: Solicitud[];
   private dispositivos: Dispositivo[] = [];
   private puntos: PuntoMapa[] = [];
+  private avisosL: AvisoPanel[] = [{
+    id: "aviso-revision", tipo: "revision_permisos", creado_en: haceDias(2),
+    mensaje: "Revisión mensual de permisos: hay 6 permisos opcionales activos en 3 cuentas; 1 vencen en los próximos 30 días y 2 no tienen vencimiento. Revíselos en el panel web, sección Colaboradores.",
+  }];
 
   constructor(rol: Rol = "admin") {
     const yo = rol === "admin" ? "u-admin" : "u-director";
@@ -195,6 +200,27 @@ export class FuenteDemo implements Fuente {
       titularesPendientes: abiertas.length,
       titularesVencidos: abiertas.filter((s) => (s.plazo_interno ?? "9") < hoy).length,
       alertasAbiertas: 3,
+    };
+  }
+
+  async avisos(): Promise<AvisoPanel[]> { await espera(); return [...this.avisosL]; }
+  async avisoLeido(id: string) { await espera(); this.avisosL = this.avisosL.filter((a) => a.id !== id); }
+
+  async metricasPiloto(desde: string | null, hasta: string | null): Promise<MetricasPiloto> {
+    await espera(250);
+    const dias = Array.from({ length: 10 }, (_, i) => diaMas(i - 9));
+    return {
+      desde: desde ?? diaMas(-30), hasta: hasta ?? diaMas(0), colaboradores: 7,
+      registros: { total: 186, mediana_seg: 212, p90_seg: 540, pct_bajo_90_seg: 31.2, por_tipo: [
+        { tipo: "con_contacto", total: 121, mediana_seg: 305, pct_bajo_90_seg: 4.1 },
+        { tipo: "solo_punto", total: 52, mediana_seg: 64, pct_bajo_90_seg: 84.6 },
+        { tipo: "seguimiento", total: 13, mediana_seg: 150, pct_bajo_90_seg: 23.1 },
+      ] },
+      calidad: { verde: 139, amarillo: 35, rojo: 12 },
+      sin_senal: { registros: 48, pct: 25.8 },
+      gps: { lecturas: 203, mediana_precision_m: 7.5, errores: { baja_precision: 17, sin_lectura: 3, sin_permiso: 1 } },
+      envios: { errores: { servidor: 4, sesion: 1 }, en_revision: 6, colas_atrasadas: 2 },
+      por_dia: dias.map((dia, i) => ({ dia, registros: 12 + ((i * 7) % 15), mediana_seg: 180 + ((i * 37) % 90), gps_errores: i % 4, envio_errores: i % 3 === 0 ? 1 : 0 })),
     };
   }
 

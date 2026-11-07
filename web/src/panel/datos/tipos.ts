@@ -106,6 +106,21 @@ export interface Salud {
   auditoria_24h: number;
 }
 
+// 4.10 y 4.5: avisos de la cuenta (revisión mensual de permisos, teléfono nuevo, contraseña cambiada).
+export interface AvisoPanel { id: string; tipo: string; mensaje: string; creado_en: string }
+
+// 22.3: tablero del piloto. Solo totales, medianas y porcentajes; nunca quién envió cada métrica.
+export interface MetricasPiloto {
+  desde: string; hasta: string; colaboradores: number;
+  registros: { total: number; mediana_seg: number | null; p90_seg: number | null; pct_bajo_90_seg: number | null;
+               por_tipo: { tipo: string; total: number; mediana_seg: number | null; pct_bajo_90_seg: number | null }[] };
+  calidad: { verde: number; amarillo: number; rojo: number };
+  sin_senal: { registros: number; pct: number | null };
+  gps: { lecturas: number; mediana_precision_m: number | null; errores: Record<string, number> };
+  envios: { errores: Record<string, number>; en_revision: number; colas_atrasadas: number };
+  por_dia: { dia: string; registros: number; mediana_seg: number | null; gps_errores: number; envio_errores: number }[];
+}
+
 export interface Fuente {
   readonly modo: "real" | "demo";
   // sesión (17.5: la misma cuenta del teléfono y siempre con verificación en dos pasos)
@@ -115,6 +130,10 @@ export interface Fuente {
   salir(): Promise<void>;
   // resumen e inicio
   resumen(): Promise<Resumen>;
+  avisos(): Promise<AvisoPanel[]>;
+  avisoLeido(id: string): Promise<void>;
+  // 22.3 métricas del piloto (Director y Administrador)
+  metricasPiloto(desde: string | null, hasta: string | null): Promise<MetricasPiloto>;
   // P-36 colaboradores
   colaboradores(): Promise<Colaborador[]>;
   invitaciones(): Promise<Invitacion[]>;

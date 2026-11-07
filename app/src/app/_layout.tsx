@@ -6,6 +6,7 @@ import { Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { debeAceptarAcuerdos } from "@/core/acceso";
 import { ProveedorApp, useApp } from "@/servicios/contexto";
+import { BotonOcultar } from "@/ui/BotonOcultar";
 import { Boton, Cargando, Pantalla, Texto } from "@/ui/componentes";
 import { color, espacio, letra } from "@/ui/tema";
 
@@ -37,8 +38,8 @@ function Guardian() {
   if (app.bloqueado) {
     return (
       <Pantalla titulo="Pijao nos une">
-        <Texto>La app se bloqueó por seguridad tras unos minutos sin uso.</Texto>
-        <Boton texto="Desbloquear con huella o rostro" onPress={app.desbloquear} />
+        <Texto>{app.oculto ? "Pantalla oculta." : "La app se bloqueó por seguridad tras unos minutos sin uso."}</Texto>
+        <Boton texto={app.oculto ? "Volver con huella o rostro" : "Desbloquear con huella o rostro"} onPress={app.desbloquear} />
       </Pantalla>
     );
   }
@@ -58,7 +59,8 @@ function Guardian() {
           <Text style={{ textAlign: "center", fontWeight: "700", fontSize: letra.normal, color: color.texto }}>MODO PRÁCTICA · datos de ejemplo</Text>
         </View>
       ) : null}
-      <Stack screenOptions={{ headerTintColor: color.azul, headerTitleStyle: { fontWeight: "700" }, contentStyle: { backgroundColor: color.fondo } }}>
+      <Stack screenOptions={{ headerTintColor: color.azul, headerTitleStyle: { fontWeight: "700" }, contentStyle: { backgroundColor: color.fondo },
+        headerRight: app.usuarioId ? () => <BotonOcultar /> : undefined }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="entrar" options={{ headerShown: false }} />
@@ -78,6 +80,7 @@ function Guardian() {
         <Stack.Screen name="titulares" options={{ title: "Derechos de los titulares" }} />
         <Stack.Screen name="carnet" options={{ title: "Carnet digital" }} />
         <Stack.Screen name="anuncios" options={{ title: "Anuncios" }} />
+        <Stack.Screen name="guion" options={{ title: "Guion y preguntas" }} />
       </Stack>
     </View>
   );

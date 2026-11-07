@@ -185,6 +185,14 @@ export function compararVersion(a: string, b: string): number {
 }
 
 /** Cuenta para grupos pequeños (R-29): nunca se muestra un número menor que el mínimo. */
+/** 22.3: la meta del registro sin contacto es menos de 90 segundos (6.1). */
+export function nivelMeta90(pct: number | null | undefined): Nivel {
+  if (pct === null || pct === undefined) return "alerta";
+  if (pct >= 80) return "ok";
+  if (pct >= 50) return "alerta";
+  return "critico";
+}
+
 export function contarSeguro(n: number, minimo = 5): string {
   return n > 0 && n < minimo ? `menos de ${minimo}` : String(n);
 }

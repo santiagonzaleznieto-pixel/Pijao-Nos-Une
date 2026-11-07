@@ -47,7 +47,7 @@ export function debeAceptarAcuerdos(perfil: PerfilDatos | null | undefined, cone
 }
 
 export interface AvisoCuenta {
-  id: string; tipo: "dispositivo_nuevo" | "clave_cambiada"; mensaje: string; creado_en: string;
+  id: string; tipo: "dispositivo_nuevo" | "clave_cambiada" | "revision_permisos"; mensaje: string; creado_en: string;
   datos: { dispositivo_id?: string; modelo?: string };
 }
 

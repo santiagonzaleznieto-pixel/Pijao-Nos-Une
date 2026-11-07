@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { describirAccion, humanizar, tituloSolicitud, TIPOS_SOLICITUD } from "./textos";
+import { describirAccion, etiquetaMetrica, humanizar, TIPO_TEXTO_LEGAL, tituloSolicitud, TIPOS_SOLICITUD } from "./textos";
 import {
   aCsv, aFecha, compararVersion, contactoValido, contarSeguro, diaMas, errorVencimiento, fecha, haceCuanto, idDeCarnet,
-  interpretarValor, mensajeDeError, nivelRespaldo, nivelUso, normalizarCaso, NUMERO_CASO, valorParaEditar, venceSugerido,
+  interpretarValor, mensajeDeError, nivelMeta90, nivelRespaldo, nivelUso, normalizarCaso, NUMERO_CASO, valorParaEditar, venceSugerido,
 } from "./utiles";
 
 const HOY = new Date("2026-11-05T15:00:00Z"); // 10:00 a. m. en Colombia
@@ -149,5 +149,22 @@ describe("textos", () => {
     expect(describirAccion("aprobar_usuario")).toBe("Aprobó una cuenta");
     expect(describirAccion("algo_nuevo")).toBe("Algo nuevo");
     expect(humanizar("")).toBe("");
+  });
+});
+
+describe("cierre de la Fase 1", () => {
+  it("la meta de 90 segundos del registro sin contacto (6.1 y 22.3)", () => {
+    expect(nivelMeta90(85)).toBe("ok");
+    expect(nivelMeta90(60)).toBe("alerta");
+    expect(nivelMeta90(20)).toBe("critico");
+    expect(nivelMeta90(null)).toBe("alerta");
+  });
+  it("las métricas y las acciones nuevas se leen en palabras sencillas", () => {
+    expect(etiquetaMetrica("baja_precision")).toMatch(/Señal débil/);
+    expect(etiquetaMetrica("algo_nuevo")).toBe("Algo nuevo");
+    expect(describirAccion("revision_permisos")).toMatch(/revisión de permisos/);
+  });
+  it("el Administrador puede publicar el guion y las preguntas frecuentes", () => {
+    expect(Object.keys(TIPO_TEXTO_LEGAL)).toEqual(expect.arrayContaining(["guion_visita", "preguntas_frecuentes"]));
   });
 });

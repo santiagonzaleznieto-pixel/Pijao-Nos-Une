@@ -44,12 +44,16 @@ export default function Inicio() {
       {app.avisos.map((a) => (
         <Tarjeta key={a.id}>
           <Aviso tipo={a.tipo === "dispositivo_nuevo" ? "alerta" : "info"} texto={a.mensaje} />
-          <Fila>
-            <Boton texto="Fui yo, entendido" variante="suave" onPress={() => app.descartarAviso(a.id)} estilo={{ flex: 1 }} />
-            <Boton texto="No fui yo" variante="secundario" estilo={{ flex: 1 }} onPress={async () => {
-              try { await app.noFuiYo(a); router.push("/recuperar"); } catch (e) { setErrorAviso((e as Error).message); }
-            }} />
-          </Fila>
+          {a.tipo === "revision_permisos" ? (
+            <Boton texto="Entendido" variante="suave" onPress={() => app.descartarAviso(a.id)} />
+          ) : (
+            <Fila>
+              <Boton texto="Fui yo, entendido" variante="suave" onPress={() => app.descartarAviso(a.id)} estilo={{ flex: 1 }} />
+              <Boton texto="No fui yo" variante="secundario" estilo={{ flex: 1 }} onPress={async () => {
+                try { await app.noFuiYo(a); router.push("/recuperar"); } catch (e) { setErrorAviso((e as Error).message); }
+              }} />
+            </Fila>
+          )}
         </Tarjeta>
       ))}
       {errorAviso ? <Aviso tipo="error" texto={errorAviso} /> : null}
@@ -78,6 +82,7 @@ export default function Inicio() {
         ) : null}
         <Texto suave>Solo cuentan los registros completos (en verde). Los grupos pequeños se muestran como «menos de 5».</Texto>
       </Tarjeta>
+      <Boton texto="Guion de visita y preguntas frecuentes" variante="suave" onPress={() => router.push("/guion")} />
       <Boton texto="Sincronizar ahora" variante="suave" onPress={app.sincronizar} />
     </Pantalla>
   );

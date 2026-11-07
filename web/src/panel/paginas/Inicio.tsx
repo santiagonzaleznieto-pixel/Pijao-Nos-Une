@@ -1,6 +1,6 @@
 // Inicio del panel: lo que necesita atención hoy (aprobaciones, solicitudes de titulares con plazo, alertas).
 import type { Resumen } from "../datos/tipos";
-import { Aviso, Encabezado, esAdmin, Estado, usePanel, type Carga } from "../ui";
+import { Aviso, Encabezado, esAdmin, Estado, useCarga, usePanel, type Carga } from "../ui";
 
 function Cifra({ href, titulo, valor, nivel, nota }: { href: string; titulo: string; valor: number; nivel?: "alerta" | "critico"; nota?: string }) {
   return (
@@ -13,10 +13,19 @@ function Cifra({ href, titulo, valor, nivel, nota }: { href: string; titulo: str
 }
 
 export function Inicio({ resumen }: { resumen: Carga<Resumen> }) {
-  const { perfil } = usePanel();
+  const { perfil, fuente } = usePanel();
+  const avisos = useCarga(() => fuente.avisos(), [fuente]);
   return (
     <>
       <Encabezado titulo={`Hola, ${perfil.nombre.split(" ")[0]}`} />
+      {(avisos.datos ?? []).map((a) => (
+        <div key={a.id} className="tarjeta" role="status">
+          <p>{a.mensaje}</p>
+          {a.tipo === "revision_permisos" && <p><a href="#/colaboradores">Ir a Colaboradores</a></p>}
+          <button type="button" className="boton secundario chico"
+                  onClick={() => void fuente.avisoLeido(a.id).then(avisos.recargar, avisos.recargar)}>Entendido</button>
+        </div>
+      ))}
       <Estado carga={resumen}>
         {(r) => (
           <>

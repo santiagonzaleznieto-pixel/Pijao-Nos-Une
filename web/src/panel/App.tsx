@@ -9,6 +9,7 @@ import { Colaboradores } from "./paginas/Colaboradores";
 import { Configuracion } from "./paginas/Configuracion";
 import { FichaColaborador } from "./paginas/FichaColaborador";
 import { Inicio } from "./paginas/Inicio";
+import { Piloto } from "./paginas/Piloto";
 import { Salud } from "./paginas/Salud";
 import { Titulares } from "./paginas/Titulares";
 import { Vivienda } from "./paginas/Vivienda";
@@ -92,6 +93,7 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
     ["titulares", "Derechos de titulares", r?.titularesPendientes],
     ["auditoria", "Auditoría"],
     ["mapa", "Mapa del avance"],
+    ["piloto", "Métricas del piloto"],
     ...(esAdmin(perfil) ? [["configuracion", "Configuración"], ["salud", "Salud del sistema"]] as [string, string][] : []),
   ];
 
@@ -106,6 +108,7 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
     case "vivienda": vivienda = true; vista = <Vivienda id={param ?? ""} />; break;
     case "configuracion": vista = <Configuracion pestanaInicial={param} />; break;
     case "salud": vista = <Salud />; break;
+    case "piloto": vista = <Piloto />; break;
     default: vista = <Inicio resumen={resumen} />;
   }
 

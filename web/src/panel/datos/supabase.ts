@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../../config";
 import { mensajeDeError } from "../../logica/utiles";
 import type {
-  CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
+  AvisoPanel, MetricasPiloto, CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
 } from "./tipos";
 
@@ -124,6 +124,11 @@ export class FuenteSupabase implements Fuente {
       this.contar("alertas_calidad", (q) => q.is("resuelta_en", null)),
     ]);
     return { pendientes, activos, invitacionesVigentes, titularesPendientes, titularesVencidos, alertasAbiertas };
+  }
+  avisos() { return this.rpc<AvisoPanel[]>("rpc_mis_avisos"); }
+  async avisoLeido(id: string) { await this.rpc("rpc_aviso_leido", { p_id: id }); }
+  metricasPiloto(desde: string | null, hasta: string | null) {
+    return this.rpc<MetricasPiloto>("rpc_metricas_piloto", { p_desde: desde, p_hasta: hasta });
   }
 
   // ------------------------------------------------------------------------------------------- P-36

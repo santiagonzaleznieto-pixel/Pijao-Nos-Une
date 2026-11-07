@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { opciones } from "@/core/catalogos";
 import { cercanos, haversineM } from "@/core/geo";
 import { clasificarUbicacionManual, gpsAceptable, param } from "@/core/reglas";
+import { metricasGps } from "@/core/metricas";
 import { borradorVacio } from "@/core/visita";
 import { guardarBorrador } from "@/servicios/campo";
 import { useApp } from "@/servicios/contexto";
@@ -27,10 +28,12 @@ export default function Registrar() {
 
   useEffect(() => {
     (async () => {
-      if (!(await pedirPermiso())) { setSinPermiso(true); setMidiendo(false); return; }
+      if (!(await pedirPermiso())) { setSinPermiso(true); setMidiendo(false); app.metrica("gps_error", null, "sin_permiso"); return; }
       const l = await muestrear(segundos, setLectura);
       setLectura(l);
       setMidiendo(false);
+      // 22.3: errores de GPS y precisión para las métricas del piloto (sin coordenadas).
+      for (const m of metricasGps(l, gpsAceptable(l?.precision_m, app.params))) app.metrica(m.tipo, m.valor ?? null, m.detalle ?? null);
       const punto = manual ?? l;
       if (punto) {
         const viviendas = (await app.almacen.listar("viviendas")) as V[];

@@ -2,6 +2,7 @@
 import { Tabs, useRouter } from "expo-router";
 import { Pressable, Text, View } from "react-native";
 import { useApp } from "@/servicios/contexto";
+import { BotonOcultar } from "@/ui/BotonOcultar";
 import { color, espacio, letra } from "@/ui/tema";
 
 function Franja() {
@@ -9,8 +10,9 @@ function Franja() {
   const router = useRouter();
   const hace = ultimaSyncEn ? Math.round((Date.now() - new Date(ultimaSyncEn).getTime()) / 60000) : null;
   return (
+    <View style={{ flexDirection: "row", alignItems: "center", backgroundColor: conectado ? color.azul : color.textoSuave }}>
     <Pressable accessibilityRole="button" onPress={() => router.push("/pendientes")}
-      style={{ flexDirection: "row", justifyContent: "space-between", backgroundColor: conectado ? color.azul : color.textoSuave, paddingHorizontal: espacio.l, paddingVertical: espacio.xs }}>
+      style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", paddingLeft: espacio.l, paddingRight: espacio.xs, paddingVertical: espacio.xs }}>
       <Text style={{ color: color.blanco, fontSize: letra.pequena }}>
         {conectado ? (hace === null ? "Conectado" : `Actualizado hace ${hace} min`) : "Sin señal · todo se guarda en el teléfono"}
       </Text>
@@ -18,6 +20,8 @@ function Franja() {
         {cola.pendientes ? `${cola.pendientes} por enviar` : ""}{cola.cuarentena ? ` · ${cola.cuarentena} por revisar` : ""}
       </Text>
     </Pressable>
+    <BotonOcultar claro />
+    </View>
   );
 }
 

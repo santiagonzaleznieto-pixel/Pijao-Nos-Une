@@ -10,6 +10,7 @@ import { zonaDePunto, type Geometria } from "@/core/geo";
 import { nuevoId } from "@/core/ids";
 import { param } from "@/core/reglas";
 import { avisosDeNota, normalizarTelefono, palabrasSospechosas, validarCedula, validarCorreo, validarEdades, validarFechaNacimiento, validarNombre } from "@/core/validadores";
+import { segundosRegistro, tipoRegistro } from "@/core/metricas";
 import { borradorVacio, type Borrador, type PersonaBorrador } from "@/core/visita";
 import { guardarBorrador, guardarVisita } from "@/servicios/campo";
 import { useApp } from "@/servicios/contexto";
@@ -129,7 +130,13 @@ export default function Visita() {
   }
 
   async function guardar() {
-    setGuardado(await guardarVisita(app.almacen, bb));
+    const r = await guardarVisita(app.almacen, bb);
+    setGuardado(r);
+    // 22.3: tiempo por registro, calidad y registros sin señal, sin datos de la casa ni de las personas.
+    const seg = segundosRegistro(bb.creado_en);
+    if (seg !== null) app.metrica("registro_segundos", seg, tipoRegistro(bb.visita.resultado, soloPunto, bb.vivienda_existente));
+    if (["verde", "amarillo", "rojo"].includes(r.color)) app.metrica("registro_calidad", null, r.color);
+    if (!app.conectado) app.metrica("registro_sin_senal");
     app.avisarCambio();
     app.sincronizar();
   }
@@ -199,6 +206,7 @@ export default function Visita() {
           <Texto>• No fotografíe a niños ni a personas sin permiso. Si le dicen que no, agradezca y deje constancia. No insista.</Texto>
           <Texto>• No ofrezca regalos, favores ni promesas personales.</Texto>
           {vistas >= 3 ? <Texto suave>Ya vio esta tarjeta {vistas} veces: puede pasarla rápido.</Texto> : null}
+          <Boton texto="Ver el guion completo y las preguntas frecuentes" variante="suave" onPress={() => router.push("/guion")} />
         </Tarjeta>
       ) : null}
 

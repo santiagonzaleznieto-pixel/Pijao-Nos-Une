@@ -54,6 +54,8 @@ export const TIPO_TEXTO_LEGAL: Record<string, string> = {
   politica_tratamiento: "Política de tratamiento de datos (P-53)",
   acuerdo_confidencialidad: "Acuerdo de confidencialidad",
   codigo_conducta: "Código de conducta (10.7)",
+  guion_visita: "Guion de visita (13.3, lo usa la app en la puerta)",
+  preguntas_frecuentes: "Preguntas frecuentes (13.3, en la app)",
 };
 
 export const ESTADO_FECHA_LEGAL: Record<string, string> = {
@@ -72,6 +74,7 @@ export const ACCION_AUDITORIA: Record<string, string> = {
   suspension_automatica: "Cuenta suspendida automáticamente por inactividad",
   aceptar_acuerdos: "Volvió a aceptar los acuerdos",
   clave_cambiada: "Cambió su contraseña",
+  revision_permisos: "Se envió el aviso mensual de revisión de permisos",
   baja_usuario: "Dio de baja una cuenta",
   designar_director: "Designó al Director",
   permiso: "Cambió un permiso",
@@ -108,6 +111,21 @@ export const ACCION_AUDITORIA: Record<string, string> = {
   respaldo: "Se hizo un respaldo",
   sos: "Activó el SOS",
 };
+
+// 22.3: nombres sencillos para el tablero del piloto.
+export const METRICA_ETIQUETA: Record<string, string> = {
+  con_contacto: "Con conversación",
+  solo_punto: "Solo el punto (sin contacto)",
+  seguimiento: "Visita de seguimiento",
+  otro: "Otro",
+  baja_precision: "Señal débil (más de la precisión mínima)",
+  sin_lectura: "El GPS no respondió",
+  sin_permiso: "Sin permiso de ubicación",
+  simulada: "Ubicación simulada",
+  servidor: "El servidor no respondió",
+  sesion: "Sesión vencida",
+};
+export const etiquetaMetrica = (clave: string) => METRICA_ETIQUETA[clave] ?? humanizar(clave);
 
 export function describirAccion(accion: string): string {
   return ACCION_AUDITORIA[accion] ?? humanizar(accion);

@@ -10,6 +10,7 @@ import JailMonkey from "jail-monkey";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AppState } from "react-native";
 import { avisosVisibles, type AvisoCuenta } from "../core/acceso";
+import { colaAtrasada, type Metrica, type TipoMetrica } from "../core/metricas";
 import { configurarGeneradorId } from "../core/ids";
 import { Perfil, type PerfilDatos } from "../core/permisos";
 import { param, type Params } from "../core/reglas";
@@ -17,6 +18,7 @@ import { AlmacenSqlite } from "../datos/almacen-sqlite";
 import { crearCliente, RemotoSupabase } from "../datos/remoto-supabase";
 import { MotorSync, type ResultadoSync } from "../datos/sync";
 import type { Almacen } from "../datos/tipos";
+import { anotarMetrica, enviarMetricas } from "./metricas";
 import { RemotoPractica } from "./practica";
 import { ServicioSesion } from "./sesion";
 import { VERSION_APP } from "./version";
@@ -66,6 +68,11 @@ interface ContextoApp {
   descartarAviso: (id: string) => Promise<void>;
   /** «No fui yo»: cierra el teléfono del aviso y lo marca como leído. */
   noFuiYo: (aviso: AvisoCuenta) => Promise<void>;
+  /** 5.16: «Ocultar pantalla». Tapa todo al instante; para volver se confirma con huella o rostro. */
+  oculto: boolean;
+  ocultarPantalla: () => void;
+  /** 22.3: anota una métrica del piloto sin datos personales (no hace nada en el modo práctica). */
+  metrica: (tipo: TipoMetrica, valor?: number | null, detalle?: string | null) => void;
 }
 
 const Ctx = createContext<ContextoApp | null>(null);
@@ -85,6 +92,7 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
   const [params, setParams] = useState<Params>({});
   const [conectado, setConectado] = useState(true);
   const [bloqueado, setBloqueado] = useState(false);
+  const [oculto, setOculto] = useState(false);
   const [cola, setCola] = useState<EstadoCola>({ pendientes: 0, cuarentena: 0, masAntiguo: null });
   const [ultimaSync, setUltimaSync] = useState<ResultadoSync | null>(null);
   const [ultimaSyncEn, setUltimaSyncEn] = useState<string | null>(null);
@@ -161,6 +169,25 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
         }
       } catch { /* sin conexión: se intenta en la próxima */ }
     }
+    if (!practica) {
+      // 22.3: problemas de envío para las métricas del piloto (sin el texto del error, que podría traer datos).
+      try {
+        if (r.error) await anotarMetrica(almacen, VERSION_APP, "envio_error", null, motor.sesionExpirada ? "sesion" : "servidor");
+        if (r.cuarentena) await anotarMetrica(almacen, VERSION_APP, "envio_cuarentena", r.cuarentena);
+        const c = await almacen.contarCola(usuarioId);
+        const hoy = new Date().toISOString().slice(0, 10);
+        if (colaAtrasada(c.masAntiguo) && (await almacen.getMeta<string>("metrica_cola_atrasada_dia")) !== hoy) {
+          await anotarMetrica(almacen, VERSION_APP, "cola_atrasada", null);
+          await almacen.setMeta("metrica_cola_atrasada_dia", hoy);
+        }
+        if (!r.sinConexion) {
+          await enviarMetricas(almacen, async (lote: Metrica[]) => {
+            const { error } = await cliente.rpc("rpc_metricas", { p: lote });
+            if (error) throw new Error(error.message);
+          });
+        }
+      } catch { /* las métricas nunca frenan el trabajo de campo */ }
+    }
     return r;
   }, [motor, almacen, usuarioId, sesion, practica, refrescarCola, ultimaSyncEn]);
 
@@ -190,10 +217,17 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
 
   const desbloquear = useCallback(async () => {
     const tiene = await LocalAuthentication.hasHardwareAsync() && await LocalAuthentication.isEnrolledAsync();
-    if (!tiene) { setBloqueado(false); return; }
+    if (!tiene) { setBloqueado(false); setOculto(false); return; }
     const r = await LocalAuthentication.authenticateAsync({ promptMessage: "Confirme que es usted", cancelLabel: "Cancelar" });
-    if (r.success) setBloqueado(false);
+    if (r.success) { setBloqueado(false); setOculto(false); }
   }, []);
+
+  const ocultarPantalla = useCallback(() => { setOculto(true); setBloqueado(true); }, []);
+
+  const metrica = useCallback((tipo: TipoMetrica, valor: number | null = null, detalle: string | null = null) => {
+    if (practica || !almacen) return;
+    anotarMetrica(almacen, VERSION_APP, tipo, valor, detalle).catch(() => undefined);
+  }, [practica, almacen]);
 
   const cambiarPractica = useCallback(async (activar: boolean) => {
     await SecureStore.setItemAsync(CLAVE_PRACTICA, activar ? "1" : "0");
@@ -222,10 +256,10 @@ export function ProveedorApp({ children }: { children: ReactNode }) {
     telefonoModificado, actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil,
     cambiarPractica, desbloquear, avisarCambio: () => { refrescarCola(); setVersion((v) => v + 1); },
     urlFoto: async (ruta: string) => (conectado && remoto.urlFoto ? remoto.urlFoto(ruta) : null),
-    avisos: practica ? [] : avisos, descartarAviso, noFuiYo,
+    avisos: practica ? [] : avisos, descartarAviso, noFuiYo, oculto, ocultarPantalla, metrica,
   } : null), [remoto, listo, practica, usuarioId, perfilDatos, params, almacen, sesion, conectado, bloqueado, telefonoModificado,
     actualizacionObligatoria, cola, ultimaSync, ultimaSyncEn, version, sincronizar, recargarPerfil, cambiarPractica, desbloquear, refrescarCola,
-    avisos, descartarAviso, noFuiYo]);
+    avisos, descartarAviso, noFuiYo, oculto, ocultarPantalla, metrica]);
 
   if (!valor) return null;
   return <Ctx.Provider value={valor}>{children}</Ctx.Provider>;
