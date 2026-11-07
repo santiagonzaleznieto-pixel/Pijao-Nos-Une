@@ -1,0 +1,46 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-11-07T21:40:00Z" },
+  "title": "Pijao Nos Une · pantallas",
+  "launch": { "view": "canvas", "page": "acceso" },
+  "pages": [
+    { "id": "acceso", "name": "Acceso" },
+    { "id": "campo", "name": "Trabajo de campo" },
+    { "id": "modos", "name": "Modos" }
+  ],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-01 Bienvenida", "page": "acceso", "radius": 44 },
+    "P02-Entrar.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-02 Entrar", "page": "acceso", "radius": 44 },
+    "P03-DosPasos.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "P-03 Verificación en dos pasos", "page": "acceso", "radius": 44 },
+    "P04-CrearCuenta.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "P-04 Crear cuenta con código", "page": "acceso", "radius": 44 },
+    "P05-Acuerdos.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "P-05 Acuerdos", "page": "acceso", "radius": 44 },
+    "P06-Curso.dc.html": { "x": 2350, "y": 0, "w": 390, "h": 844, "title": "P-06 Curso de ingreso", "page": "acceso", "radius": 44 },
+    "P07-Recuperar.dc.html": { "x": 2820, "y": 0, "w": 390, "h": 844, "title": "P-07 Recuperar el acceso", "page": "acceso", "radius": 44 },
+    "P08-Inicio.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-08 Inicio", "page": "campo", "radius": 44 },
+    "P09-Mapa.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-09 Mapa", "page": "campo", "radius": 44 },
+    "P10-FichaRapida.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "P-10 Ficha rápida", "page": "campo", "radius": 44 },
+    "P11-RegistrarAqui.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "P-11 Registrar aquí", "page": "campo", "radius": 44 },
+    "P12-Resultado.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "P-12 Visita · paso 4, resultado", "page": "campo", "radius": 44 },
+    "P12-Autorizacion.dc.html": { "x": 0, "y": 964, "w": 390, "h": 844, "title": "P-12 Visita · paso 10, autorización", "page": "campo", "radius": 44 },
+    "P13-Vivienda.dc.html": { "x": 470, "y": 964, "w": 390, "h": 844, "title": "P-13 Detalle de vivienda", "page": "campo", "radius": 44 },
+    "P14-Persona.dc.html": { "x": 940, "y": 964, "w": 390, "h": 844, "title": "P-14 Detalle de persona", "page": "campo", "radius": 44 },
+    "P15-Buscar.dc.html": { "x": 1410, "y": 964, "w": 390, "h": 844, "title": "P-15 Buscar", "page": "campo", "radius": 44 },
+    "P16-Pendientes.dc.html": { "x": 1880, "y": 964, "w": 390, "h": 844, "title": "P-16 Mis visitas y pendientes", "page": "campo", "radius": 44 },
+    "P08-Oscuro.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-08 Inicio · modo oscuro", "page": "modos", "radius": 44 },
+    "P08-Sol.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-08 Inicio · modo sol", "page": "modos", "radius": 44 }
+  },
+  "order": [
+    "Main.dc.html", "P02-Entrar.dc.html", "P03-DosPasos.dc.html", "P04-CrearCuenta.dc.html", "P05-Acuerdos.dc.html", "P06-Curso.dc.html", "P07-Recuperar.dc.html",
+    "P08-Inicio.dc.html", "P09-Mapa.dc.html", "P10-FichaRapida.dc.html", "P11-RegistrarAqui.dc.html", "P12-Resultado.dc.html",
+    "P12-Autorizacion.dc.html", "P13-Vivienda.dc.html", "P14-Persona.dc.html", "P15-Buscar.dc.html", "P16-Pendientes.dc.html",
+    "P08-Oscuro.dc.html", "P08-Sol.dc.html"
+  ],
+  "notes": {
+    "t-acceso": { "x": 0, "y": -300, "text": "Acceso: de la bienvenida al curso", "kind": "title1", "maxW": 3210, "page": "acceso" },
+    "t-campo": { "x": 0, "y": -300, "text": "Trabajo de campo: del Inicio a la visita", "kind": "title1", "maxW": 2270, "page": "campo" },
+    "t-modos": { "x": 0, "y": -300, "text": "La misma pantalla en modo oscuro y modo sol", "kind": "title1", "maxW": 860, "page": "modos" }
+  },
+  "designSystems": [
+    { "title": "Pijao Nos Une · sistema de diseño", "namespace": "pijaonosune", "artifact": "https://claude.ai/artifact/QRhRen1fKqyW9bvE4i7pMy", "version": "1794085791-854f", "copiedAt": "2026-11-07T21:40:00Z" }
+  ]
+}

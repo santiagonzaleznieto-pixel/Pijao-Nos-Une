@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-03 Verificación en dos pasos</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P02-Entrar.dc.html" class="atras pj-toque" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <h1>Verificación en dos pasos</h1>
+  </div>
+  <div class="cuerpo" style="gap: 22px">
+    <div style="width: 72px; height: 72px; border-radius: 22px; background: var(--tinte-azul); color: var(--marca-azul); display: flex; align-items: center; justify-content: center">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2.5"></rect><path d="M10 18h4"></path><rect x="8.5" y="6.5" width="7" height="6" rx="1"></rect><path d="M12 6.5v-1"></path></svg>
+    </div>
+    <div>
+      <h2 class="titulo-medio">Escriba el código de su aplicación autenticadora</h2>
+      <p class="texto" style="margin-top: 8px">Abra Google Authenticator o Aegis en su teléfono. El código cambia cada 30 segundos.</p>
+    </div>
+    <div class="codigo" role="group" aria-label="Código de 6 números">
+      <span class="pj-num">4</span><span class="pj-num">8</span><span class="pj-num">2</span><span class="activo pj-num" aria-current="true"></span><span></span><span></span>
+    </div>
+    <div class="pj-aviso pj-aviso--info" role="status">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+      <span>Se pide para ver datos completos y para las acciones delicadas. Así nadie puede usar su cuenta solo con la contraseña.</span>
+    </div>
+    <span style="flex: 1"></span>
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho" disabled>Verificar</button>
+    <p class="apoyo" style="text-align: center">¿Cambió de teléfono? Pídale al Administrador que reinicie su verificación.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

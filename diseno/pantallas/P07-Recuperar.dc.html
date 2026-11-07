@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-07 Recuperar el acceso</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P02-Entrar.dc.html" class="atras pj-toque" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <h1>Recuperar el acceso</h1>
+  </div>
+  <div class="cuerpo" style="gap: 20px">
+    <div class="pj-aviso pj-aviso--exito" role="status">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+      <span>Le enviamos un código a <strong>car•••@gmail.com</strong>. Revise también la carpeta de correo no deseado.</span>
+    </div>
+    <div class="pj-campo">
+      <label for="cod">Código del correo</label>
+      <input id="cod" value="7 3 9 1 0 4" class="pj-num" inputmode="numeric" autocomplete="one-time-code" style="font: 800 22px/26px var(--font-titulos); letter-spacing: 0.12em">
+    </div>
+    <div class="pj-campo">
+      <label for="nueva">Contraseña nueva</label>
+      <input id="nueva" type="password" value="cafetal-de-la-montaña" autocomplete="new-password">
+      <div class="fuerza" aria-hidden="true" style="margin-top: 4px">
+        <span style="background: var(--texto-verde)"></span><span style="background: var(--texto-verde)"></span><span style="background: var(--texto-verde)"></span><span></span>
+      </div>
+      <span class="pj-campo__ayuda" style="color: var(--texto-verde); font-weight: 600">Buena: 21 caracteres y no es una contraseña común.</span>
+    </div>
+    <div class="pj-campo">
+      <label for="repetir">Repítala</label>
+      <input id="repetir" type="password" value="cafetal-de-la-montaña" autocomplete="new-password">
+    </div>
+    <span style="flex: 1"></span>
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Cambiar contraseña</button>
+    <p class="apoyo" style="text-align: center">Al cambiarla se cierra su cuenta en los otros teléfonos.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

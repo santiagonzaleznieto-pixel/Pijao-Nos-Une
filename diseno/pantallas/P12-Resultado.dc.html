@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-12 Visita · resultado</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P11-RegistrarAqui.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 7l10 10"></path><path d="M17 7L7 17"></path></svg></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div style="display: flex; justify-content: space-between; align-items: baseline">
+      <span class="pj-etiqueta">PASO 4 DE 12</span>
+      <span class="apoyo">Resultado de la visita</span>
+    </div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.333)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 16px; gap: 10px">
+    <h2 class="titulo-medio" style="margin-bottom: 4px">¿Qué pasó en esta casa?</h2>
+    <div role="radiogroup" aria-label="Resultado de la visita" style="display: flex; flex-direction: column; gap: 8px">
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="true"><span class="radio"></span>Conversamos con calma</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Conversación breve</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Pidió que volviéramos otro día</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Nadie en casa</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>No quiso conversar</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Pidió no ser visitado</button>
+    </div>
+    <label class="pj-casilla" style="margin-top: 6px">
+      <input type="checkbox" checked>
+      <span><strong>La persona autorizó registrar esta visita</strong>Se lo pregunté de palabra antes de anotar.</span>
+    </label>
+    <p class="apoyo pj-num" style="display: flex; gap: 6px; align-items: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Hora de la visita: 10:42 a. m. (automática)</p>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <button type="button" class="pj-boton pj-boton--suave pj-toque" style="flex: 1">Atrás</button>
+    <a href="P12-Autorizacion.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

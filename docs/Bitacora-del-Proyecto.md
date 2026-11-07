@@ -202,3 +202,9 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
   - espacios, radios por función, sombras solo para lo que flota, y tiempos y curvas de animación;
   - 19 componentes con guía y muestra viva, el manual de marca (voz «usted», sin emojis, nada solo por color, una sola acción naranja por pantalla) y la portada;
   - faltan el lienzo de firma, el visor de cámara, las notificaciones y los gráficos.
+- El dueño pidió: «Diseña primero las pantallas, y después hacemos los 4 componentes».
+- **Pantallas, primera tanda** (lienzo privado https://claude.ai/artifact/4oCPiyRjau7oc9vx4JMpua, copia en `diseno/pantallas/`), con el sistema de diseño instalado en el lienzo:
+  - acceso: P-01 Bienvenida, P-02 Entrar (con huella o rostro), P-03 Dos pasos, P-04 Crear cuenta con código, P-05 Acuerdos (leer hasta el final), P-06 Curso (lección 3 de 7) y P-07 Recuperar;
+  - campo: P-08 Inicio, P-09 Mapa (marcadores con color y forma, leyenda, sin señal), P-10 Ficha rápida, P-11 Registrar aquí (precisión y casas cercanas), P-12 pasos 4 (resultado) y 10 (autorización por propósito y firma), P-13 Vivienda, P-14 Persona (datos enmascarados y autorizaciones), P-15 Buscar y P-16 Pendientes;
+  - el Inicio en modo oscuro y modo sol;
+  - pendientes de la fase: los 4 componentes, el resto de pantallas, los cuatro modos por pantalla y los estados.

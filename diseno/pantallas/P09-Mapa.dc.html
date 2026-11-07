@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-09 Mapa</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="mapa" role="img" aria-label="Mapa de la Vereda La Mina con 31 viviendas">
+    <svg width="390" height="844" viewBox="0 0 390 844" fill="none" aria-hidden="true">
+      <path d="M0 250 C90 210 160 260 240 220 S360 170 390 190 L390 0 L0 0 Z" style="fill: var(--mapa-loma)"></path>
+      <path d="M0 620 C80 580 170 640 260 600 S370 560 390 575 L390 844 L0 844 Z" style="fill: var(--mapa-loma)"></path>
+      <path d="M-10 470 C70 440 110 520 190 500 S300 420 400 455" style="stroke: var(--mapa-rio)" stroke-width="14" stroke-linecap="round"></path>
+      <path d="M40 844 C70 700 120 620 150 520 S210 330 260 250 S330 120 360 0" style="stroke: var(--mapa-via)" stroke-width="12" stroke-linecap="round"></path>
+      <path d="M0 360 C80 350 150 380 220 400 S330 420 390 410" style="stroke: var(--mapa-via)" stroke-width="8" stroke-linecap="round"></path>
+      <path d="M150 520 C200 560 250 580 330 640" style="stroke: var(--mapa-via)" stroke-width="7" stroke-linecap="round"></path>
+      <path d="M60 300 L250 270 L320 380 L300 560 L110 600 L40 470 Z" style="stroke: var(--mapa-zona); fill: var(--mapa-zona)" fill-opacity="0.06" stroke-width="2.5" stroke-dasharray="8 6" stroke-linejoin="round"></path>
+
+      <circle cx="96" cy="410" r="16" style="fill: var(--texto-verde)"></circle><path d="M89 410 l5 5 9-10" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="232" cy="330" r="16" style="fill: var(--texto-verde)"></circle><path d="M225 330 l5 5 9-10" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      <rect x="168" y="420" width="24" height="24" rx="3" transform="rotate(45 180 432)" style="fill: var(--marca-naranja)"></rect><path d="M180 425 v8 M180 438 v1" style="stroke: var(--sobre-accion-principal)" stroke-width="2.6" stroke-linecap="round"></path>
+      <rect x="262" y="472" width="28" height="28" rx="6" style="fill: var(--marca-azul)"></rect><path d="M270 486 h12" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"></path>
+      <circle cx="132" cy="520" r="14" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="3"></circle>
+      <circle cx="290" cy="300" r="14" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="3"></circle>
+      <circle cx="82" cy="560" r="16" style="fill: var(--texto-rojo)"></circle><path d="M76 554 l12 12 M88 554 l-12 12" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round"></path>
+      <circle cx="210" cy="560" r="18" style="fill: var(--texto-verde); stroke: var(--fondo)" stroke-width="3" stroke-dasharray="5 4"></circle><path d="M203 560 l5 5 9-10" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="160" cy="300" r="24" style="fill: var(--accion-secundaria)"></circle>
+      <circle cx="160" cy="300" r="30" style="stroke: var(--accion-secundaria)" stroke-opacity="0.25" stroke-width="6"></circle>
+
+      <circle cx="196" cy="470" r="46" style="fill: var(--marca-turquesa)" fill-opacity="0.16"></circle>
+      <circle cx="196" cy="470" r="10" style="fill: var(--marca-azul); stroke: var(--fondo)" stroke-width="4"></circle>
+    </svg>
+    <span class="pj-num" aria-hidden="true" style="position: absolute; left: 136px; top: 288px; width: 48px; text-align: center; font: 800 16px/24px var(--font-titulos); color: var(--tinta-invertida)">24</span>
+  </div>
+
+  <div class="mapa-arriba">
+    <div class="buscador">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <span style="flex: 1">Buscar dirección o vereda</span>
+      <span class="pj-estado" style="padding: 5px 10px; font-size: 13px; box-shadow: none"><span class="pj-punto pj-punto--sin-senal" aria-hidden="true"></span>Sin señal</span>
+    </div>
+    <div style="display: flex; gap: 8px; overflow: hidden">
+      <button type="button" class="pj-chip pj-toque" aria-pressed="true">Solo lo mío</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Pendientes</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Seguimientos</button>
+    </div>
+  </div>
+
+  <button type="button" class="boton-mapa pj-toque" aria-label="Capas del mapa" style="top: 140px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"></path><path d="M3 13l9 5 9-5"></path></svg></button>
+  <button type="button" class="boton-mapa pj-toque" aria-label="Ir a mi ubicación" style="top: 198px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M2 12h4"></path><path d="M18 12h4"></path><circle cx="12" cy="12" r="5"></circle></svg></button>
+
+  <div class="leyenda" aria-label="Leyenda">
+    <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="6" style="fill: var(--texto-verde)"></circle></svg>Completa</span>
+    <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="2" y="2" width="8" height="8" transform="rotate(45 6 6)" style="fill: var(--marca-naranja)"></rect></svg>Por revisar</span>
+    <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><rect x="1" y="1" width="10" height="10" rx="2" style="fill: var(--marca-azul)"></rect></svg>Seguimiento</span>
+    <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="2"></circle></svg>Sin visitar</span>
+    <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="6" style="fill: var(--texto-rojo)"></circle></svg>No contactar</span>
+    <span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" style="fill: none; stroke: var(--tinta)" stroke-width="1.6" stroke-dasharray="2 2"></circle></svg>Por enviar</span>
+  </div>
+
+  <nav class="pj-barra nav-abajo" aria-label="Secciones">
+    <div class="pj-barra__pastilla" aria-hidden="true" style="transform: translateX(72.4px)"></div>
+    <a href="P08-Inicio.dc.html" class="pj-barra__item pj-toque" style="text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg>Inicio</a>
+    <a href="P09-Mapa.dc.html" class="pj-barra__item pj-toque" aria-current="page" style="text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"></path><path d="M9 4v14"></path><path d="M15 6v14"></path></svg>Mapa</a>
+    <span style="display: flex; justify-content: center"><a href="P11-RegistrarAqui.dc.html" class="pj-central pj-toque" aria-label="Registrar aquí" style="width: 54px; height: 54px"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"></path><path d="M5 12h14"></path></svg></a></span>
+    <a href="#" class="pj-barra__item pj-toque" style="text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"></path></svg>Tareas</a>
+    <a href="#" class="pj-barra__item pj-toque" style="text-decoration: none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"></path><path d="M4 12h16"></path><path d="M4 18h16"></path></svg>Más</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

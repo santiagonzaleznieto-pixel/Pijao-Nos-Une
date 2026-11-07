@@ -5,6 +5,7 @@ Copia en el repositorio de lo que se diseña en Claude Design. Si una de las pá
 | Carpeta | Qué guarda | Página en Claude (privada) |
 |---|---|---|
 | `sistema/` | El **sistema de diseño**: medidas base en `tokens.json` (colores en claro, oscuro y modo sol; letras; espacios; radios; sombras; tiempos de animación), el manual de marca en `README.md`, los estilos de los componentes en `components/bundle.css` y cada componente con su guía (`README.md`) y su muestra (`preview.html`) | https://claude.ai/artifact/QRhRen1fKqyW9bvE4i7pMy |
+| `pantallas/` | Las **pantallas diseñadas** con el sistema: acceso (P-01 a P-07), trabajo de campo (P-08 a P-16, con los pasos 4 y 10 de la visita) y el Inicio en modo oscuro y modo sol. `pantallas.css` tiene las piezas de pantalla; `ds/` es la copia del sistema que usa el lienzo | https://claude.ai/artifact/4oCPiyRjau7oc9vx4JMpua |
 | `lienzo/` | Las tres propuestas de Inicio (A Institucional, B Territorio, C Pulso) y la **C refinada con animaciones** (entrada de la app e Inicio), que eligió la campaña | https://claude.ai/artifact/ReqX728bukSmmqzNM7wUct |
 
 - Los logos están subidos a esas páginas y no se copian aquí como imagen; las muestras los cargan desde allá.

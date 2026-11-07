@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-05 Acuerdos</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <h1 style="padding-left: 8px">Acuerdos del equipo</h1>
+    <span class="apoyo pj-num" style="padding-right: 10px">2 de 2</span>
+  </div>
+  <div class="leido" aria-hidden="true"><div class="pj-degradado" style="transform: scaleX(0.64)"></div></div>
+  <div class="cuerpo" style="padding-top: 16px; gap: 14px">
+    <div style="display: flex; gap: 8px">
+      <span class="pj-insignia" style="background: var(--tinte-verde); color: var(--texto-verde)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Confidencialidad</span>
+      <span class="pj-insignia" style="background: var(--tinte-azul); color: var(--texto-azul)">Código de conducta</span>
+    </div>
+    <h2 class="titulo-medio">Código de conducta</h2>
+    <div style="display: flex; flex-direction: column; gap: 12px; font: 400 16px/25px var(--font-texto); color: var(--tinta)">
+      <p style="margin: 0"><strong>1. Respeto en cada puerta.</strong> Saludo, me presento con mi carnet y acepto un «no» sin insistir.</p>
+      <p style="margin: 0"><strong>2. Nada a cambio.</strong> No ofrezco ni recibo dinero, regalos, mercados ni favores, y no prometo obras ni empleos.</p>
+      <p style="margin: 0"><strong>3. Los datos no salen de la app.</strong> No tomo fotos de documentos con mi cámara ni paso datos de personas por WhatsApp.</p>
+      <p style="margin: 0"><strong>4. Autorización de cada persona.</strong> Leo el texto completo y cada adulto autoriza por sí mismo. Con menores de edad no registro datos.</p>
+      <p style="margin: 0; color: var(--tinta-suave)"><strong>5. Seguridad primero.</strong> En las veredas trabajo en pareja y aviso a qué hora regreso…</p>
+    </div>
+  </div>
+  <div class="pie">
+    <label class="pj-casilla" style="opacity: 0.55; cursor: not-allowed">
+      <input type="checkbox" disabled>
+      <span><strong>Leí y acepto el código de conducta</strong>Se activa al leer hasta el final.</span>
+    </label>
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho" disabled>Aceptar y continuar</button>
+    <p class="apoyo pj-num" style="text-align: center">Versión v1-borrador · se guarda la fecha y el teléfono</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

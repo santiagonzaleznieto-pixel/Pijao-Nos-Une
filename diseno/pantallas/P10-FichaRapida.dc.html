@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-10 Ficha rápida</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="mapa" aria-hidden="true">
+    <svg width="390" height="844" viewBox="0 0 390 844" fill="none">
+      <path d="M0 250 C90 210 160 260 240 220 S360 170 390 190 L390 0 L0 0 Z" style="fill: var(--mapa-loma)"></path>
+      <path d="M-10 470 C70 440 110 520 190 500 S300 420 400 455" style="stroke: var(--mapa-rio)" stroke-width="14" stroke-linecap="round"></path>
+      <path d="M40 844 C70 700 120 620 150 520 S210 330 260 250 S330 120 360 0" style="stroke: var(--mapa-via)" stroke-width="12" stroke-linecap="round"></path>
+      <path d="M0 360 C80 350 150 380 220 400 S330 420 390 410" style="stroke: var(--mapa-via)" stroke-width="8" stroke-linecap="round"></path>
+      <circle cx="232" cy="300" r="22" style="fill: var(--texto-verde); stroke: var(--fondo)" stroke-width="4"></circle><path d="M223 300 l6 6 12-13" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+      <circle cx="232" cy="300" r="34" style="stroke: var(--texto-verde)" stroke-opacity="0.3" stroke-width="6"></circle>
+    </svg>
+  </div>
+  <div class="pj-velo" style="backdrop-filter: none; -webkit-backdrop-filter: none; opacity: 0.55"></div>
+
+  <div class="pj-hoja" role="dialog" aria-label="Ficha rápida de la vivienda" style="padding-bottom: 28px">
+    <div class="pj-hoja__asa" aria-hidden="true"></div>
+    <div style="display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: start">
+      <div class="foto" style="height: 112px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg>
+        Foto de fachada
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; min-width: 0">
+        <h2 class="titulo-medio" style="font-size: 20px; line-height: 25px">Vereda La Mina, km 3</h2>
+        <p class="apoyo">Casa de bahareque · junto a la escuela</p>
+        <span class="pj-semaforo pj-semaforo--verde" style="align-self: flex-start"><span class="pj-semaforo__luz"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></span>Completo</span>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px">
+      <div style="background: var(--superficie); border-radius: 16px; padding: 12px 14px">
+        <div class="apoyo" style="font-size: 13px">Última visita</div>
+        <div class="texto-fuerte" style="margin-top: 2px">3 de noviembre</div>
+        <div class="apoyo" style="font-size: 13px">por Carolina R.</div>
+      </div>
+      <div style="background: var(--superficie); border-radius: 16px; padding: 12px 14px">
+        <div class="apoyo" style="font-size: 13px">Hogar</div>
+        <div class="texto-fuerte pj-num" style="margin-top: 2px">4 personas</div>
+        <div class="apoyo" style="font-size: 13px">1 seguimiento</div>
+      </div>
+    </div>
+    <div style="margin-top: 14px">
+      <div class="apoyo" style="font-size: 13px; margin-bottom: 8px">Necesidades</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <span class="pj-insignia" style="background: var(--tinte-azul); color: var(--texto-azul)">Vías y movilidad</span>
+        <span class="pj-insignia" style="background: var(--tinte-turquesa); color: var(--texto-turquesa)">Agua</span>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; margin-top: 18px">
+      <a href="P13-Vivienda.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 1; text-decoration: none">Ver detalles</a>
+      <a href="P12-Resultado.dc.html" class="pj-boton pj-boton--contorno pj-toque" style="flex: 1; text-decoration: none">Nueva visita</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

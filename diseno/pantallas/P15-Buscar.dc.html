@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-15 Buscar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P08-Inicio.dc.html" class="atras pj-toque" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <h1>Buscar</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="pj-campo">
+      <label for="q" class="visualmente-oculto" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar persona, dirección o vereda</label>
+      <div style="position: relative">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="position: absolute; left: 16px; top: 16px; color: var(--tinta-suave)"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input id="q" value="la mina" autocomplete="off" style="width: 100%; padding-left: 46px; border-color: var(--tinta); outline: 3px solid var(--foco); outline-offset: 1px">
+      </div>
+    </div>
+    <div style="display: flex; gap: 8px">
+      <button type="button" class="pj-chip pj-toque" aria-pressed="true">Todo</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Viviendas</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Personas</button>
+    </div>
+    <p class="apoyo pj-num">12 resultados en sus zonas</p>
+    <div class="lista">
+      <a href="P13-Vivienda.dc.html" class="lista-item pj-toque"><span class="avatar" style="border-radius: 14px; background: var(--tinte-verde); color: var(--texto-verde)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span><span class="lista-item__texto"><span class="texto-fuerte">Vereda <mark style="background: var(--tinte-naranja); color: inherit">La Mina</mark>, km 3</span><span class="apoyo">Completa · 4 personas</span></span></a>
+      <a href="P14-Persona.dc.html" class="lista-item pj-toque"><span class="avatar">MF</span><span class="lista-item__texto"><span class="texto-fuerte">María Fernanda R.</span><span class="apoyo">Vereda <mark style="background: var(--tinte-naranja); color: inherit">La Mina</mark> · 47 años</span></span></a>
+      <div class="lista-item"><span class="avatar" style="border-radius: 14px; background: var(--tinte-azul); color: var(--texto-azul)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span><span class="lista-item__texto"><span class="texto-fuerte">Escuela <mark style="background: var(--tinte-naranja); color: inherit">La Mina</mark>, frente</span><span class="apoyo">Seguimiento el 10 de noviembre</span></span></div>
+      <div class="lista-item"><span class="avatar" style="border-radius: 14px; background: var(--superficie-panel); color: var(--tinta-suave)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span><span class="lista-item__texto"><span class="texto-fuerte">Vereda <mark style="background: var(--tinte-naranja); color: inherit">La Mina</mark>, km 4</span><span class="apoyo">Sin visitar</span></span></div>
+    </div>
+    <span style="flex: 1"></span>
+    <p class="apoyo" style="display: flex; gap: 8px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>Las búsquedas no se guardan en el teléfono.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

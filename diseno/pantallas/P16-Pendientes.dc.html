@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-16 Mis visitas y pendientes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P08-Inicio.dc.html" class="atras pj-toque" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <h1>Mis visitas y pendientes</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="segmentos" role="group" aria-label="Qué ver">
+      <button type="button" aria-pressed="true" class="pj-toque">Por enviar · 2</button>
+      <button type="button" aria-pressed="false" class="pj-toque">Borradores · 1</button>
+      <button type="button" aria-pressed="false" class="pj-toque">Seguimientos</button>
+    </div>
+    <div class="pj-aviso pj-aviso--alerta" role="status">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 8.8a15 15 0 0 1 4.2-2.6"></path><path d="M10.7 5.1A15 15 0 0 1 22 8.8"></path><path d="M8.5 16.4a5 5 0 0 1 7 0"></path><path d="M12 20h.01"></path><path d="M3 3l18 18"></path></svg>
+      <span>Sin señal. Las visitas están seguras en el teléfono y se enviarán solas.</span>
+    </div>
+    <div class="lista">
+      <div class="lista-item">
+        <span class="avatar" style="border-radius: 14px; background: var(--tinte-naranja); color: var(--texto-naranja)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></span>
+        <span class="lista-item__texto"><span class="texto-fuerte">Vereda La Mina, km 4</span><span class="apoyo pj-num">Hoy, 10:58 a. m. · con 2 fotos</span></span>
+        <span class="pj-semaforo pj-semaforo--verde" style="padding: 4px 10px 4px 6px; font-size: 13px"><span class="pj-semaforo__luz" style="width: 18px; height: 18px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></span>Completo</span>
+      </div>
+      <div class="lista-item">
+        <span class="avatar" style="border-radius: 14px; background: var(--tinte-naranja); color: var(--texto-naranja)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></span>
+        <span class="lista-item__texto"><span class="texto-fuerte">Escuela La Mina, frente</span><span class="apoyo pj-num">Hoy, 11:20 a. m.</span></span>
+        <span class="pj-semaforo pj-semaforo--amarillo" style="padding: 4px 10px 4px 6px; font-size: 13px"><span class="pj-semaforo__luz" style="width: 18px; height: 18px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v6"></path><path d="M12 17h.01"></path></svg></span>Revisar</span>
+      </div>
+    </div>
+    <section class="pj-seccion" style="padding: 14px 16px">
+      <h2 class="pj-etiqueta">NECESITA REVISIÓN</h2>
+      <div class="lista-item" style="border-bottom: 0; padding-bottom: 0">
+        <span class="avatar" style="border-radius: 14px; background: var(--tinte-rojo); color: var(--texto-rojo)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg></span>
+        <span class="lista-item__texto"><span class="texto-fuerte">Casa sin número, km 5</span><span class="apoyo" style="color: var(--texto-rojo)">El servidor pidió revisar: falta la foto de la autorización en papel.</span></span>
+      </div>
+    </section>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"></path><path d="M3 21v-5h5"></path></svg>
+      Reintentar ahora
+    </button>
+    <p class="apoyo" style="text-align: center">Último envío correcto: hoy, 8:14 a. m.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+/* Pijao Nos Une · sistema de diseño — generated from tokens.json */
+:root, [data-theme="light"] {
+  --fondo: #ffffff; --superficie: #f5f8fc; --superficie-panel: #eef3f9; --superficie-elevada: #ffffff;
+  --borde: #e3e9f1; --borde-control: #8796ab; --tinta: #122b52; --tinta-suave: #5a6b80; --tinta-invertida: #ffffff;
+  --marca-azul: #1d4e9e; --marca-turquesa: #1aa0c8; --marca-verde: #6db33f; --marca-naranja: #f39a1e;
+  --accion-principal: #f39a1e; --sobre-accion-principal: #2a1a05; --accion-secundaria: #122b52;
+  --tinte-azul: #edf3fb; --tinte-turquesa: #e8f6f8; --tinte-verde: #eef6e8; --tinte-naranja: #fdf2e4; --tinte-rojo: #fdecea;
+  --texto-azul: #1f4e8c; --texto-turquesa: #0e5f69; --texto-verde: #2f6b1e; --texto-naranja: #8a4a05; --texto-rojo: #b42318;
+  --estado-conectado: #3f9a2c; --estado-sin-senal: #8a4a05; --foco: #0e7fa3; --velo: rgba(246, 249, 253, 0.86);
+  --sombra-flotante: 0 14px 34px rgba(18, 43, 82, 0.16); --sombra-accion: 0 12px 26px rgba(18, 43, 82, 0.22); --sombra-logo: 0 14px 34px rgba(22, 63, 134, 0.16);
+}
+[data-theme="dark"] {
+  --fondo: #0e1726; --superficie: #152238; --superficie-panel: #1a2a44; --superficie-elevada: #1d2f4d;
+  --borde: #2c3e5c; --borde-control: #7b8ca6; --tinta: #eef3fa; --tinta-suave: #a9b8cc; --tinta-invertida: #0e1726;
+  --marca-azul: #7fa8e8; --marca-turquesa: #4cc3e3; --marca-verde: #8fd161; --marca-naranja: #f7ae4a;
+  --accion-principal: #f7ae4a; --sobre-accion-principal: #2a1a05; --accion-secundaria: #eef3fa;
+  --tinte-azul: #1b2d4a; --tinte-turquesa: #14343c; --tinte-verde: #1e3420; --tinte-naranja: #3a2a14; --tinte-rojo: #3d1c1a;
+  --texto-azul: #a9c6f2; --texto-turquesa: #8ed8e6; --texto-verde: #a8dc86; --texto-naranja: #f5c489; --texto-rojo: #ff9c8f;
+  --estado-conectado: #8fd161; --estado-sin-senal: #f5c489; --foco: #4cc3e3; --velo: rgba(14, 23, 38, 0.86);
+  --sombra-flotante: 0 14px 34px rgba(0, 0, 0, 0.45); --sombra-accion: 0 12px 26px rgba(0, 0, 0, 0.4); --sombra-logo: 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+[data-theme="sol"] {
+  --fondo: #ffffff; --superficie: #ffffff; --superficie-panel: #ffffff; --superficie-elevada: #ffffff;
+  --borde: #000000; --borde-control: #000000; --tinta: #000000; --tinta-suave: #1a1a1a; --tinta-invertida: #ffffff;
+  --marca-azul: #0b2e6b; --marca-turquesa: #005e77; --marca-verde: #1e5a0f; --marca-naranja: #8a4300;
+  --accion-principal: #8a4300; --sobre-accion-principal: #ffffff; --accion-secundaria: #000000;
+  --tinte-azul: #ffffff; --tinte-turquesa: #ffffff; --tinte-verde: #ffffff; --tinte-naranja: #ffffff; --tinte-rojo: #ffffff;
+  --texto-azul: #000000; --texto-turquesa: #000000; --texto-verde: #000000; --texto-naranja: #000000; --texto-rojo: #8b0000;
+  --estado-conectado: #1e5a0f; --estado-sin-senal: #000000; --foco: #0055cc; --velo: rgba(255, 255, 255, 0.97);
+  --sombra-flotante: none; --sombra-accion: none; --sombra-logo: none;
+}
+:root {
+  --espacio-1: 4px; --espacio-2: 8px; --espacio-3: 12px; --espacio-4: 16px; --espacio-5: 18px; --espacio-6: 24px; --espacio-8: 32px; --espacio-12: 48px;
+  --radio-chip: 9px; --radio-control: 14px; --radio-tarjeta: 20px; --radio-seccion: 22px; --radio-barra: 26px; --radio-panel: 30px; --radio-pastilla: 999px;
+  --duracion-instante: 80ms; --duracion-rapida: 180ms; --duracion-normal: 350ms; --duracion-lenta: 600ms; --duracion-pausada: 1000ms;
+  --curva-suave: cubic-bezier(0.22, 1, 0.36, 1); --curva-afilada: cubic-bezier(0.4, 0, 0.2, 1); --curva-rebote: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --font-titulos: Montserrat, "Segoe UI", Roboto, system-ui, sans-serif;
+  --font-texto: Inter, "Segoe UI", Roboto, system-ui, sans-serif;
+}

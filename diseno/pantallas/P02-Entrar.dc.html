@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-02 Entrar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1d4e9e}a:hover{color:#122b52}
+</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="Main.dc.html" class="atras pj-toque" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg></a>
+    <span style="flex: 1"></span>
+    <span class="pj-estado" style="margin-right: 8px"><span class="pj-punto" aria-hidden="true"></span>Conectado</span>
+  </div>
+  <div class="cuerpo" style="gap: 20px; padding-top: 4px">
+    <div>
+      <p class="pj-etiqueta">PIJAO NOS UNE</p>
+      <h1 class="titulo-grande" style="margin-top: 8px">Entrar</h1>
+      <p class="texto" style="margin-top: 8px">Con el correo o el celular con el que lo invitaron.</p>
+    </div>
+    <div class="pj-campo">
+      <label for="usuario">Correo o celular</label>
+      <input id="usuario" value="carolina.rios@gmail.com" autocomplete="username">
+    </div>
+    <div class="pj-campo">
+      <label for="clave">Contraseña</label>
+      <div style="position: relative">
+        <input id="clave" type="password" value="contraseña-larga" autocomplete="current-password" style="width: 100%; padding-right: 56px">
+        <button type="button" class="pj-toque" aria-label="Mostrar la contraseña" style="position: absolute; right: 2px; top: 2px; width: 48px; height: 48px; border: 0; background: none; color: var(--tinta-suave); display: inline-flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+      </div>
+      <a href="P07-Recuperar.dc.html" class="enlace" style="align-self: flex-end; padding: 8px 0">Olvidé mi contraseña</a>
+    </div>
+    <a href="P03-DosPasos.dc.html" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque" style="text-decoration: none">Entrar</a>
+    <div style="display: flex; align-items: center; gap: 12px; color: var(--tinta-suave); font: 500 14px/20px var(--font-texto)">
+      <span style="flex: 1; height: 1px; background: var(--borde)"></span>o<span style="flex: 1; height: 1px; background: var(--borde)"></span>
+    </div>
+    <button type="button" class="pj-boton pj-boton--contorno pj-boton--ancho pj-toque">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11c0 3-1 6-3 8"></path><path d="M8 4.5A8 8 0 0 1 20 11c0 2-.3 4-1 6"></path><path d="M4 8a8 8 0 0 0-1 4c0 1.5.2 3 .7 4.3"></path><path d="M8 11a4 4 0 0 1 8 0c0 3-.6 5.6-1.8 8"></path></svg>
+      Entrar con huella o rostro
+    </button>
+  </div>
+  <p class="apoyo" style="text-align: center; padding: 0 28px 28px">Por seguridad, la sesión se cierra sola a los 14 días y hay que volver a entrar.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
