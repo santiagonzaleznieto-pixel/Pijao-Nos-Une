@@ -223,3 +223,13 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
   - gráficos.
 
   La paleta de gráficos se validó con el script de `dataviz`: el verde y el naranja de la marca no se distinguen con daltonismo rojo-verde si van juntos, así que el orden fijo es azul, naranja, turquesa, verde, con tonos propios para el modo oscuro.
+- El dueño preguntó si el diseño ya estaba en la app y pidió hacerlo y correr el flujo que construye el APK. **App 0.16.0:**
+  - tema central con las medidas del sistema;
+  - letras Montserrat e Inter (paquetes gratuitos de Google Fonts para Expo);
+  - íconos de línea;
+  - componentes base rediseñados con respuesta al toque;
+  - barra inferior flotante con pastilla animada y franja de conexión con «Ocultar»;
+  - animación de entrada (anillo, logo, nombre con degradado y «Juntos, casa por casa.»);
+  - Inicio de la opción C con animaciones y pantalla de bloqueo con el logo.
+
+  La lógica no se tocó: pasan las 81 pruebas y la revisión de tipos. Se subió a `fase-2/diseno` para que GitHub construya el APK.

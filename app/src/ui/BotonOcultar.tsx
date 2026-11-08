@@ -1,14 +1,18 @@
 // 5.16: botón «Ocultar pantalla». Si alguien se acerca a mirar, un toque tapa todo; para volver se confirma con huella o rostro.
-import { Pressable, Text } from "react-native";
+import { Pressable } from "react-native";
 import { useApp } from "@/servicios/contexto";
-import { color, letra } from "@/ui/tema";
+import { Icono } from "@/ui/Icono";
+import { color } from "@/ui/tema";
 
-export function BotonOcultar({ claro }: { claro?: boolean }) {
+export function BotonOcultar({ tam = 44 }: { tam?: number }) {
   const app = useApp();
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel="Ocultar pantalla" onPress={app.ocultarPantalla} hitSlop={10}
-      style={{ paddingHorizontal: 10, paddingVertical: 4 }}>
-      <Text style={{ color: claro ? color.blanco : color.azul, fontSize: letra.pequena, fontWeight: "700" }}>Ocultar</Text>
+    <Pressable accessibilityRole="button" accessibilityLabel="Ocultar pantalla" onPress={app.ocultarPantalla} hitSlop={6}
+      style={({ pressed }) => ({
+        width: tam, height: tam, borderRadius: tam / 2, borderWidth: 1, borderColor: color.borde, backgroundColor: color.fondo,
+        alignItems: "center", justifyContent: "center", transform: [{ scale: pressed ? 0.94 : 1 }],
+      })}>
+      <Icono nombre="ocultar" tam={20} color={color.texto} />
     </Pressable>
   );
 }

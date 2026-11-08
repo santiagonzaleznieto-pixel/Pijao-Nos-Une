@@ -1,27 +1,37 @@
 // Raíz de la app: proveedor de datos, guardián de acceso (4.9) y capas de seguridad (bloqueo, actualización obligatoria).
+import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold } from "@expo-google-fonts/inter";
+import { Montserrat_600SemiBold, Montserrat_700Bold, Montserrat_800ExtraBold, Montserrat_900Black } from "@expo-google-fonts/montserrat";
+import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Image, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { debeAceptarAcuerdos } from "@/core/acceso";
 import { ProveedorApp, useApp } from "@/servicios/contexto";
 import { BotonOcultar } from "@/ui/BotonOcultar";
+import { Entrada } from "@/ui/Entrada";
 import { Boton, Cargando, Pantalla, Texto } from "@/ui/componentes";
-import { color, espacio, letra } from "@/ui/tema";
+import { color, espacio, fuente } from "@/ui/tema";
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 const PUBLICAS = new Set(["entrar", "registro", "recuperar"]);
 
+let entradaVista = false;   // la entrada se ve una vez por apertura de la app
+
 function Guardian() {
   const app = useApp();
+  const [fuentesListas] = useFonts({
+    Montserrat_600SemiBold, Montserrat_700Bold, Montserrat_800ExtraBold, Montserrat_900Black, Inter_400Regular, Inter_500Medium, Inter_600SemiBold,
+  });
+  const [mostrarEntrada, setMostrarEntrada] = useState(!entradaVista);
   const segmentos = useSegments();
   const router = useRouter();
   const ruta = segmentos[0] ?? "";
 
   useEffect(() => {
-    if (!app.listo) return;
+    if (!app.listo || !fuentesListas) return;
     SplashScreen.hideAsync().catch(() => undefined);
     if (!app.usuarioId) { if (!PUBLICAS.has(ruta)) router.replace("/entrar"); return; }
     if (ruta === "recuperar") return;   // P-07: al verificar el código ya hay sesión, pero falta poner la contraseña nueva
@@ -31,16 +41,23 @@ function Guardian() {
     if (!app.practica && estado === "aprobado") { if (ruta !== "ingreso") router.replace("/ingreso"); return; }
     if (!app.practica && debeAceptarAcuerdos(app.perfil.d, app.conectado)) { if (ruta !== "acuerdos") router.replace("/acuerdos"); return; }
     if (PUBLICAS.has(ruta) || ruta === "cuenta" || ruta === "ingreso" || ruta === "acuerdos") router.replace("/inicio");
-  }, [app.listo, app.usuarioId, app.perfil, app.practica, app.conectado, ruta, router]);
+  }, [app.listo, fuentesListas, app.usuarioId, app.perfil, app.practica, app.conectado, ruta, router]);
 
+  if (!fuentesListas) return null;   // la pantalla de inicio del sistema sigue visible mientras cargan las letras
   if (!app.listo) return <Cargando />;
 
   if (app.bloqueado) {
     return (
-      <Pantalla titulo="Pijao nos une">
-        <Texto>{app.oculto ? "Pantalla oculta." : "La app se bloqueó por seguridad tras unos minutos sin uso."}</Texto>
-        <Boton texto={app.oculto ? "Volver con huella o rostro" : "Desbloquear con huella o rostro"} onPress={app.desbloquear} />
-      </Pantalla>
+      <View style={{ flex: 1, backgroundColor: color.fondo, alignItems: "center", justifyContent: "center", padding: 28, gap: 16 }}>
+        <View style={{ width: 104, height: 104, borderRadius: 52, overflow: "hidden", backgroundColor: color.blanco, elevation: 6 }}>
+          <Image source={require("../../assets/images/logo-circular.jpg")} style={{ width: 127, height: 127, marginLeft: -12, marginTop: -10 }} accessibilityIgnoresInvertColors />
+        </View>
+        <Text accessibilityRole="header" style={{ fontFamily: fuente.titulo, fontSize: 22, color: color.texto, textAlign: "center" }}>{app.oculto ? "Pantalla oculta" : "App bloqueada"}</Text>
+        <Text style={{ fontFamily: fuente.texto, fontSize: 16, lineHeight: 24, color: color.textoSuave, textAlign: "center", maxWidth: 280 }}>
+          {app.oculto ? "Nadie puede ver los datos. Para volver, confirme que es usted." : "Se bloqueó por seguridad tras unos minutos sin uso."}
+        </Text>
+        <Boton texto="Volver con huella o rostro" onPress={app.desbloquear} />
+      </View>
     );
   }
   if (app.actualizacionObligatoria) {
@@ -55,12 +72,13 @@ function Guardian() {
   return (
     <View style={{ flex: 1 }}>
       {app.practica ? (
-        <View accessibilityRole="alert" style={{ backgroundColor: color.amarillo, paddingTop: 36, paddingBottom: espacio.xs }}>
-          <Text style={{ textAlign: "center", fontWeight: "700", fontSize: letra.normal, color: color.texto }}>MODO PRÁCTICA · datos de ejemplo</Text>
+        <View accessibilityRole="alert" style={{ backgroundColor: color.naranja, paddingTop: 36, paddingBottom: espacio.xs }}>
+          <Text style={{ textAlign: "center", fontFamily: fuente.titulo, fontSize: 13, letterSpacing: 1.5, color: color.sobreNaranja }}>MODO PRÁCTICA · DATOS DE EJEMPLO</Text>
         </View>
       ) : null}
-      <Stack screenOptions={{ headerTintColor: color.azul, headerTitleStyle: { fontWeight: "700" }, contentStyle: { backgroundColor: color.fondo },
-        headerRight: app.usuarioId ? () => <BotonOcultar /> : undefined }}>
+      <Stack screenOptions={{ headerTintColor: color.texto, headerTitleStyle: { fontFamily: fuente.titulo, fontSize: 19 }, headerShadowVisible: false,
+        headerStyle: { backgroundColor: color.fondo }, contentStyle: { backgroundColor: color.fondo }, animation: "slide_from_right",
+        headerRight: app.usuarioId ? () => <BotonOcultar tam={40} /> : undefined }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="entrar" options={{ headerShown: false }} />
@@ -82,6 +100,7 @@ function Guardian() {
         <Stack.Screen name="anuncios" options={{ title: "Anuncios" }} />
         <Stack.Screen name="guion" options={{ title: "Guion y preguntas" }} />
       </Stack>
+      {mostrarEntrada ? <Entrada alTerminar={() => { entradaVista = true; setMostrarEntrada(false); }} /> : null}
     </View>
   );
 }
