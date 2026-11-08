@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-40 Importar y exportar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="importar" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel"><h1>Importar y exportar</h1></div>
+    <div style="display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 20px">
+      <div class="tarjeta-panel" style="display: flex; flex-direction: column; gap: 16px">
+        <div class="fila" style="gap: 10px">
+          <span class="pj-insignia ins-verde"><span class="ic ic-check ic--s"></span>1 · Archivo</span>
+          <span class="pj-insignia ins-azul">2 · Revisar</span>
+          <span class="pj-insignia ins-gris">3 · Confirmar</span>
+        </div>
+        <h2 class="titulo-medio" style="font-size: 20px">Barrios y veredas · límites oficiales</h2>
+        <div class="pj-campo"><label for="fu">Fuente documentada</label><input id="fu" value="DANE, marco geoestadístico 2025"></div>
+        <div class="pj-aviso pj-aviso--exito" role="status"><span class="ic ic-check"></span><span>27 de 28 polígonos son válidos.</span></div>
+        <div class="pj-aviso pj-aviso--alerta" role="status"><span class="ic ic-alerta"></span><span>«Vereda El Placer» se cruza con «Barragán». Corríjala en el editor antes de confirmar.</span></div>
+        <div class="fila"><button type="button" class="pj-boton pj-boton--suave pj-toque">Atrás</button><button type="button" class="pj-boton pj-boton--solido pj-toque">Continuar con 27</button></div>
+      </div>
+      <div class="tarjeta-panel" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 class="pj-etiqueta">EXPORTACIONES RECIENTES</h2>
+        <div class="lista">
+          <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-descargar"></span></span><span class="lista-item__texto"><span class="texto-fuerte" style="font-size: 15px">Cobertura por zona</span><span class="apoyo" style="font-size: 13px">Directora · 3 nov · «Reunión de equipo»</span></span></div>
+          <div class="lista-item"><span class="ficha ficha--gris"><span class="ic ic-descargar"></span></span><span class="lista-item__texto"><span class="texto-fuerte" style="font-size: 15px">Auditoría técnica</span><span class="apoyo" style="font-size: 13px">Administrador · 28 oct · «Revisión mensual»</span></span></div>
+        </div>
+        <p class="apoyo">Toda exportación pide un motivo, lleva marca de agua y queda en la auditoría.</p>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

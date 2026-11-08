@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · hogar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 5 DE 12</span><span class="apoyo">Hogar</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.417)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 14px">
+    <h2 class="titulo-medio">¿Cuántas personas viven aquí?</h2>
+    <div class="pj-seccion" style="padding: 6px 16px">
+      <div class="dato" style="align-items: center"><span style="color: var(--tinta); font-weight: 600">Adultos</span><span class="fila" style="gap: 14px"><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno menos"><span style="width: 14px; height: 2px; background: currentColor; display: block"></span></button><b class="pj-num" style="font: 800 22px var(--font-titulos); min-width: 20px; text-align: center">2</b><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno más"><span class="ic ic-mas ic--s"></span></button></span></div>
+      <div class="dato" style="align-items: center"><span>0 a 5 años</span><span class="fila" style="gap: 14px"><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno menos"><span style="width: 14px; height: 2px; background: currentColor; display: block"></span></button><b class="pj-num" style="font: 800 22px var(--font-titulos); min-width: 20px; text-align: center">0</b><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno más"><span class="ic ic-mas ic--s"></span></button></span></div>
+      <div class="dato" style="align-items: center"><span>6 a 12 años</span><span class="fila" style="gap: 14px"><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno menos"><span style="width: 14px; height: 2px; background: currentColor; display: block"></span></button><b class="pj-num" style="font: 800 22px var(--font-titulos); min-width: 20px; text-align: center">1</b><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno más"><span class="ic ic-mas ic--s"></span></button></span></div>
+      <div class="dato" style="align-items: center"><span>13 a 17 años</span><span class="fila" style="gap: 14px"><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno menos"><span style="width: 14px; height: 2px; background: currentColor; display: block"></span></button><b class="pj-num" style="font: 800 22px var(--font-titulos); min-width: 20px; text-align: center">1</b><button type="button" class="pj-boton-icono pj-toque" aria-label="Uno más"><span class="ic ic-mas ic--s"></span></button></span></div>
+    </div>
+    <div class="pj-aviso pj-aviso--info" role="note" style="font-size: 15px; line-height: 22px"><span class="ic ic-info"></span><span>De los menores solo se cuenta el rango de edad. Nunca nombres ni fotos.</span></div>
+    <div>
+      <div style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">Sustento principal del hogar</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Café y campo</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Empleo formal</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Independiente</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Pensión</button>
+      </div>
+    </div>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="P12-Resultado.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="V06-Personas.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

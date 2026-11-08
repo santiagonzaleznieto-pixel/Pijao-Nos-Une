@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · necesidades</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 7 DE 12</span><span class="apoyo">Necesidades</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.583)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 14px">
+    <h2 class="titulo-medio">¿Qué necesita el hogar o el sector?</h2>
+    <div class="cuadricula-2">
+      <button type="button" class="opcion pj-toque" aria-checked="true" role="checkbox" style="min-height: 64px"><span class="ic ic-ruta" style="color: var(--marca-azul)"></span>Vías y movilidad</button>
+      <button type="button" class="opcion pj-toque" aria-checked="true" role="checkbox" style="min-height: 64px"><span class="ic ic-nube" style="color: var(--marca-turquesa)"></span>Agua y ambiente</button>
+      <button type="button" class="opcion pj-toque" aria-checked="false" role="checkbox" style="min-height: 64px"><span class="ic ic-dinero" style="color: var(--texto-verde)"></span>Empleo</button>
+      <button type="button" class="opcion pj-toque" aria-checked="false" role="checkbox" style="min-height: 64px"><span class="ic ic-corazon" style="color: var(--texto-rojo)"></span>Salud</button>
+      <button type="button" class="opcion pj-toque" aria-checked="false" role="checkbox" style="min-height: 64px"><span class="ic ic-libro" style="color: var(--marca-azul)"></span>Educación</button>
+      <button type="button" class="opcion pj-toque" aria-checked="false" role="checkbox" style="min-height: 64px"><span class="ic ic-escudo" style="color: var(--tinta)"></span>Seguridad</button>
+    </div>
+    <div class="pj-campo">
+      <label for="det">Cuéntelo en pocas palabras</label>
+      <textarea id="det" rows="3">La vía al km 3 se daña con cada aguacero y los niños no pueden bajar a la escuela.</textarea>
+    </div>
+    <button type="button" class="pj-boton pj-boton--suave pj-toque" style="align-self: flex-start"><span class="ic ic-mensaje"></span>Dictar en vez de escribir</button>
+    <p class="apoyo">El dictado se procesa en el mismo teléfono: no sale a otros servicios.</p>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="V06-Personas.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="V08-Participacion.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

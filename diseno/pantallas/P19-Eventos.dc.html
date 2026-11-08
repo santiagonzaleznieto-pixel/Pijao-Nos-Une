@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-19 Eventos</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Eventos</h1>
+    <button type="button" class="pj-boton-icono pj-toque" aria-label="Crear evento" style="margin-right: 4px"><span class="ic ic-mas"></span></button>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <h2 class="pj-etiqueta">ESTA SEMANA</h2>
+    <div class="fila" style="align-items: stretch">
+      <span class="calendario-dia">VIE<b>14</b></span>
+      <div class="pj-seccion" style="flex: 1; padding: 12px 14px">
+        <div class="texto-fuerte">Encuentro con caficultores</div>
+        <div class="apoyo">6:00 p. m. · Caseta comunal La Mina</div>
+        <div class="fila" style="margin-top: 8px; gap: 8px"><span class="pj-insignia ins-verde pj-num">32 confirmados</span><span class="pj-insignia ins-azul">Usted organiza</span></div>
+      </div>
+    </div>
+    <div class="fila" style="align-items: stretch">
+      <span class="calendario-dia" style="background: var(--superficie-panel); color: var(--tinta-suave)">DOM<b>16</b></span>
+      <div class="pj-seccion" style="flex: 1; padding: 12px 14px">
+        <div class="texto-fuerte">Recorrido por el casco urbano</div>
+        <div class="apoyo">8:00 a. m. · Parque principal</div>
+      </div>
+    </div>
+    <section class="pj-seccion" style="display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center">
+      <span class="ic ic-qr ic--xl" style="color: var(--tinta)"></span>
+      <div class="texto-fuerte">Asistencia con QR</div>
+      <p class="apoyo">Al llegar, los asistentes escanean el código del evento. Nadie más ve la lista.</p>
+      <button type="button" class="pj-boton pj-boton--contorno pj-toque">Mostrar el código del viernes</button>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

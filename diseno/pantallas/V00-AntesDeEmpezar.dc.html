@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · antes de empezar</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P11-RegistrarAqui.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+  </div>
+  <div class="cuerpo" style="gap: 16px">
+    <div class="ficha ficha--naranja" style="width: 64px; height: 64px; border-radius: 20px"><span class="ic ic-mano ic--l"></span></div>
+    <div>
+      <p class="pj-etiqueta">ANTES DE TOCAR LA PUERTA</p>
+      <h2 class="titulo-grande" style="font-size: 26px; line-height: 31px; margin-top: 6px">Una visita respetuosa</h2>
+    </div>
+    <div class="pj-seccion" style="display: flex; flex-direction: column; gap: 12px">
+      <div class="fila" style="align-items: flex-start"><span class="ic ic-usuario" style="color: var(--marca-azul)"></span><span class="texto" style="color: var(--tinta)">Salude y preséntese con su nombre y el de la campaña. Muestre su carnet.</span></div>
+      <div class="fila" style="align-items: flex-start"><span class="ic ic-mensaje" style="color: var(--marca-azul)"></span><span class="texto" style="color: var(--tinta)">Explique que viene a escuchar las necesidades, no a pedir nada a cambio.</span></div>
+      <div class="fila" style="align-items: flex-start"><span class="ic ic-documento" style="color: var(--marca-azul)"></span><span class="texto" style="color: var(--tinta)">Pregunte si puede registrar la visita y ofrezca el aviso de privacidad.</span></div>
+      <div class="fila" style="align-items: flex-start"><span class="ic ic-camara" style="color: var(--marca-azul)"></span><span class="texto" style="color: var(--tinta)">No fotografíe niños ni personas sin permiso. Si le dicen que no, agradezca.</span></div>
+      <div class="fila" style="align-items: flex-start"><span class="ic ic-equis" style="color: var(--texto-rojo)"></span><span class="texto" style="color: var(--tinta)">No ofrezca regalos, favores ni promesas personales.</span></div>
+    </div>
+    <a href="#" class="pj-fila-enlace pj-toque"><span class="ic ic-libro"></span>Ver el guion completo y las preguntas</a>
+    <p class="apoyo">Ya vio esta tarjeta 2 veces. A la tercera puede pasarla rápido.</p>
+  </div>
+  <div class="pie">
+    <a href="V02-Foto.dc.html" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque" style="text-decoration: none">Empezar la visita</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

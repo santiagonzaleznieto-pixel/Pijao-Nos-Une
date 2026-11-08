@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Barra inferior</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<nav class="pj-barra" aria-label="Secciones" style="width: 362px; font-family: var(--font-titulos); color: var(--tinta)">
+  <div class="pj-barra__pastilla" aria-hidden="true" style="{{pastilla}}"></div>
+  <a href="P08-Inicio.dc.html" class="pj-barra__item pj-toque" aria-current="{{a0}}" style="text-decoration: none"><span class="ic ic-casa"></span>Inicio</a>
+  <a href="P09-Mapa.dc.html" class="pj-barra__item pj-toque" aria-current="{{a1}}" style="text-decoration: none"><span class="ic ic-mapa"></span>Mapa</a>
+  <span style="display: flex; justify-content: center"><a href="P11-RegistrarAqui.dc.html" class="pj-central pj-toque" aria-label="Registrar aquí" style="width: 54px; height: 54px"><span class="ic ic-mas"></span></a></span>
+  <a href="P18-Tareas.dc.html" class="pj-barra__item pj-toque" aria-current="{{a3}}" style="text-decoration: none"><span class="ic ic-tareas"></span>Tareas</a>
+  <a href="P44-Perfil.dc.html" class="pj-barra__item pj-toque" aria-current="{{a4}}" style="text-decoration: none"><span class="ic ic-menu"></span>Más</a>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"activo":{"editor":"enum","options":["0","1","3","4"],"default":"0"},"$preview":{"width":362,"height":70}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const i = Number(this.props.activo ?? 0);
+    const marca = (n) => (n === i ? 'page' : 'false');
+    return { pastilla: 'transform: translateX(' + (i * 72.4).toFixed(1) + 'px)', a0: marca(0), a1: marca(1), a3: marca(3), a4: marca(4) };
+  }
+}
+</script>
+</body>
+</html>

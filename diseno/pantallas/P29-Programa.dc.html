@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-29 Programa de gobierno</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Programa de gobierno</h1>
+    <span class="pj-insignia ins-gris pj-num" style="margin-right: 10px">Borrador 0.3</span>
+  </div>
+  <div class="cuerpo" style="gap: 12px">
+    <p class="texto">Se construye con lo que escuchamos en las visitas. Cada propuesta cita su evidencia.</p>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-ruta"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Vías y movilidad rural</span><span class="apoyo pj-num">4 propuestas · 412 menciones</span></span><span class="ic ic-derecha" style="color: var(--tinta-suave)"></span></div>
+      <div class="lista-item"><span class="ficha ficha--turquesa"><span class="ic ic-nube"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Agua y ambiente</span><span class="apoyo pj-num">3 propuestas · 318 menciones</span></span><span class="ic ic-derecha" style="color: var(--tinta-suave)"></span></div>
+      <div class="lista-item"><span class="ficha ficha--verde"><span class="ic ic-dinero"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Café, campo y empleo</span><span class="apoyo pj-num">5 propuestas · 276 menciones</span></span><span class="ic ic-derecha" style="color: var(--tinta-suave)"></span></div>
+      <div class="lista-item"><span class="ficha ficha--naranja"><span class="ic ic-estrella"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Turismo y cultura</span><span class="apoyo pj-num">2 propuestas · 94 menciones</span></span><span class="ic ic-derecha" style="color: var(--tinta-suave)"></span></div>
+    </div>
+    <section class="pj-seccion">
+      <h2 class="pj-etiqueta">PROPUESTA DESTACADA</h2>
+      <div class="texto-fuerte" style="margin-top: 8px">Mantenimiento rotativo de las vías veredales</div>
+      <p class="apoyo" style="margin-top: 4px">Evidencia: 9 de 12 veredas · competencia municipal · cuesta según el plan vial</p>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Menú del panel web</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<nav class="menu-panel" aria-label="Secciones del panel" style="width: 240px; font-family: var(--font-titulos); color: var(--tinta)">
+  <div style="padding: 0 12px 18px; font: 900 16px/22px var(--font-titulos); letter-spacing: 0.04em"><span class="pj-marca-texto">PIJAO</span> <span style="color: var(--tinta); font-weight: 600; letter-spacing: 0.18em; font-size: 11px">NOS</span> <span class="pj-marca-texto">UNE</span></div>
+  <a href="#" aria-current="{{inicio}}"><span class="ic ic-casa"></span>Inicio</a>
+  <a href="P36-Colaboradores.dc.html" aria-current="{{colaboradores}}"><span class="ic ic-personas"></span>Colaboradores</a>
+  <a href="P38-Zonas.dc.html" aria-current="{{zonas}}"><span class="ic ic-mapa"></span>Zonas</a>
+  <a href="P39-Calidad.dc.html" aria-current="{{calidad}}"><span class="ic ic-check"></span>Calidad</a>
+  <a href="P35-Titulares.dc.html" aria-current="{{titulares}}"><span class="ic ic-escudo"></span>Derechos de titulares</a>
+  <a href="P41-Auditoria.dc.html" aria-current="{{auditoria}}"><span class="ic ic-lista"></span>Auditoría</a>
+  <a href="P40-ImportarExportar.dc.html" aria-current="{{importar}}"><span class="ic ic-descargar"></span>Importar y exportar</a>
+  <a href="P42-Configuracion.dc.html" aria-current="{{configuracion}}"><span class="ic ic-ajustes"></span>Configuración</a>
+  <a href="P43-Salud.dc.html" aria-current="{{salud}}"><span class="ic ic-corazon"></span>Salud del sistema</a>
+  <span style="flex: 1"></span>
+  <div style="display: flex; align-items: center; gap: 10px; padding: 12px; border-top: 1px solid var(--borde)">
+    <span class="avatar" style="width: 36px; height: 36px; font-size: 13px">AD</span>
+    <div style="min-width: 0"><div style="font: 700 14px/18px var(--font-titulos)">Administrador</div><div class="apoyo" style="font-size: 12px">Verificación en dos pasos activa</div></div>
+  </div>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"activo":{"editor":"enum","options":["inicio","colaboradores","zonas","calidad","titulares","auditoria","importar","configuracion","salud"],"default":"colaboradores"},"$preview":{"width":240,"height":800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.activo ?? 'colaboradores';
+    const v = {};
+    ['inicio', 'colaboradores', 'zonas', 'calidad', 'titulares', 'auditoria', 'importar', 'configuracion', 'salud'].forEach((k) => { v[k] = k === a ? 'page' : 'false'; });
+    return v;
+  }
+}
+</script>
+</body>
+</html>

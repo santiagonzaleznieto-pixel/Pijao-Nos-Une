@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-38 Editor de zonas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="zonas" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel">
+      <h1>Zonas</h1>
+      <div class="fila">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true"><span class="ic ic-lapiz ic--s"></span>Dibujar</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Unir</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Dividir</button>
+      </div>
+    </div>
+    <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr); gap: 20px">
+      <div style="position: relative; height: 560px; border-radius: var(--radio-seccion); overflow: hidden; border: 1px solid var(--borde); background: var(--mapa-tierra)" role="img" aria-label="Mapa de Pijao con cuatro zonas dibujadas">
+        <svg width="100%" height="100%" viewBox="0 0 700 560" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true">
+          <path d="M0 200 C150 150 260 230 400 180 S620 120 700 150 L700 0 L0 0 Z" style="fill: var(--mapa-loma)"></path>
+          <path d="M-10 380 C120 340 220 420 360 390 S560 320 710 360" style="stroke: var(--mapa-rio)" stroke-width="16" stroke-linecap="round"></path>
+          <path d="M60 560 C120 420 200 320 260 220 S380 80 460 0" style="stroke: var(--mapa-via)" stroke-width="12" stroke-linecap="round"></path>
+          <path d="M80 120 L300 90 L340 250 L120 290 Z" style="fill: var(--marca-azul); stroke: var(--marca-azul)" fill-opacity="0.14" stroke-width="2.5"></path>
+          <path d="M340 250 L560 210 L600 400 L380 440 Z" style="fill: var(--marca-turquesa); stroke: var(--marca-turquesa)" fill-opacity="0.18" stroke-width="2.5"></path>
+          <path d="M120 290 L340 250 L380 440 L160 480 Z" style="fill: var(--marca-verde); stroke: var(--marca-verde)" fill-opacity="0.26" stroke-width="3"></path>
+          <path d="M300 90 L520 60 L560 210 L340 250 Z" style="fill: var(--marca-naranja); stroke: var(--marca-naranja)" fill-opacity="0.14" stroke-width="2.5" stroke-dasharray="8 6"></path>
+          <circle cx="120" cy="290" r="7" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="2.5"></circle>
+          <circle cx="340" cy="250" r="7" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="2.5"></circle>
+          <circle cx="380" cy="440" r="7" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="2.5"></circle>
+          <circle cx="160" cy="480" r="7" style="fill: var(--fondo); stroke: var(--tinta)" stroke-width="2.5"></circle>
+        </svg>
+      </div>
+      <div class="tarjeta-panel" style="display: flex; flex-direction: column; gap: 14px">
+        <h2 class="titulo-medio" style="font-size: 20px">Vereda La Mina</h2>
+        <div class="cuadricula-2"><div class="mini"><b>31</b><span>viviendas</span></div><div class="mini"><b>62 %</b><span>cobertura</span></div></div>
+        <div class="pj-campo"><label for="meta">Meta de visitas</label><input id="meta" value="31 viviendas antes del 15 de diciembre"></div>
+        <div>
+          <div style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">Asignada a</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="pj-insignia ins-azul">Carolina Ríos</span><span class="pj-insignia ins-azul">Andrés Muñoz</span><button type="button" class="pj-chip pj-toque" aria-pressed="false"><span class="ic ic-mas ic--s"></span>Asignar</button></div>
+        </div>
+        <span class="separa"></span>
+        <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Guardar zona</button>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-18 Tareas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div style="padding: 18px 18px 8px; display: flex; justify-content: space-between; align-items: center">
+    <h1 class="titulo-grande">Tareas</h1>
+    <button type="button" class="pj-boton pj-boton--solido pj-toque" style="min-height: 44px; padding: 0 16px"><span class="ic ic-mas ic--s"></span>Crear</button>
+  </div>
+  <div class="cuerpo" style="gap: 14px; padding-top: 4px">
+    <div class="segmentos" role="group" aria-label="Vista">
+      <button type="button" aria-pressed="true">Lista</button>
+      <button type="button" aria-pressed="false">Mapa</button>
+      <button type="button" aria-pressed="false">Calendario</button>
+    </div>
+    <div style="display: flex; gap: 8px">
+      <button type="button" class="pj-chip pj-toque" aria-pressed="true">Mías · 4</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Vencidas · 1</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Hechas</button>
+    </div>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--rojo"><span class="ic ic-reloj"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Volver a la casa del km 5</span><span class="apoyo" style="color: var(--texto-rojo)">Venció ayer · falta foto de autorización</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--naranja"><span class="ic ic-documento"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Entregar volantes en Barragán</span><span class="apoyo">Hoy · 30 volantes</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-personas"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Reunión con la junta de acción comunal</span><span class="apoyo">Viernes 14, 6:00 p. m.</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--verde"><span class="ic ic-check"></span></span><span class="lista-item__texto"><span class="texto-fuerte" style="color: var(--tinta-suave); text-decoration: line-through">Recorrer La Mina, km 1 a 3</span><span class="apoyo">Hecha el martes · con 2 fotos</span></span></div>
+    </div>
+  </div>
+  <div class="nav-abajo"><dc-import name="BarraNav" activo="3" hint-size="362px,70px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-47 Modo práctica</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div style="background: var(--accion-principal); color: var(--sobre-accion-principal); text-align: center; padding: 10px; font: 800 13px/18px var(--font-titulos); letter-spacing: 0.12em">MODO PRÁCTICA · DATOS DE EJEMPLO</div>
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Modo práctica</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <p class="texto">Aquí puede equivocarse sin problema: nada se envía ni cuenta en las estadísticas.</p>
+    <h2 class="pj-etiqueta">SIMULACROS</h2>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-casa"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Una visita completa</span><span class="apoyo">Los 12 pasos con una familia de ejemplo</span></span><span class="pj-insignia ins-verde"><span class="ic ic-check ic--s"></span>Hecho</span></div>
+      <div class="lista-item"><span class="ficha ficha--turquesa"><span class="ic ic-reloj"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Registro rápido en 90 s</span><span class="apoyo">Su mejor tiempo: 1 min 12 s</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--naranja"><span class="ic ic-sinsenal"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Trabajar sin señal</span><span class="apoyo">Guardar y enviar después</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--rojo"><span class="ic ic-escudo"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Una persona dice «no»</span><span class="apoyo">Cómo cerrar con respeto</span></span></div>
+    </div>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Salir del modo práctica</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

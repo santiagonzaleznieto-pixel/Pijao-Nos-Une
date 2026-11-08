@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-31 Propaganda</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Propaganda</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="pj-aviso pj-aviso--info" role="note"><span class="ic ic-calendario"></span><span>La propaganda en espacio público se permite desde el <strong>31 de julio de 2027</strong>. El abogado confirma la fecha.</span></div>
+    <div class="cuadricula-3">
+      <div class="mini"><b>0</b><span>instaladas</span></div>
+      <div class="mini"><b>120</b><span>en bodega</span></div>
+      <div class="mini"><b>0</b><span>por retirar</span></div>
+    </div>
+    <h2 class="pj-etiqueta">INVENTARIO</h2>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-cartel"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Pendón 1 × 2 m</span><span class="apoyo pj-num">40 en bodega</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--turquesa"><span class="ic ic-documento"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Afiche para ventana</span><span class="apoyo pj-num">80 en bodega</span></span></div>
+    </div>
+    <p class="apoyo">Al instalar, se marca el punto en el mapa con una foto; al retirar, otra foto. El retiro se registra con O-17.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

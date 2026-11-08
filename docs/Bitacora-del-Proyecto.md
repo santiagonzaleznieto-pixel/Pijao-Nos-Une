@@ -208,3 +208,18 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
   - campo: P-08 Inicio, P-09 Mapa (marcadores con color y forma, leyenda, sin señal), P-10 Ficha rápida, P-11 Registrar aquí (precisión y casas cercanas), P-12 pasos 4 (resultado) y 10 (autorización por propósito y firma), P-13 Vivienda, P-14 Persona (datos enmascarados y autorizaciones), P-15 Buscar y P-16 Pendientes;
   - el Inicio en modo oscuro y modo sol;
   - pendientes de la fase: los 4 componentes, el resto de pantallas, los cuatro modos por pantalla y los estados.
+- El dueño pidió: «Más pantallas. Termina todas las pantallas, y lo último son los 4 componentes».
+- **Las 53 pantallas quedaron diseñadas** en el mismo lienzo, organizadas en 9 páginas. Se agregaron:
+  - un juego de 60 íconos de línea y dos piezas reutilizables, la barra inferior y el menú del panel;
+  - los pasos que faltaban de la visita y el registro rápido;
+  - P-17 a P-35, incluidos SOS sin margen de error (mantener 3 segundos), día de elecciones, finanzas con el tope legal por confirmar y propaganda con su fecha legal;
+  - el panel web de escritorio (P-36 a P-43);
+  - P-44 a P-48;
+  - las páginas públicas P-49 a P-53.
+- **Los 4 componentes** entraron al sistema de diseño:
+  - firma en pantalla (se puede firmar en la muestra);
+  - cámara con sello;
+  - notificaciones sin datos personales;
+  - gráficos.
+
+  La paleta de gráficos se validó con el script de `dataviz`: el verde y el naranja de la marca no se distinguen con daltonismo rojo-verde si van juntos, así que el orden fijo es azul, naranja, turquesa, verde, con tonos propios para el modo oscuro.

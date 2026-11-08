@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-46 Jornada y SOS</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Jornada</h1>
+  </div>
+  <div class="cuerpo" style="gap: 16px">
+    <section class="fila" style="background: var(--tinte-verde); color: var(--texto-verde); border-radius: var(--radio-tarjeta); padding: 16px">
+      <span class="pj-punto" aria-hidden="true" style="width: 12px; height: 12px"></span>
+      <div style="flex: 1"><div style="font: 800 18px/24px var(--font-titulos)">Jornada activa</div><div class="pj-num" style="font: 400 15px/22px var(--font-texto)">Desde las 8:10 a. m. · 2 h 41 min · en pareja con Andrés</div></div>
+    </section>
+    <div class="cuadricula-2">
+      <button type="button" class="pj-boton pj-boton--contorno pj-toque"><span class="ic ic-pausa"></span>Pausar</button>
+      <button type="button" class="pj-boton pj-boton--solido pj-toque">Terminar</button>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 10px 0">
+      <button type="button" class="pj-toque" aria-label="SOS: mantenga presionado 3 segundos para pedir ayuda" style="position: relative; width: 190px; height: 190px; border-radius: 50%; border: 0; background: var(--tinte-rojo); display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="190" height="190" viewBox="0 0 190 190" fill="none" style="position: absolute; inset: 0"><circle cx="95" cy="95" r="88" style="stroke: var(--borde)" stroke-width="6"></circle><circle cx="95" cy="95" r="88" style="stroke: var(--texto-rojo)" stroke-width="6" stroke-linecap="round" pathLength="100" stroke-dasharray="35 100" transform="rotate(-90 95 95)"></circle></svg>
+        <span style="width: 140px; height: 140px; border-radius: 50%; background: var(--texto-rojo); color: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; font: 900 34px/38px var(--font-titulos)">SOS<span style="font: 600 13px/18px var(--font-texto)">Mantenga 3 s</span></span>
+      </button>
+      <p class="texto" style="text-align: center; max-width: 290px">Mantenga presionado. Se avisa al Director y a sus contactos con su ubicación. Un toque suelto no hace nada.</p>
+    </div>
+    <section class="pj-seccion" style="padding: 4px 16px">
+      <div class="dato"><span>Contacto de emergencia</span><span>Mamá · ··· 4471</span></div>
+      <div class="dato"><span>Hora de regreso</span><span class="pj-num">5:00 p. m.</span></div>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

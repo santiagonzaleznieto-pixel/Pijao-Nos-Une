@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-21 Directorio del equipo</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Equipo</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="buscador" style="box-shadow: none"><span class="ic ic-buscar"></span><span style="flex: 1">Buscar por nombre o zona</span></div>
+    <div class="titulo-seccion"><h2 class="pj-etiqueta">VEREDA LA MINA · 4</h2></div>
+    <div class="lista">
+      <div class="lista-item"><span class="avatar">CR</span><span class="lista-item__texto"><span class="texto-fuerte">Carolina Ríos</span><span class="apoyo">Colaboradora · en jornada</span></span><button type="button" class="pj-boton-icono pj-toque" aria-label="Escribir a Carolina por la app"><span class="ic ic-mensaje"></span></button></div>
+      <div class="lista-item"><span class="avatar" style="background: var(--tinte-turquesa); color: var(--texto-turquesa)">AM</span><span class="lista-item__texto"><span class="texto-fuerte">Andrés Muñoz</span><span class="apoyo">Colaborador · hace 2 h</span></span><button type="button" class="pj-boton-icono pj-toque" aria-label="Escribir a Andrés por la app"><span class="ic ic-mensaje"></span></button></div>
+    </div>
+    <div class="titulo-seccion"><h2 class="pj-etiqueta">CASCO URBANO · 6</h2></div>
+    <div class="lista">
+      <div class="lista-item"><span class="avatar" style="background: var(--tinte-verde); color: var(--texto-verde)">LP</span><span class="lista-item__texto"><span class="texto-fuerte">Luz Dary Pineda</span><span class="apoyo">Líder de zona</span></span><button type="button" class="pj-boton-icono pj-toque" aria-label="Escribir a Luz Dary por la app"><span class="ic ic-mensaje"></span></button></div>
+      <div class="lista-item"><span class="avatar" style="background: var(--tinte-naranja); color: var(--texto-naranja)">DG</span><span class="lista-item__texto"><span class="texto-fuerte">Directora General</span><span class="apoyo">Director de campaña</span></span><button type="button" class="pj-boton-icono pj-toque" aria-label="Escribir a la Directora por la app"><span class="ic ic-mensaje"></span></button></div>
+    </div>
+    <p class="apoyo">Los celulares del equipo no se muestran: se escribe por la app.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

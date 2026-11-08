@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-52 Verificación de carnet</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div style="padding: 16px 18px; border-bottom: 1px solid var(--borde); font: 900 15px var(--font-titulos); letter-spacing: 0.04em"><span class="pj-marca-texto">PIJAO</span> <span style="font-weight: 600; letter-spacing: 0.18em; font-size: 11px; color: var(--tinta)">NOS</span> <span class="pj-marca-texto">UNE</span></div>
+  <div class="cuerpo" style="padding-top: 40px; gap: 18px; align-items: center; text-align: center">
+    <span style="width: 96px; height: 96px; border-radius: 50%; background: var(--tinte-verde); color: var(--texto-verde); display: flex; align-items: center; justify-content: center"><span class="ic ic-check ic--xl"></span></span>
+    <div>
+      <h1 class="titulo-grande">Carnet vigente</h1>
+      <p class="texto" style="margin-top: 8px">Esta persona hace parte del equipo de Pijao Nos Une.</p>
+    </div>
+    <section class="pj-seccion" style="width: 100%; text-align: left; padding: 4px 16px">
+      <div class="dato"><span>Nombre</span><span>Carolina R.</span></div>
+      <div class="dato"><span>Rol</span><span>Colaboradora</span></div>
+      <div class="dato"><span>Vigente hasta</span><span class="pj-num">30/04/2027</span></div>
+    </section>
+    <p class="apoyo" style="max-width: 300px">El equipo nunca pide dinero, regalos ni documentos. Si alguien lo hace en nombre de la campaña, avísenos.</p>
+    <a href="P50-MisDatos.dc.html" class="enlace">Ir a «Mis datos»</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

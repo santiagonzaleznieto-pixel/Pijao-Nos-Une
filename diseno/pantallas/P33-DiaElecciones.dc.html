@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-33 Día de elecciones</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Día de elecciones</h1>
+    <span class="pj-insignia ins-verde" style="margin-right: 10px">Mesas abiertas</span>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <section class="pj-seccion">
+      <div class="fila"><span class="ficha ficha--azul"><span class="ic ic-urna"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Mesa 3 · Institución Educativa San José</span><span class="apoyo">Usted es testigo · llegó a las 7:42 a. m.</span></span></div>
+    </section>
+    <h2 class="pj-etiqueta">CIERRE DE LA MESA</h2>
+    <div class="pj-campo"><label for="v1">Votos por el candidato</label><input id="v1" value="148" class="pj-num" inputmode="numeric"></div>
+    <div class="cuadricula-2">
+      <div class="pj-campo"><label for="v2">Total en la mesa</label><input id="v2" value="402" class="pj-num" inputmode="numeric"></div>
+      <div class="pj-campo"><label for="v3">Votos nulos</label><input id="v3" value="6" class="pj-num" inputmode="numeric"></div>
+    </div>
+    <button type="button" class="pj-boton pj-boton--contorno pj-boton--ancho pj-toque"><span class="ic ic-camara"></span>Foto del acta E-14</button>
+    <button type="button" class="pj-boton pj-boton--peligro pj-boton--ancho pj-toque"><span class="ic ic-alerta"></span>Reportar una irregularidad</button>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Enviar a la sala de control</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-42 Configuración del sistema</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="configuracion" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel"><h1>Configuración</h1><span class="pj-insignia ins-gris"><span class="ic ic-candado ic--s"></span>Solo el Administrador, con dos pasos</span></div>
+    <div class="fila" style="flex-wrap: wrap; gap: 8px">
+      <button type="button" class="pj-chip pj-toque" aria-pressed="true">Valores de control</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Catálogos</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Textos legales</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Calendario legal</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Plantillas de permisos</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Integraciones</button>
+    </div>
+    <div class="tarjeta-panel" style="padding: 6px 22px">
+      <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">Sesión de un colaborador</b><span class="apoyo" style="font-size: 13px">R-33 · horas antes de volver a entrar</span></span><span class="fila"><input aria-label="Horas de sesión de un colaborador" value="336" class="pj-num" style="width: 90px; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--borde-control); padding: 0 12px; font: 600 16px var(--font-texto)"><span class="apoyo">horas (14 días)</span></span></div>
+      <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">Suspensión por inactividad</b><span class="apoyo" style="font-size: 13px">4.9 · 0 para no suspender</span></span><span class="fila"><input aria-label="Días sin actividad" value="30" class="pj-num" style="width: 90px; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--borde-control); padding: 0 12px; font: 600 16px var(--font-texto)"><span class="apoyo">días</span></span></div>
+      <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">Precisión mínima del GPS</b><span class="apoyo" style="font-size: 13px">R-10 · para registrar con GPS</span></span><span class="fila"><input aria-label="Precisión mínima en metros" value="20" class="pj-num" style="width: 90px; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--borde-control); padding: 0 12px; font: 600 16px var(--font-texto)"><span class="apoyo">metros</span></span></div>
+      <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">Métricas del piloto</b><span class="apoyo" style="font-size: 13px">22.3 · sin datos personales</span></span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="true" aria-label="Métricas del piloto"></button></div>
+      <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">Versión mínima de la app</b><span class="apoyo" style="font-size: 13px">N-13 · las anteriores deben actualizar</span></span><span class="fila"><input aria-label="Versión mínima" value="0.15.0" class="pj-num" style="width: 90px; min-height: 44px; border-radius: 12px; border: 1.5px solid var(--borde-control); padding: 0 12px; font: 600 16px var(--font-texto)"></span></div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

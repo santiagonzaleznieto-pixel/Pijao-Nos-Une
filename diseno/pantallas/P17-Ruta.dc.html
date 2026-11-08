@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-17 Mis zonas y ruta del día</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P08-Inicio.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Mis zonas y ruta</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="cuadricula-2">
+      <div class="pj-seccion fila" style="padding: 12px; gap: 10px">
+        <svg width="52" height="52" viewBox="0 0 52 52" role="img" aria-label="62 % de avance"><circle cx="26" cy="26" r="21" fill="none" style="stroke: var(--superficie-panel)" stroke-width="7"></circle><circle cx="26" cy="26" r="21" fill="none" style="stroke: var(--marca-turquesa)" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="62 100" transform="rotate(-90 26 26)"></circle></svg>
+        <div><div class="texto-fuerte" style="font-size: 15px">La Mina</div><div class="apoyo pj-num" style="font-size: 13px">62 % · 19 de 31</div></div>
+      </div>
+      <div class="pj-seccion fila" style="padding: 12px; gap: 10px">
+        <svg width="52" height="52" viewBox="0 0 52 52" role="img" aria-label="18 % de avance"><circle cx="26" cy="26" r="21" fill="none" style="stroke: var(--superficie-panel)" stroke-width="7"></circle><circle cx="26" cy="26" r="21" fill="none" style="stroke: var(--marca-turquesa)" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="18 100" transform="rotate(-90 26 26)"></circle></svg>
+        <div><div class="texto-fuerte" style="font-size: 15px">Barragán</div><div class="apoyo pj-num" style="font-size: 13px">18 % · 7 de 40</div></div>
+      </div>
+    </div>
+    <div class="titulo-seccion"><h2 class="pj-etiqueta">RUTA DE HOY · 6 CASAS</h2><a href="#" class="enlace" style="padding: 4px 0">Reordenar</a></div>
+    <div class="lista">
+      <div class="lista-item"><span class="calendario-dia" style="width: 34px; padding: 4px 0"><b style="font-size: 16px; line-height: 20px">1</b></span><span class="lista-item__texto"><span class="texto-fuerte">Escuela La Mina, frente</span><span class="apoyo pj-num">Seguimiento · a 120 m</span></span><a href="#" class="pj-boton pj-boton--contorno pj-toque" style="min-height: 44px; padding: 0 14px; font-size: 14px; text-decoration: none">Cómo llegar</a></div>
+      <div class="lista-item"><span class="calendario-dia" style="width: 34px; padding: 4px 0"><b style="font-size: 16px; line-height: 20px">2</b></span><span class="lista-item__texto"><span class="texto-fuerte">Vereda La Mina, km 4</span><span class="apoyo pj-num">Sin visitar · a 350 m</span></span><a href="#" class="pj-boton pj-boton--contorno pj-toque" style="min-height: 44px; padding: 0 14px; font-size: 14px; text-decoration: none">Cómo llegar</a></div>
+      <div class="lista-item"><span class="calendario-dia" style="width: 34px; padding: 4px 0"><b style="font-size: 16px; line-height: 20px">3</b></span><span class="lista-item__texto"><span class="texto-fuerte">Finca El Recreo</span><span class="apoyo pj-num">Volver en la tarde · a 900 m</span></span><a href="#" class="pj-boton pj-boton--contorno pj-toque" style="min-height: 44px; padding: 0 14px; font-size: 14px; text-decoration: none">Cómo llegar</a></div>
+    </div>
+    <p class="apoyo">«Cómo llegar» abre Google Maps o Waze. La app no comparte su ruta con nadie.</p>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque"><span class="ic ic-play"></span>Grabar recorrido</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

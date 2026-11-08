@@ -1,0 +1,30 @@
+<!-- @dsCard group="Contenido" height=380 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 12px">
+  <div id="zona"></div>
+  <div class="pj-notificacion pj-notificacion--sin-leer" role="status">
+    <span class="pj-notificacion__icono"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"></path><path d="M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"></path></svg></span>
+    <span class="pj-notificacion__texto"><b>Tiene 1 tarea para hoy</b>Entregar volantes en Barragán.</span>
+    <span class="pj-notificacion__hora">8:00 a. m.</span>
+  </div>
+  <div class="pj-notificacion" role="status" style="animation-delay: 80ms">
+    <span class="pj-notificacion__icono" style="background: var(--tinte-naranja); color: var(--texto-naranja)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"></path><path d="M6 11l6-6 6 6"></path></svg></span>
+    <span class="pj-notificacion__texto"><b>Hay visitas sin enviar hace más de un día</b>Abra la app con señal para enviarlas.</span>
+    <span class="pj-notificacion__hora">Ayer</span>
+  </div>
+  <div class="pj-notificacion" role="status" style="animation-delay: 160ms">
+    <span class="pj-notificacion__icono" style="background: var(--tinte-rojo); color: var(--texto-rojo)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l9.5 17h-19z"></path><path d="M12 10v4"></path><path d="M12 17h.01"></path></svg></span>
+    <span class="pj-notificacion__texto"><b>Se entró a su cuenta desde un teléfono nuevo</b>Si no fue usted, toque «No fui yo».</span>
+    <span class="pj-notificacion__hora">Lun</span>
+  </div>
+  <button type="button" class="pj-boton pj-boton--suave pj-toque" id="otra" style="align-self: flex-start">Simular una notificación nueva</button>
+</div>
+<script>
+document.getElementById('otra').onclick = () => {
+  const n = document.createElement('div');
+  n.className = 'pj-notificacion pj-notificacion--sin-leer';
+  n.setAttribute('role', 'status');
+  n.innerHTML = '<span class="pj-notificacion__icono" style="background: var(--tinte-verde); color: var(--texto-verde)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg></span><span class="pj-notificacion__texto"><b>Su visita se envió</b>Vereda La Mina, km 4.</span><span class="pj-notificacion__hora">Ahora</span>';
+  const z = document.getElementById('zona');
+  z.replaceChildren(n);
+};
+</script>

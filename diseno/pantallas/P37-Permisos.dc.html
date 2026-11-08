@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-37 Permisos de un colaborador</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="colaboradores" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <a href="P36-Colaboradores.dc.html" class="enlace" style="padding: 0; display: inline-flex; gap: 6px; align-items: center"><span class="ic ic-atras ic--s"></span>Colaboradores</a>
+    <div class="encabezado-panel">
+      <div class="fila"><span class="avatar" style="width: 52px; height: 52px; font-size: 18px">AM</span><div><h1>Andrés Muñoz</h1><div class="apoyo">Colaborador · Vereda La Mina · dos pasos activa</div></div></div>
+      <div class="fila"><select class="pj-chip" aria-label="Aplicar plantilla" style="min-height: 44px"><option>Aplicar plantilla…</option><option>Líder de zona</option></select></div>
+    </div>
+    <div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px">
+      <div class="tarjeta-panel" style="padding: 8px 22px">
+        <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">O-01 · Ver datos completos</b><span class="apoyo" style="font-size: 13px">Riesgo alto · vence el 30 de noviembre · solo La Mina</span></span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="true" aria-label="O-01 Ver datos completos"></button></div>
+        <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">O-06 · Editar registros de otros</b><span class="apoyo" style="font-size: 13px">Riesgo medio</span></span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="false" aria-label="O-06 Editar registros de otros"></button></div>
+        <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">O-09 · Crear tareas</b><span class="apoyo" style="font-size: 13px">Riesgo bajo · sin vencimiento</span></span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="true" aria-label="O-09 Crear tareas"></button></div>
+        <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">O-12 · Enviar comunicaciones</b><span class="apoyo" style="font-size: 13px">Riesgo alto · pide dos pasos y vencimiento</span></span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="false" aria-label="O-12 Enviar comunicaciones"></button></div>
+        <div class="dato" style="align-items: center; padding: 14px 0"><span style="display: flex; flex-direction: column; gap: 2px; color: var(--tinta)"><b style="font-weight: 600">O-14 · Editar zonas</b><span class="apoyo" style="font-size: 13px">Riesgo medio</span></span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="false" aria-label="O-14 Editar zonas"></button></div>
+      </div>
+      <div class="tarjeta-panel" style="display: flex; flex-direction: column; gap: 12px">
+        <h2 class="pj-etiqueta">HISTORIAL DE CAMBIOS</h2>
+        <div class="tiempo">
+          <div class="tiempo-item"><div class="texto-fuerte" style="font-size: 15px">Encendió O-01 hasta el 30 nov</div><div class="apoyo" style="font-size: 13px">Directora · 3 nov · «Verificar duplicados»</div></div>
+          <div class="tiempo-item"><div class="texto-fuerte" style="font-size: 15px">Aplicó la plantilla «Colaborador»</div><div class="apoyo" style="font-size: 13px">Directora · 20 oct</div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

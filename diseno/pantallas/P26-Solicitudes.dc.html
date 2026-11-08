@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-26 Solicitudes ciudadanas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Solicitudes ciudadanas</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="segmentos" role="group" aria-label="Estado">
+      <button type="button" aria-pressed="true">Nuevas · 5</button>
+      <button type="button" aria-pressed="false">En curso · 8</button>
+      <button type="button" aria-pressed="false">Respondidas</button>
+    </div>
+    <div class="lista">
+      <div class="lista-item" style="align-items: flex-start"><span class="ficha ficha--azul"><span class="ic ic-ruta"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Arreglo del puente peatonal</span><span class="apoyo">Barragán · por «Cuéntale a Pijao» · hoy</span><span style="display: flex; gap: 6px; margin-top: 6px"><span class="pj-insignia ins-azul">Vías</span><span class="pj-insignia ins-gris">Sin clasificar</span></span></span></div>
+      <div class="lista-item" style="align-items: flex-start"><span class="ficha ficha--turquesa"><span class="ic ic-nube"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Agua turbia en temporada de lluvia</span><span class="apoyo">La Mina · en una visita · ayer</span><span style="display: flex; gap: 6px; margin-top: 6px"><span class="pj-insignia ins-turquesa">Agua</span><span class="pj-insignia ins-verde">12 hogares lo piden</span></span></span></div>
+      <div class="lista-item" style="align-items: flex-start"><span class="ficha ficha--verde"><span class="ic ic-dinero"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Apoyo a jóvenes emprendedores</span><span class="apoyo">Casco urbano · formulario · hace 3 días</span><span style="display: flex; gap: 6px; margin-top: 6px"><span class="pj-insignia ins-verde">Empleo</span></span></span></div>
+    </div>
+    <p class="apoyo">Cada respuesta llega al ciudadano por el canal que dejó. Nunca se prometen obras.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

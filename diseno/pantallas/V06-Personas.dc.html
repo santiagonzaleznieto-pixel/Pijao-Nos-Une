@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · personas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 6 DE 12</span><span class="apoyo">Personas</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.5)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 14px">
+    <h2 class="titulo-medio">Adultos que conversaron</h2>
+    <p class="texto">Registre solo a quien esté presente y quiera dar sus datos. Cada persona autoriza en el paso 10.</p>
+    <div class="pj-seccion" style="padding: 4px 16px">
+      <div class="lista-item"><span class="avatar">MF</span><span class="lista-item__texto"><span class="texto-fuerte">María Fernanda Ramírez</span><span class="apoyo pj-num">47 años · jefa de hogar · cédula completa</span></span><span class="ic ic-lapiz" style="color: var(--tinta-suave)"></span></div>
+      <div class="lista-item"><span class="avatar" style="background: var(--tinte-turquesa); color: var(--texto-turquesa)">JI</span><span class="lista-item__texto"><span class="texto-fuerte">Jorge Iván Ramírez</span><span class="apoyo" style="color: var(--texto-naranja); display: flex; gap: 6px; align-items: center"><span class="ic ic-exclama ic--s"></span>Falta la fecha de nacimiento</span></span><span class="ic ic-lapiz" style="color: var(--tinta-suave)"></span></div>
+    </div>
+    <button type="button" class="pj-boton pj-boton--contorno pj-boton--ancho pj-toque"><span class="ic ic-mas"></span>Agregar otra persona</button>
+    <div class="pj-campo pj-campo--error">
+      <label for="ced">Cédula de Jorge Iván</label>
+      <input id="ced" value="9 412 558 1" class="pj-num" inputmode="numeric" aria-invalid="true" aria-describedby="e1">
+      <span class="pj-campo__error" id="e1"><span class="ic ic-alerta ic--s"></span>Esta cédula ya está registrada en otra vivienda.</span>
+    </div>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="V05-Hogar.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="V07-Necesidades.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

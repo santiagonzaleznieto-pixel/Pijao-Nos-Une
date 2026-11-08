@@ -6,7 +6,13 @@
   "pages": [
     { "id": "acceso", "name": "Acceso" },
     { "id": "campo", "name": "Trabajo de campo" },
-    { "id": "modos", "name": "Modos" }
+    { "id": "visita", "name": "Visita de 12 pasos" },
+    { "id": "equipo", "name": "Equipo y módulos" },
+    { "id": "panel", "name": "Panel web" },
+    { "id": "personales", "name": "Personales y seguridad" },
+    { "id": "publicas", "name": "Páginas públicas" },
+    { "id": "modos", "name": "Modos" },
+    { "id": "piezas", "name": "Piezas reutilizables" }
   ],
   "boards": {
     "Main.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-01 Bienvenida", "page": "acceso", "radius": 44 },
@@ -27,18 +33,91 @@
     "P15-Buscar.dc.html": { "x": 1410, "y": 964, "w": 390, "h": 844, "title": "P-15 Buscar", "page": "campo", "radius": 44 },
     "P16-Pendientes.dc.html": { "x": 1880, "y": 964, "w": 390, "h": 844, "title": "P-16 Mis visitas y pendientes", "page": "campo", "radius": 44 },
     "P08-Oscuro.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-08 Inicio · modo oscuro", "page": "modos", "radius": 44 },
-    "P08-Sol.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-08 Inicio · modo sol", "page": "modos", "radius": 44 }
+    "P08-Sol.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-08 Inicio · modo sol", "page": "modos", "radius": 44 },
+
+    "V00-AntesDeEmpezar.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "Paso 0 · Antes de empezar", "page": "visita", "radius": 44 },
+    "V02-Foto.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "Paso 2 · Foto de fachada", "page": "visita", "radius": 44 },
+    "V03-Vivienda.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "Paso 3 · Vivienda", "page": "visita", "radius": 44 },
+    "V05-Hogar.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "Paso 5 · Hogar", "page": "visita", "radius": 44 },
+    "V06-Personas.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "Paso 6 · Personas", "page": "visita", "radius": 44 },
+    "V07-Necesidades.dc.html": { "x": 2350, "y": 0, "w": 390, "h": 844, "title": "Paso 7 · Necesidades", "page": "visita", "radius": 44 },
+    "V08-Participacion.dc.html": { "x": 0, "y": 964, "w": 390, "h": 844, "title": "Paso 8 · Participación", "page": "visita", "radius": 44 },
+    "V09-Simpatia.dc.html": { "x": 470, "y": 964, "w": 390, "h": 844, "title": "Paso 9 · Simpatía", "page": "visita", "radius": 44 },
+    "V11-Notas.dc.html": { "x": 940, "y": 964, "w": 390, "h": 844, "title": "Paso 11 · Notas", "page": "visita", "radius": 44 },
+    "V12-Cierre.dc.html": { "x": 1410, "y": 964, "w": 390, "h": 844, "title": "Paso 12 · Cierre y semáforo", "page": "visita", "radius": 44 },
+    "V13-Rapido.dc.html": { "x": 1880, "y": 964, "w": 390, "h": 844, "title": "Registro rápido (menos de 90 s)", "page": "visita", "radius": 44 },
+
+    "P17-Ruta.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-17 Mis zonas y ruta del día", "page": "equipo", "radius": 44 },
+    "P18-Tareas.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-18 Tareas", "page": "equipo", "radius": 44 },
+    "P19-Eventos.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "P-19 Eventos", "page": "equipo", "radius": 44 },
+    "P20-Anuncios.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "P-20 Anuncios y notificaciones", "page": "equipo", "radius": 44 },
+    "P21-Directorio.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "P-21 Directorio del equipo", "page": "equipo", "radius": 44 },
+    "P22-Estadisticas.dc.html": { "x": 0, "y": 964, "w": 390, "h": 844, "title": "P-22 Estadísticas", "page": "equipo", "radius": 44 },
+    "P23-Informes.dc.html": { "x": 470, "y": 964, "w": 390, "h": 844, "title": "P-23 Informes", "page": "equipo", "radius": 44 },
+    "P24-CentroInfo.dc.html": { "x": 940, "y": 964, "w": 390, "h": 844, "title": "P-24 Centro de información", "page": "equipo", "radius": 44 },
+    "P25-Capacitacion.dc.html": { "x": 1410, "y": 964, "w": 390, "h": 844, "title": "P-25 Capacitación", "page": "equipo", "radius": 44 },
+    "P26-Solicitudes.dc.html": { "x": 1880, "y": 964, "w": 390, "h": 844, "title": "P-26 Solicitudes ciudadanas", "page": "equipo", "radius": 44 },
+    "P27-Voluntarios.dc.html": { "x": 0, "y": 1928, "w": 390, "h": 844, "title": "P-27 Voluntarios", "page": "equipo", "radius": 44 },
+    "P28-Lideres.dc.html": { "x": 470, "y": 1928, "w": 390, "h": 844, "title": "P-28 Líderes y organizaciones", "page": "equipo", "radius": 44 },
+    "P29-Programa.dc.html": { "x": 940, "y": 1928, "w": 390, "h": 844, "title": "P-29 Programa de gobierno", "page": "equipo", "radius": 44 },
+    "P30-Comunicaciones.dc.html": { "x": 1410, "y": 1928, "w": 390, "h": 844, "title": "P-30 Comunicaciones", "page": "equipo", "radius": 44 },
+    "P31-Propaganda.dc.html": { "x": 1880, "y": 1928, "w": 390, "h": 844, "title": "P-31 Propaganda", "page": "equipo", "radius": 44 },
+    "P32-Finanzas.dc.html": { "x": 0, "y": 2892, "w": 390, "h": 844, "title": "P-32 Finanzas", "page": "equipo", "radius": 44 },
+    "P33-DiaElecciones.dc.html": { "x": 470, "y": 2892, "w": 390, "h": 844, "title": "P-33 Día de elecciones", "page": "equipo", "radius": 44 },
+    "P34-Incidentes.dc.html": { "x": 940, "y": 2892, "w": 390, "h": 844, "title": "P-34 Incidentes", "page": "equipo", "radius": 44 },
+    "P35-Titulares.dc.html": { "x": 1410, "y": 2892, "w": 390, "h": 844, "title": "P-35 Derechos de los titulares", "page": "equipo", "radius": 44 },
+
+    "P36-Colaboradores.dc.html": { "x": 0, "y": 0, "w": 1280, "h": 800, "title": "P-36 Gestión de colaboradores", "page": "panel", "expand": "fill" },
+    "P37-Permisos.dc.html": { "x": 1360, "y": 0, "w": 1280, "h": 800, "title": "P-37 Permisos de un colaborador", "page": "panel", "expand": "fill" },
+    "P38-Zonas.dc.html": { "x": 0, "y": 920, "w": 1280, "h": 800, "title": "P-38 Editor de zonas", "page": "panel", "expand": "fill" },
+    "P39-Calidad.dc.html": { "x": 1360, "y": 920, "w": 1280, "h": 800, "title": "P-39 Calidad y verificación", "page": "panel", "expand": "fill" },
+    "P40-ImportarExportar.dc.html": { "x": 0, "y": 1840, "w": 1280, "h": 800, "title": "P-40 Importar y exportar", "page": "panel", "expand": "fill" },
+    "P41-Auditoria.dc.html": { "x": 1360, "y": 1840, "w": 1280, "h": 800, "title": "P-41 Auditoría", "page": "panel", "expand": "fill" },
+    "P42-Configuracion.dc.html": { "x": 0, "y": 2760, "w": 1280, "h": 800, "title": "P-42 Configuración del sistema", "page": "panel", "expand": "fill" },
+    "P43-Salud.dc.html": { "x": 1360, "y": 2760, "w": 1280, "h": 800, "title": "P-43 Salud del sistema", "page": "panel", "expand": "fill" },
+
+    "P44-Perfil.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-44 Perfil y ajustes", "page": "personales", "radius": 44 },
+    "P45-Ayuda.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-45 Ayuda y soporte", "page": "personales", "radius": 44 },
+    "P46-JornadaSOS.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "P-46 Jornada y SOS", "page": "personales", "radius": 44 },
+    "P47-ModoPractica.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "P-47 Modo práctica", "page": "personales", "radius": 44 },
+    "P48-Carnet.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "P-48 Carnet digital", "page": "personales", "radius": 44 },
+
+    "P49-Cuentale.dc.html": { "x": 0, "y": 0, "w": 390, "h": 844, "title": "P-49 Cuéntale a Pijao", "page": "publicas", "radius": 44 },
+    "P50-MisDatos.dc.html": { "x": 470, "y": 0, "w": 390, "h": 844, "title": "P-50 Mis datos", "page": "publicas", "radius": 44 },
+    "P51-QuieroSerParte.dc.html": { "x": 940, "y": 0, "w": 390, "h": 844, "title": "P-51 Quiero ser parte", "page": "publicas", "radius": 44 },
+    "P52-VerificarCarnet.dc.html": { "x": 1410, "y": 0, "w": 390, "h": 844, "title": "P-52 Verificación de carnet", "page": "publicas", "radius": 44 },
+    "P53-Politica.dc.html": { "x": 1880, "y": 0, "w": 390, "h": 844, "title": "P-53 Política de datos", "page": "publicas", "radius": 44 },
+
+    "BarraNav.dc.html": { "x": 0, "y": 0, "w": 362, "h": 70, "title": "Barra inferior (se reutiliza)", "page": "piezas" },
+    "MenuPanel.dc.html": { "x": 442, "y": 0, "w": 240, "h": 800, "title": "Menú del panel web (se reutiliza)", "page": "piezas" }
   },
   "order": [
     "Main.dc.html", "P02-Entrar.dc.html", "P03-DosPasos.dc.html", "P04-CrearCuenta.dc.html", "P05-Acuerdos.dc.html", "P06-Curso.dc.html", "P07-Recuperar.dc.html",
     "P08-Inicio.dc.html", "P09-Mapa.dc.html", "P10-FichaRapida.dc.html", "P11-RegistrarAqui.dc.html", "P12-Resultado.dc.html",
     "P12-Autorizacion.dc.html", "P13-Vivienda.dc.html", "P14-Persona.dc.html", "P15-Buscar.dc.html", "P16-Pendientes.dc.html",
-    "P08-Oscuro.dc.html", "P08-Sol.dc.html"
+    "P08-Oscuro.dc.html", "P08-Sol.dc.html",
+    "V00-AntesDeEmpezar.dc.html", "V02-Foto.dc.html", "V03-Vivienda.dc.html", "V05-Hogar.dc.html", "V06-Personas.dc.html", "V07-Necesidades.dc.html",
+    "V08-Participacion.dc.html", "V09-Simpatia.dc.html", "V11-Notas.dc.html", "V12-Cierre.dc.html", "V13-Rapido.dc.html",
+    "P17-Ruta.dc.html", "P18-Tareas.dc.html", "P19-Eventos.dc.html", "P20-Anuncios.dc.html", "P21-Directorio.dc.html",
+    "P22-Estadisticas.dc.html", "P23-Informes.dc.html", "P24-CentroInfo.dc.html", "P25-Capacitacion.dc.html", "P26-Solicitudes.dc.html",
+    "P27-Voluntarios.dc.html", "P28-Lideres.dc.html", "P29-Programa.dc.html", "P30-Comunicaciones.dc.html", "P31-Propaganda.dc.html",
+    "P32-Finanzas.dc.html", "P33-DiaElecciones.dc.html", "P34-Incidentes.dc.html", "P35-Titulares.dc.html",
+    "P36-Colaboradores.dc.html", "P37-Permisos.dc.html", "P38-Zonas.dc.html", "P39-Calidad.dc.html", "P40-ImportarExportar.dc.html",
+    "P41-Auditoria.dc.html", "P42-Configuracion.dc.html", "P43-Salud.dc.html",
+    "P44-Perfil.dc.html", "P45-Ayuda.dc.html", "P46-JornadaSOS.dc.html", "P47-ModoPractica.dc.html", "P48-Carnet.dc.html",
+    "P49-Cuentale.dc.html", "P50-MisDatos.dc.html", "P51-QuieroSerParte.dc.html", "P52-VerificarCarnet.dc.html", "P53-Politica.dc.html",
+    "BarraNav.dc.html", "MenuPanel.dc.html"
   ],
   "notes": {
     "t-acceso": { "x": 0, "y": -300, "text": "Acceso: de la bienvenida al curso", "kind": "title1", "maxW": 3210, "page": "acceso" },
     "t-campo": { "x": 0, "y": -300, "text": "Trabajo de campo: del Inicio a la visita", "kind": "title1", "maxW": 2270, "page": "campo" },
-    "t-modos": { "x": 0, "y": -300, "text": "La misma pantalla en modo oscuro y modo sol", "kind": "title1", "maxW": 860, "page": "modos" }
+    "t-visita": { "x": 0, "y": -300, "text": "La visita de 12 pasos y el registro rápido", "kind": "title1", "maxW": 2740, "page": "visita" },
+    "t-equipo": { "x": 0, "y": -300, "text": "Equipo y módulos de campaña", "kind": "title1", "maxW": 2270, "page": "equipo" },
+    "t-panel": { "x": 0, "y": -300, "text": "Panel web del Director y el Administrador", "kind": "title1", "maxW": 2640, "page": "panel" },
+    "t-personales": { "x": 0, "y": -300, "text": "Personales y de seguridad", "kind": "title1", "maxW": 2270, "page": "personales" },
+    "t-publicas": { "x": 0, "y": -300, "text": "Páginas públicas para la ciudadanía", "kind": "title1", "maxW": 2270, "page": "publicas" },
+    "t-modos": { "x": 0, "y": -300, "text": "La misma pantalla en modo oscuro y modo sol", "kind": "title1", "maxW": 860, "page": "modos" },
+    "t-piezas": { "x": 0, "y": -300, "text": "Piezas que usan varias pantallas", "kind": "title1", "maxW": 1200, "page": "piezas" }
   },
   "designSystems": [
     { "title": "Pijao Nos Une · sistema de diseño", "namespace": "pijaonosune", "artifact": "https://claude.ai/artifact/QRhRen1fKqyW9bvE4i7pMy", "version": "1794085791-854f", "copiedAt": "2026-11-07T21:40:00Z" }

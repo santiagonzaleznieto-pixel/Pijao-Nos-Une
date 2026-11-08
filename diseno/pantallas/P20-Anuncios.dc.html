@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-20 Anuncios y notificaciones</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Anuncios</h1>
+    <button type="button" class="pj-boton pj-boton--solido pj-toque" style="min-height: 44px; padding: 0 14px; margin-right: 6px; font-size: 15px">Publicar</button>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="segmentos" role="group" aria-label="Qué ver" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+      <button type="button" aria-pressed="true">Anuncios</button>
+      <button type="button" aria-pressed="false">Notificaciones · 3</button>
+    </div>
+    <section style="background: var(--tinte-naranja); border-radius: var(--radio-tarjeta); padding: 16px; display: flex; flex-direction: column; gap: 8px">
+      <div class="fila" style="gap: 8px; color: var(--texto-naranja)"><span class="ic ic-bandera ic--s"></span><span style="font: 700 12px/16px var(--font-titulos); letter-spacing: 0.1em">FIJADO POR EL DIRECTOR</span></div>
+      <div style="font: 800 18px/24px var(--font-titulos); color: var(--tinta)">Nada de datos por WhatsApp</div>
+      <p class="texto" style="color: var(--tinta)">Recuerden: los datos de las familias solo van en la app. Si alguien les pide pasarlos por chat, avísenme.</p>
+      <div class="fila" style="justify-content: space-between"><span class="apoyo pj-num">Leído por 18 de 24</span><button type="button" class="pj-boton pj-boton--solido pj-toque" style="min-height: 44px; padding: 0 16px; font-size: 15px">Entendido</button></div>
+    </section>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-megafono"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Nueva versión de la app</span><span class="apoyo">Instálela encima de la que tiene · ayer</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--turquesa"><span class="ic ic-calendario"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Encuentro con caficultores el viernes</span><span class="apoyo">Confirme si puede ir · hace 2 días</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--verde"><span class="ic ic-estrella"></span></span><span class="lista-item__texto"><span class="texto-fuerte">La Mina superó el 60 %</span><span class="apoyo">Gracias al equipo de la vereda · hace 3 días</span></span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

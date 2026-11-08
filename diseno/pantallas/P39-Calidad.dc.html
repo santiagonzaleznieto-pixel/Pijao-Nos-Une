@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-39 Calidad y verificación</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="calidad" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel"><h1>Calidad y verificación</h1><button type="button" class="pj-boton pj-boton--solido pj-toque" style="min-height: 44px"><span class="ic ic-reintentar"></span>Sortear 10 verificaciones</button></div>
+    <div class="cuadricula-3" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+      <div class="tarjeta-panel"><div class="apoyo">Alertas abiertas</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos); color: var(--texto-rojo)">3</div></div>
+      <div class="tarjeta-panel"><div class="apoyo">Registros en rojo</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos)">7</div></div>
+      <div class="tarjeta-panel"><div class="apoyo">Posibles duplicados</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos)">4</div></div>
+      <div class="tarjeta-panel"><div class="apoyo">Verificadas por llamada</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos)">18</div><div class="apoyo" style="font-size: 13px">17 confirmadas</div></div>
+    </div>
+    <div class="tarjeta-panel">
+      <h2 class="pj-etiqueta" style="margin-bottom: 12px">ALERTAS</h2>
+      <div class="pj-tabla-caja">
+        <table class="pj-tabla">
+          <thead><tr><th scope="col">Alerta</th><th scope="col">Colaborador</th><th scope="col">Cuándo</th><th scope="col">Estado</th><th scope="col"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Acción</span></th></tr></thead>
+          <tbody>
+            <tr><td><div class="fila"><span class="ficha ficha--rojo" style="width: 34px; height: 34px; border-radius: 10px"><span class="ic ic-reloj ic--s"></span></span>Registros demasiado seguidos (cada 40 s)</div></td><td>Luz Dary P.</td><td>Hoy, 9:12 a. m.</td><td><span class="pj-insignia ins-rojo"><span class="ic ic-exclama ic--s"></span>Abierta</span></td><td><a href="#" class="enlace" style="padding: 0">Revisar</a></td></tr>
+            <tr><td><div class="fila"><span class="ficha ficha--naranja" style="width: 34px; height: 34px; border-radius: 10px"><span class="ic ic-pin ic--s"></span></span>Registro fuera de su zona</div></td><td>Andrés M.</td><td>Ayer</td><td><span class="pj-insignia ins-rojo"><span class="ic ic-exclama ic--s"></span>Abierta</span></td><td><a href="#" class="enlace" style="padding: 0">Revisar</a></td></tr>
+            <tr><td><div class="fila"><span class="ficha ficha--azul" style="width: 34px; height: 34px; border-radius: 10px"><span class="ic ic-usuario ic--s"></span></span>Declaró ser contratista público (R-07)</div></td><td>Julián T.</td><td>Hace 3 días</td><td><span class="pj-insignia ins-naranja">Con el abogado</span></td><td><a href="#" class="enlace" style="padding: 0">Ver</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

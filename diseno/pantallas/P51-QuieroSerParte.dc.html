@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-51 Quiero ser parte</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div style="position: relative; height: 200px; flex: none; background: var(--superficie-panel); overflow: hidden">
+    <svg aria-hidden="true" width="390" height="200" viewBox="0 0 390 200" fill="none" style="position: absolute; inset: 0">
+      <path d="M0 150 C80 110 140 130 210 104 S330 70 390 92 L390 200 L0 200 Z" style="fill: var(--tinte-verde)"></path>
+      <path d="M0 170 C90 140 150 158 220 136 S340 104 390 124 L390 200 L0 200 Z" style="fill: var(--tinte-turquesa)"></path>
+      <circle cx="320" cy="56" r="26" style="fill: var(--marca-naranja)"></circle>
+    </svg>
+    <div style="position: absolute; left: 18px; top: 16px; font: 900 15px var(--font-titulos); letter-spacing: 0.04em"><span class="pj-marca-texto">PIJAO</span> <span style="font-weight: 600; letter-spacing: 0.18em; font-size: 11px; color: var(--tinta)">NOS</span> <span class="pj-marca-texto">UNE</span></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 20px; gap: 14px">
+    <div>
+      <h1 class="titulo-grande">Quiero ser parte</h1>
+      <p class="texto" style="margin-top: 8px">Súmese al equipo que recorre Pijao casa por casa.</p>
+    </div>
+    <div class="pj-campo"><label for="n">Nombre</label><input id="n" value="Julián Tabares"></div>
+    <div class="pj-campo"><label for="ce">Celular</label><input id="ce" value="311 555 0192" class="pj-num"></div>
+    <div>
+      <div style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">¿Cómo le gustaría ayudar?</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Visitas</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Redes sociales</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Eventos</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Transporte</button>
+      </div>
+    </div>
+    <label class="pj-casilla" style="padding: 12px 14px"><input type="checkbox" checked><span>Soy mayor de edad y autorizo que me contacten para esto</span></label>
+  </div>
+  <div class="pie"><button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Quiero sumarme</button></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

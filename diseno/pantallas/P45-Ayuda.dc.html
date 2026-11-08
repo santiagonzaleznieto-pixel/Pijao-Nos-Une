@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-45 Ayuda y soporte</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Ayuda</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="buscador" style="box-shadow: none"><span class="ic ic-buscar"></span><span style="flex: 1">¿En qué le ayudamos?</span></div>
+    <h2 class="pj-etiqueta">PREGUNTAS FRECUENTES</h2>
+    <div class="pj-seccion" style="padding: 4px 16px">
+      <div class="dato" style="align-items: center"><span style="color: var(--tinta); font-weight: 600">¿Qué hago si no hay señal?</span><span class="ic ic-abajo" style="color: var(--tinta-suave); transform: rotate(180deg)"></span></div>
+      <p class="texto" style="padding: 0 0 12px">Siga trabajando: todo se guarda cifrado en el teléfono y se envía solo cuando vuelva la señal. No desinstale la app.</p>
+      <div class="dato" style="align-items: center"><span style="color: var(--tinta); font-weight: 600">¿Qué hago si pierdo el teléfono?</span><span class="ic ic-abajo" style="color: var(--tinta-suave)"></span></div>
+      <div class="dato" style="align-items: center"><span style="color: var(--tinta); font-weight: 600">¿Cómo cambio mi contraseña?</span><span class="ic ic-abajo" style="color: var(--tinta-suave)"></span></div>
+    </div>
+    <div class="cuadricula-2">
+      <button type="button" class="pj-seccion pj-toque" style="text-align: left; display: flex; flex-direction: column; gap: 8px; color: var(--tinta); font: inherit"><span class="ficha ficha--rojo"><span class="ic ic-alerta"></span></span><span class="texto-fuerte">Reportar un error</span><span class="apoyo">Sin datos personales</span></button>
+      <button type="button" class="pj-seccion pj-toque" style="text-align: left; display: flex; flex-direction: column; gap: 8px; color: var(--tinta); font: inherit"><span class="ficha ficha--azul"><span class="ic ic-mensaje"></span></span><span class="texto-fuerte">Escribir al Administrador</span><span class="apoyo">Por la app</span></button>
+    </div>
+    <section class="pj-seccion">
+      <h2 class="pj-etiqueta">NOVEDADES DE LA VERSIÓN 0.15.0</h2>
+      <p class="texto" style="margin-top: 8px; color: var(--tinta)">Guion de visita sin señal, botón «Ocultar pantalla» y métricas del piloto.</p>
+    </section>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

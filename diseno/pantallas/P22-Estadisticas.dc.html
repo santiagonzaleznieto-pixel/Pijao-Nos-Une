@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-22 Estadísticas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Estadísticas</h1>
+    <button type="button" class="pj-boton-icono pj-toque" aria-label="Filtros" style="margin-right: 4px"><span class="ic ic-filtro"></span></button>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div style="display: flex; gap: 8px">
+      <button type="button" class="pj-chip pj-toque" aria-pressed="true">Todo Pijao</button>
+      <button type="button" class="pj-chip pj-toque" aria-pressed="false">Últimos 30 días</button>
+    </div>
+    <div class="cuadricula-3">
+      <div class="mini"><b>1.284</b><span>viviendas</span></div>
+      <div class="mini"><b>38 %</b><span>cobertura</span></div>
+      <div class="mini"><b>1.102</b><span>hogares</span></div>
+    </div>
+    <section class="pj-seccion">
+      <h2 class="pj-etiqueta">VISITAS POR SEMANA</h2>
+      <svg width="320" height="120" viewBox="0 0 320 120" role="img" aria-label="Visitas por semana: 42, 58, 71, 66, 89, 104" style="margin-top: 12px; max-width: 100%">
+        <line x1="0" y1="110" x2="320" y2="110" style="stroke: var(--borde)"></line>
+        <rect x="8" y="70" width="36" height="40" rx="6" style="fill: var(--tinte-azul)"></rect>
+        <rect x="60" y="55" width="36" height="55" rx="6" style="fill: var(--tinte-azul)"></rect>
+        <rect x="112" y="42" width="36" height="68" rx="6" style="fill: var(--tinte-azul)"></rect>
+        <rect x="164" y="47" width="36" height="63" rx="6" style="fill: var(--tinte-azul)"></rect>
+        <rect x="216" y="25" width="36" height="85" rx="6" style="fill: var(--tinte-azul)"></rect>
+        <rect x="268" y="10" width="36" height="100" rx="6" style="fill: var(--marca-azul)"></rect>
+        <text x="286" y="6" text-anchor="middle" style="fill: var(--tinta); font: 700 12px var(--font-titulos)">104</text>
+      </svg>
+    </section>
+    <section class="pj-seccion">
+      <h2 class="pj-etiqueta">LO QUE MÁS PIDEN</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 12px">
+        <div><div class="titulo-seccion apoyo" style="color: var(--tinta)"><span>Vías y movilidad</span><b class="pj-num">412</b></div><div class="barra-h" style="margin-top: 4px"><i style="width: 100%; background: var(--marca-azul)"></i></div></div>
+        <div><div class="titulo-seccion apoyo" style="color: var(--tinta)"><span>Agua y ambiente</span><b class="pj-num">318</b></div><div class="barra-h" style="margin-top: 4px"><i style="width: 77%; background: var(--marca-turquesa)"></i></div></div>
+        <div><div class="titulo-seccion apoyo" style="color: var(--tinta)"><span>Empleo</span><b class="pj-num">276</b></div><div class="barra-h" style="margin-top: 4px"><i style="width: 67%; background: var(--texto-verde)"></i></div></div>
+      </div>
+    </section>
+    <p class="apoyo">Solo registros completos. Grupos menores de 5 personas aparecen como «menos de 5».</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

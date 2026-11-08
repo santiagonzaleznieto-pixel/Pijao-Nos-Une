@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · participación</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 8 DE 12</span><span class="apoyo">Participación</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.667)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 12px">
+    <h2 class="titulo-medio">¿Cómo le gustaría participar?</h2>
+    <label class="pj-casilla"><input type="checkbox" checked><span><strong>Recibir información de la campaña</strong>Por el canal que elija abajo.</span></label>
+    <label class="pj-casilla"><input type="checkbox"><span><strong>Ser voluntario o voluntaria</strong>Le contactará el equipo de su zona.</span></label>
+    <label class="pj-casilla"><input type="checkbox"><span><strong>Ofrecer su casa para una reunión</strong>Con vecinos del sector.</span></label>
+    <div>
+      <div style="font: 600 15px/20px var(--font-titulos); margin: 4px 0 8px">Canal preferido</div>
+      <div style="display: flex; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">WhatsApp</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Llamada</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Correo</button>
+      </div>
+    </div>
+    <label class="pj-casilla" style="border-color: var(--texto-rojo)"><input type="checkbox"><span><strong style="color: var(--texto-rojo)">Pidió que no le vuelvan a visitar</strong>La casa queda como «No contactar» de inmediato.</span></label>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="V07-Necesidades.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="V09-Simpatia.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

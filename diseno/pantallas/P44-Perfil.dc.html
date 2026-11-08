@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-44 Perfil y ajustes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div style="padding: 18px 18px 8px" class="fila">
+    <span class="avatar" style="width: 60px; height: 60px; font-size: 20px; background: var(--accion-secundaria); color: var(--tinta-invertida)">CR</span>
+    <div><h1 class="titulo-medio">Carolina Ríos</h1><p class="apoyo">Colaboradora · Vereda La Mina</p></div>
+  </div>
+  <div class="cuerpo" style="gap: 14px; padding-bottom: 100px">
+    <section class="pj-seccion" style="padding: 4px 16px">
+      <h2 class="pj-etiqueta" style="padding-top: 12px">CÓMO SE VE LA APP</h2>
+      <div class="dato" style="align-items: center"><span style="color: var(--tinta)">Modo</span><span class="segmentos" style="grid-template-columns: repeat(3, minmax(0, 1fr)); width: 210px; padding: 3px"><button type="button" aria-pressed="true" style="min-height: 36px; font-size: 13px">Claro</button><button type="button" aria-pressed="false" style="min-height: 36px; font-size: 13px">Oscuro</button><button type="button" aria-pressed="false" style="min-height: 36px; font-size: 13px">Sol</button></span></div>
+      <div class="dato" style="align-items: center"><span style="color: var(--tinta)">Letra grande</span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="false" aria-label="Letra grande"></button></div>
+    </section>
+    <section class="pj-seccion" style="padding: 4px 16px">
+      <h2 class="pj-etiqueta" style="padding-top: 12px">CUENTA Y SEGURIDAD</h2>
+      <a href="P07-Recuperar.dc.html" class="dato" style="text-decoration: none; color: var(--tinta)"><span style="color: var(--tinta)">Cambiar contraseña</span><span class="ic ic-derecha" style="color: var(--tinta-suave)"></span></a>
+      <div class="dato"><span style="color: var(--tinta)">Mis teléfonos</span><span>2 de 2</span></div>
+      <div class="dato"><span style="color: var(--tinta)">Mapas sin conexión</span><span>Pijao · 18 MB</span></div>
+    </section>
+    <div class="cuadricula-2">
+      <a href="P48-Carnet.dc.html" class="pj-fila-enlace pj-toque"><span class="ic ic-qr"></span>Carnet</a>
+      <a href="P45-Ayuda.dc.html" class="pj-fila-enlace pj-toque"><span class="ic ic-ayuda"></span>Ayuda</a>
+      <a href="P47-ModoPractica.dc.html" class="pj-fila-enlace pj-toque"><span class="ic ic-play"></span>Práctica</a>
+      <a href="P46-JornadaSOS.dc.html" class="pj-fila-enlace pj-toque"><span class="ic ic-escudo"></span>Jornada</a>
+    </div>
+    <button type="button" class="pj-boton pj-boton--peligro pj-boton--ancho pj-toque"><span class="ic ic-salir"></span>Cerrar sesión</button>
+  </div>
+  <div class="nav-abajo"><dc-import name="BarraNav" activo="4" hint-size="362px,70px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

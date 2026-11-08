@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-25 Capacitación</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Capacitación</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <section class="fila" style="background: var(--tinte-verde); color: var(--texto-verde); border-radius: var(--radio-tarjeta); padding: 16px">
+      <span class="ficha" style="background: var(--fondo); color: var(--texto-verde)"><span class="ic ic-estrella"></span></span>
+      <div style="flex: 1"><div style="font: 800 17px/22px var(--font-titulos)">Curso de ingreso aprobado</div><div style="font: 400 14px/20px var(--font-texto)">14 de 15 respuestas · certificado vigente</div></div>
+      <button type="button" class="pj-boton-icono pj-toque" aria-label="Descargar certificado"><span class="ic ic-descargar"></span></button>
+    </section>
+    <h2 class="pj-etiqueta">MÁS CURSOS</h2>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-escudo"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Protección de datos a fondo</span><span class="apoyo">4 lecciones · 15 min</span><span class="barra-h" style="margin-top: 6px"><i style="width: 50%; background: var(--marca-azul)"></i></span></span></div>
+      <div class="lista-item"><span class="ficha ficha--turquesa"><span class="ic ic-mensaje"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Conversaciones difíciles</span><span class="apoyo">5 lecciones · 20 min</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--naranja"><span class="ic ic-urna"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Testigos electorales</span><span class="apoyo">Se abre en septiembre de 2027</span></span><span class="ic ic-candado" style="color: var(--tinta-suave)"></span></div>
+    </div>
+    <a href="P47-ModoPractica.dc.html" class="pj-fila-enlace pj-toque"><span class="ic ic-play"></span>Practicar con datos de ejemplo</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

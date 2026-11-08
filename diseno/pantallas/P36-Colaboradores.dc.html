@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-36 Gestión de colaboradores</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="colaboradores" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel">
+      <h1>Colaboradores</h1>
+      <div class="fila"><button type="button" class="pj-boton pj-boton--contorno pj-toque" style="min-height: 44px"><span class="ic ic-descargar"></span>Exportar</button><button type="button" class="pj-boton pj-boton--solido pj-toque" style="min-height: 44px"><span class="ic ic-mas"></span>Invitar</button></div>
+    </div>
+    <div class="cuadricula-3" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+      <div class="tarjeta-panel"><div class="apoyo">Cuentas por aprobar</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos); color: var(--texto-naranja)">2</div></div>
+      <div class="tarjeta-panel"><div class="apoyo">Activos</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos)">24</div></div>
+      <div class="tarjeta-panel"><div class="apoyo">Invitaciones sin usar</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos)">3</div><div class="apoyo" style="font-size: 13px">Vencen a las 72 horas</div></div>
+      <div class="tarjeta-panel"><div class="apoyo">Suspendidos</div><div class="pj-num" style="font: 800 32px/40px var(--font-titulos)">1</div></div>
+    </div>
+    <div class="tarjeta-panel" style="display: flex; flex-direction: column; gap: 14px">
+      <div class="fila" style="flex-wrap: wrap">
+        <div class="buscador" style="box-shadow: none; flex: 1; min-width: 240px"><span class="ic ic-buscar"></span><span>Buscar por nombre, zona o correo</span></div>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Activos</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Por aprobar · 2</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Suspendidos</button>
+      </div>
+      <div class="pj-tabla-caja">
+        <table class="pj-tabla">
+          <thead><tr><th scope="col">Colaborador</th><th scope="col">Zona</th><th scope="col">Visitas</th><th scope="col">Último uso</th><th scope="col">Dos pasos</th><th scope="col">Estado</th><th scope="col"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">Acciones</span></th></tr></thead>
+          <tbody>
+            <tr><td><div class="fila"><span class="avatar" style="width: 36px; height: 36px; font-size: 13px">CR</span><div><div style="font-weight: 600">Carolina Ríos</div><div class="apoyo" style="font-size: 13px">car•••@gmail.com</div></div></div></td><td>Vereda La Mina</td><td class="pj-num">148</td><td>Hoy</td><td><span class="pj-insignia ins-gris">No aplica</span></td><td><span class="pj-insignia ins-verde"><span class="ic ic-check ic--s"></span>Activa</span></td><td><a href="P37-Permisos.dc.html" class="enlace" style="padding: 0">Permisos</a></td></tr>
+            <tr><td><div class="fila"><span class="avatar" style="width: 36px; height: 36px; font-size: 13px; background: var(--tinte-turquesa); color: var(--texto-turquesa)">AM</span><div><div style="font-weight: 600">Andrés Muñoz</div><div class="apoyo" style="font-size: 13px">and•••@hotmail.com</div></div></div></td><td>Vereda La Mina</td><td class="pj-num">96</td><td>Hace 2 h</td><td><span class="pj-insignia ins-verde"><span class="ic ic-check ic--s"></span>Activa</span></td><td><span class="pj-insignia ins-verde"><span class="ic ic-check ic--s"></span>Activa</span></td><td><a href="P37-Permisos.dc.html" class="enlace" style="padding: 0">Permisos</a></td></tr>
+            <tr><td><div class="fila"><span class="avatar" style="width: 36px; height: 36px; font-size: 13px; background: var(--tinte-naranja); color: var(--texto-naranja)">LP</span><div><div style="font-weight: 600">Luz Dary Pineda</div><div class="apoyo" style="font-size: 13px">luz•••@gmail.com</div></div></div></td><td>Barragán</td><td class="pj-num">12</td><td>Hace 25 días</td><td><span class="pj-insignia ins-gris">No aplica</span></td><td><span class="pj-insignia ins-naranja"><span class="ic ic-exclama ic--s"></span>Sin actividad</span></td><td><a href="P37-Permisos.dc.html" class="enlace" style="padding: 0">Permisos</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="apoyo">A los 30 días sin actividad la cuenta se suspende sola, sin borrar el teléfono. Se reactiva desde aquí.</p>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

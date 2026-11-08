@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-24 Centro de información</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Centro de información</h1>
+  </div>
+  <div class="cuerpo" style="gap: 12px">
+    <div class="buscador" style="box-shadow: none"><span class="ic ic-buscar"></span><span style="flex: 1">Buscar en documentos y respuestas</span></div>
+    <div class="cuadricula-2">
+      <a href="#" class="pj-seccion pj-toque" style="text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; gap: 10px"><span class="ficha ficha--azul"><span class="ic ic-libro"></span></span><span class="texto-fuerte">Programa de gobierno</span><span class="apoyo">Versión pública</span></a>
+      <a href="#" class="pj-seccion pj-toque" style="text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; gap: 10px"><span class="ficha ficha--turquesa"><span class="ic ic-mensaje"></span></span><span class="texto-fuerte">Mensajes clave</span><span class="apoyo">Qué decir y qué no</span></a>
+      <a href="#" class="pj-seccion pj-toque" style="text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; gap: 10px"><span class="ficha ficha--verde"><span class="ic ic-ayuda"></span></span><span class="texto-fuerte">Guion y preguntas</span><span class="apoyo">Para la puerta</span></a>
+      <a href="#" class="pj-seccion pj-toque" style="text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; gap: 10px"><span class="ficha ficha--naranja"><span class="ic ic-estrella"></span></span><span class="texto-fuerte">Kit de marca</span><span class="apoyo">Logos y plantillas</span></a>
+      <a href="#" class="pj-seccion pj-toque" style="text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; gap: 10px"><span class="ficha ficha--gris"><span class="ic ic-escudo"></span></span><span class="texto-fuerte">Biblioteca legal</span><span class="apoyo">Normas para el equipo</span></a>
+      <a href="#" class="pj-seccion pj-toque" style="text-decoration: none; color: var(--tinta); display: flex; flex-direction: column; gap: 10px"><span class="ficha ficha--gris"><span class="ic ic-documento"></span></span><span class="texto-fuerte">Documentos</span><span class="apoyo">Formatos y actas</span></a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

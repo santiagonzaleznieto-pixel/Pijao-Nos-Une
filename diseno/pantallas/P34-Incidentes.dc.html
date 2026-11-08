@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-34 Incidentes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Reportar un incidente</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <div class="pj-aviso pj-aviso--info" role="note"><span class="ic ic-candado"></span><span>Es confidencial: solo lo ven el Director y el Administrador.</span></div>
+    <div>
+      <div style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">¿Qué pasó?</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Amenaza o agresión</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Daño a propaganda</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Compra de votos</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Teléfono perdido</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Otro</button>
+      </div>
+    </div>
+    <div class="pj-campo"><label for="d">Cuéntelo</label><textarea id="d" rows="4">Arrancaron el pendón de la entrada a la vereda Barragán durante la noche.</textarea></div>
+    <button type="button" class="pj-boton pj-boton--contorno pj-boton--ancho pj-toque"><span class="ic ic-camara"></span>Agregar foto</button>
+    <p class="apoyo" style="display: flex; gap: 8px"><span class="ic ic-pin ic--s"></span>Se adjunta el punto donde está ahora. Puede quitarlo.</p>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Enviar reporte</button>
+    <p class="apoyo" style="text-align: center">Si está en peligro, use el SOS en vez de este formulario.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

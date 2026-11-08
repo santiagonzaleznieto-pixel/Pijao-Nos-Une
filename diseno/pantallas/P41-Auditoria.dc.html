@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-41 Auditoría</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="auditoria" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel">
+      <h1>Auditoría</h1>
+      <div class="fila"><span class="pj-insignia ins-verde"><span class="ic ic-escudo ic--s"></span>Cadena íntegra · 4.812 registros</span><button type="button" class="pj-boton pj-boton--contorno pj-toque" style="min-height: 44px"><span class="ic ic-descargar"></span>Exportar con motivo</button></div>
+    </div>
+    <div class="tarjeta-panel" style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+        <div class="pj-campo"><label for="u">Usuario</label><select id="u"><option>Todos</option></select></div>
+        <div class="pj-campo"><label for="a">Acción</label><select id="a"><option>Vio datos completos</option></select></div>
+        <div class="pj-campo"><label for="d">Desde</label><input id="d" value="01/11/2026" class="pj-num"></div>
+        <div class="pj-campo"><label for="h">Hasta</label><input id="h" value="07/11/2026" class="pj-num"></div>
+      </div>
+      <div class="segmentos" role="group" aria-label="Vista" style="grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 380px">
+        <button type="button" aria-pressed="true">Vista operativa</button>
+        <button type="button" aria-pressed="false">Vista técnica</button>
+      </div>
+      <div class="pj-tabla-caja">
+        <table class="pj-tabla">
+          <thead><tr><th scope="col">Fecha</th><th scope="col">Quién</th><th scope="col">Qué hizo</th><th scope="col">Registro</th></tr></thead>
+          <tbody>
+            <tr><td class="pj-num">07/11 10:52 a. m.</td><td>Andrés M.</td><td>Vio datos personales completos</td><td>Persona ···482</td></tr>
+            <tr><td class="pj-num">07/11 9:30 a. m.</td><td>Directora</td><td>Cambió un permiso (O-01 hasta el 30 nov)</td><td>Andrés M.</td></tr>
+            <tr><td class="pj-num">06/11 4:15 p. m.</td><td>Sistema</td><td>Cuenta suspendida automáticamente por inactividad</td><td>Diego O.</td></tr>
+            <tr><td class="pj-num">06/11 11:02 a. m.</td><td>Administrador</td><td>Publicó un texto legal (guion v1-borrador)</td><td>Configuración</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-48 Carnet digital</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Carnet digital</h1>
+  </div>
+  <div class="cuerpo" style="gap: 16px; align-items: center">
+    <div style="width: 100%; border-radius: 26px; overflow: hidden; border: 1px solid var(--borde); box-shadow: var(--sombra-flotante); background: var(--fondo)">
+      <div class="pj-degradado" style="height: 8px"></div>
+      <div style="padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+        <div class="fila" style="gap: 10px">
+          <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; position: relative; background: #ffffff"><img src="/_blob/5ba775c53aee5b49200377ae22eed967" alt="" style="position: absolute; width: 49px; height: 49px; left: -4px; top: -4px"></div>
+          <span style="font: 900 14px var(--font-titulos); letter-spacing: 0.04em"><span class="pj-marca-texto">PIJAO</span> <span style="font-weight: 600; letter-spacing: 0.18em; font-size: 10px; color: var(--tinta)">NOS</span> <span class="pj-marca-texto">UNE</span></span>
+        </div>
+        <span class="avatar" style="width: 96px; height: 96px; font-size: 30px; background: var(--tinte-azul)">CR</span>
+        <div><div style="font: 800 22px/28px var(--font-titulos)">Carolina Ríos Arango</div><div class="apoyo">Colaboradora · Vereda La Mina</div></div>
+        <svg width="150" height="150" viewBox="0 0 21 21" role="img" aria-label="Código QR de verificación (ejemplo)" shape-rendering="crispEdges" style="margin-top: 4px">
+          <rect width="21" height="21" style="fill: var(--fondo)"></rect>
+          <path d="M0 0h7v7H0zM2 2v3h3V2zM14 0h7v7h-7zM16 2v3h3V2zM0 14h7v7H0zM2 16v3h3v-3zM9 1h2v2H9zM8 4h1v2h2v1H8zM12 3h1v3h-1zM9 9h3v1h1v2h-2v-1H9zM0 9h2v1h1v1H0zM4 8h3v2H6v1H4zM14 9h2v2h-2zM17 8h4v1h-2v2h-2zM8 13h2v2H8zM11 13h3v1h-2v2h-1zM15 12h2v3h-2zM18 13h3v2h-1v2h-2zM8 16h1v3H8zM10 18h3v3h-3zM14 16h2v2h-2zM16 19h2v2h-2zM19 18h2v3h-2zM12 16h1v1h-1z" style="fill: var(--tinta)"></path>
+        </svg>
+        <span class="pj-insignia ins-verde"><span class="ic ic-check ic--s"></span>Vigente hasta el 30 de abril de 2027</span>
+      </div>
+    </div>
+    <p class="apoyo" style="text-align: center; max-width: 300px">Quien escanee el código ve en la página pública si usted está activa. No ve sus datos.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

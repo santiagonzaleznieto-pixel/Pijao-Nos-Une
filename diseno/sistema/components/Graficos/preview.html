@@ -1,0 +1,72 @@
+<!-- @dsCard group="Contenido" height=600 -->
+<div class="pj" style="padding: 18px; display: flex; flex-direction: column; gap: 22px">
+  <section>
+    <div style="font: 700 15px/20px var(--font-titulos); margin-bottom: 4px">Visitas por semana</div>
+    <div class="pj-grafico" id="g1">
+      <svg width="360" height="150" viewBox="0 0 360 150" role="img" aria-label="Visitas por semana: 42, 58, 71, 66, 89 y 104">
+        <line class="pj-grafico__eje" x1="0" y1="124" x2="360" y2="124"></line>
+        <line class="pj-grafico__eje" x1="0" y1="64" x2="360" y2="64" stroke-dasharray="3 4"></line>
+        <text class="pj-grafico__texto" x="360" y="60" text-anchor="end">50</text>
+        <rect class="pj-grafico__barra" data-v="42 visitas · 6 al 12 oct" x="10" y="74" width="40" height="50" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="58 visitas · 13 al 19 oct" x="68" y="54" width="40" height="70" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="71 visitas · 20 al 26 oct" x="126" y="39" width="40" height="85" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="66 visitas · 27 oct al 2 nov" x="184" y="45" width="40" height="79" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="89 visitas · 3 al 9 nov" x="242" y="17" width="40" height="107" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="104 visitas · esta semana" x="300" y="0" width="40" height="124" rx="4" style="fill: var(--grafico-1)"></rect>
+        <text class="pj-grafico__texto" x="30" y="142" text-anchor="middle">6 oct</text>
+        <text class="pj-grafico__texto" x="320" y="142" text-anchor="middle">Hoy</text>
+      </svg>
+      <div class="pj-tooltip" id="t1"></div>
+    </div>
+  </section>
+  <section>
+    <div style="font: 700 15px/20px var(--font-titulos); margin-bottom: 8px">Visitas por resultado (4 veredas)</div>
+    <div class="pj-leyenda" style="margin-bottom: 10px"><span><i style="background: var(--grafico-1)"></i>Conversación</span><span><i style="background: var(--grafico-2)"></i>Nadie en casa</span><span><i style="background: var(--grafico-3)"></i>Volver otro día</span><span><i style="background: var(--grafico-4)"></i>No quiso</span></div>
+    <div class="pj-grafico" id="g2">
+      <svg width="360" height="96" viewBox="0 0 360 96" role="img" aria-label="Resultados de las visitas por vereda en barras apiladas">
+        <text class="pj-grafico__texto" x="0" y="15">La Mina</text>
+        <rect class="pj-grafico__barra" data-v="La Mina · conversación 52 %" x="80" y="4" width="146" height="16" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="La Mina · nadie en casa 28 %" x="228" y="4" width="76" height="16" style="fill: var(--grafico-2)"></rect>
+        <rect class="pj-grafico__barra" data-v="La Mina · volver otro día 12 %" x="306" y="4" width="32" height="16" style="fill: var(--grafico-3)"></rect>
+        <rect class="pj-grafico__barra" data-v="La Mina · no quiso 8 %" x="340" y="4" width="20" height="16" rx="4" style="fill: var(--grafico-4)"></rect>
+        <text class="pj-grafico__texto" x="0" y="55">Barragán</text>
+        <rect class="pj-grafico__barra" data-v="Barragán · conversación 40 %" x="80" y="44" width="110" height="16" rx="4" style="fill: var(--grafico-1)"></rect>
+        <rect class="pj-grafico__barra" data-v="Barragán · nadie en casa 35 %" x="192" y="44" width="96" height="16" style="fill: var(--grafico-2)"></rect>
+        <rect class="pj-grafico__barra" data-v="Barragán · volver otro día 15 %" x="290" y="44" width="40" height="16" style="fill: var(--grafico-3)"></rect>
+        <rect class="pj-grafico__barra" data-v="Barragán · no quiso 10 %" x="332" y="44" width="28" height="16" rx="4" style="fill: var(--grafico-4)"></rect>
+        <text class="pj-grafico__valor" x="80" y="86">Pase el dedo o el puntero por una barra para ver el dato</text>
+      </svg>
+      <div class="pj-tooltip" id="t2"></div>
+    </div>
+  </section>
+  <section style="display: flex; align-items: center; gap: 16px">
+    <svg width="88" height="88" viewBox="0 0 88 88" role="img" aria-label="38 % de cobertura">
+      <circle cx="44" cy="44" r="36" fill="none" style="stroke: var(--grafico-guia)" stroke-width="10"></circle>
+      <circle cx="44" cy="44" r="36" fill="none" style="stroke: var(--grafico-3)" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="38 100" transform="rotate(-90 44 44)"></circle>
+      <text x="44" y="50" text-anchor="middle" class="pj-grafico__valor" style="font-size: 18px">38 %</text>
+    </svg>
+    <div style="font: 400 15px/22px var(--font-texto)"><strong class="pj-num">412</strong> de 1.084 viviendas<br><span style="color: var(--tinta-suave)">Cobertura de Pijao</span></div>
+  </section>
+  <details style="font: 400 14px/20px var(--font-texto)">
+    <summary style="cursor: pointer; font: 600 14px/20px var(--font-titulos); color: var(--marca-azul)">Ver como tabla</summary>
+    <table class="pj-tabla" style="margin-top: 8px"><thead><tr><th>Semana</th><th>Visitas</th></tr></thead><tbody><tr><td>3 al 9 nov</td><td class="pj-num">89</td></tr><tr><td>Esta semana</td><td class="pj-num">104</td></tr></tbody></table>
+  </details>
+</div>
+<script>
+// Tooltip por barra: el dato exacto al pasar el puntero o tocar (la zona de toque es la barra completa).
+[['g1', 't1'], ['g2', 't2']].forEach(([g, t]) => {
+  const caja = document.getElementById(g), tip = document.getElementById(t);
+  caja.querySelectorAll('.pj-grafico__barra').forEach((b) => {
+    const mostrar = () => {
+      const r = b.getBoundingClientRect(), c = caja.getBoundingClientRect();
+      tip.textContent = b.dataset.v;
+      tip.style.left = (r.left - c.left + r.width / 2) + 'px';
+      tip.style.top = (r.top - c.top) + 'px';
+      tip.style.opacity = '1';
+    };
+    b.addEventListener('pointerenter', mostrar);
+    b.addEventListener('pointerdown', mostrar);
+    b.addEventListener('pointerleave', () => { tip.style.opacity = '0'; });
+  });
+});
+</script>

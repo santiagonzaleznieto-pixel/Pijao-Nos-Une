@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-50 Mis datos</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div style="padding: 16px 18px; border-bottom: 1px solid var(--borde); font: 900 15px var(--font-titulos); letter-spacing: 0.04em"><span class="pj-marca-texto">PIJAO</span> <span style="font-weight: 600; letter-spacing: 0.18em; font-size: 11px; color: var(--tinta)">NOS</span> <span class="pj-marca-texto">UNE</span></div>
+  <div class="cuerpo" style="padding-top: 20px; gap: 12px">
+    <div>
+      <h1 class="titulo-grande">Mis datos</h1>
+      <p class="texto" style="margin-top: 8px">Usted decide sobre su información. ¿Qué quiere hacer?</p>
+    </div>
+    <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="ic ic-ojo" style="color: var(--marca-azul)"></span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Saber qué datos míos tienen</b><span class="apoyo">Le contamos qué guardamos y para qué</span></span></button>
+    <button type="button" class="opcion pj-toque" role="radio" aria-checked="true"><span class="ic ic-equis" style="color: var(--texto-rojo)"></span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Que no me contacten más</b><span class="apoyo">Se aplica de inmediato</span></span></button>
+    <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="ic ic-documento" style="color: var(--marca-azul)"></span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Borrar mis datos</b><span class="apoyo">Le confirmamos cuando esté hecho</span></span></button>
+    <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="ic ic-lapiz" style="color: var(--marca-azul)"></span><span style="display: flex; flex-direction: column"><b style="font-weight: 600">Corregir mis datos</b><span class="apoyo">Arreglamos lo que esté mal</span></span></button>
+    <div class="pj-campo"><label for="c">Su celular o correo, para responderle</label><input id="c" value="300 123 4567" class="pj-num"></div>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Enviar solicitud</button>
+    <a href="#" class="enlace" style="text-align: center; padding: 4px 0; font-size: 14px">Ya tengo un número de caso</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

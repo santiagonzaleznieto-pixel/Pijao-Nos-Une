@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-32 Finanzas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Finanzas</h1>
+    <span class="pj-insignia ins-gris" style="margin-right: 10px"><span class="ic ic-candado ic--s"></span>O-15</span>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <section class="pj-seccion">
+      <div class="titulo-seccion"><h2 class="pj-etiqueta">GASTO FRENTE AL TOPE LEGAL</h2><span class="apoyo">[TOPE POR CONFIRMAR]</span></div>
+      <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 10px"><span class="pj-num" style="font: 800 34px/1 var(--font-titulos)">$ 4.820.000</span><span class="apoyo">gastado</span></div>
+      <div class="barra-h" style="height: 12px; margin-top: 12px"><i style="width: 24%; height: 12px; background: var(--marca-azul)"></i></div>
+      <p class="apoyo pj-num" style="margin-top: 8px">24 % del tope · alerta al 80 %</p>
+    </section>
+    <div class="cuadricula-2">
+      <div class="mini"><b>$ 6.500.000</b><span>ingresos registrados</span></div>
+      <div class="mini"><b>3</b><span>gastos sin soporte</span></div>
+    </div>
+    <h2 class="pj-etiqueta">ÚLTIMOS MOVIMIENTOS</h2>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--naranja"><span class="ic ic-documento"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Impresión de volantes</span><span class="apoyo pj-num">$ 680.000 · 3 nov · con factura</span></span></div>
+      <div class="lista-item"><span class="ficha ficha--rojo"><span class="ic ic-exclama"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Transporte a veredas</span><span class="apoyo pj-num" style="color: var(--texto-rojo)">$ 240.000 · falta el soporte</span></span></div>
+    </div>
+    <button type="button" class="pj-boton pj-boton--contorno pj-boton--ancho pj-toque"><span class="ic ic-descargar"></span>Exportar para el informe de cuentas</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

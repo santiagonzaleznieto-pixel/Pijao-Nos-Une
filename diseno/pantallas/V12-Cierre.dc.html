@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · cierre</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 12 DE 12</span><span class="apoyo">Cierre</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(1)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 14px">
+    <div class="fila" style="background: var(--tinte-verde); color: var(--texto-verde); border-radius: var(--radio-tarjeta); padding: 16px">
+      <span style="width: 48px; height: 48px; border-radius: 50%; background: var(--texto-verde); color: var(--fondo); display: flex; align-items: center; justify-content: center; flex: none"><span class="ic ic-check ic--l"></span></span>
+      <div><div style="font: 800 20px/26px var(--font-titulos)">Registro completo</div><div style="font: 400 15px/22px var(--font-texto)">Cuenta en las estadísticas oficiales.</div></div>
+    </div>
+    <div class="pj-seccion" style="padding: 4px 16px">
+      <div class="dato"><span>Vivienda y foto</span><span style="color: var(--texto-verde)">Listo</span></div>
+      <div class="dato"><span>Hogar · 4 personas</span><span style="color: var(--texto-verde)">Listo</span></div>
+      <div class="dato"><span>Autorizaciones</span><span style="color: var(--texto-verde)">2 de 2 firmadas</span></div>
+      <div class="dato"><span>Necesidades</span><span>Vías, agua</span></div>
+    </div>
+    <div class="fila" style="justify-content: space-between"><span class="texto-fuerte">Programar seguimiento</span><button type="button" class="interruptor pj-toque" role="switch" aria-checked="true" aria-label="Programar seguimiento"></button></div>
+    <div class="cuadricula-2">
+      <div class="pj-campo"><label for="f">Fecha</label><input id="f" value="21/11/2026" class="pj-num"></div>
+      <div class="pj-campo"><label for="m">Motivo</label><input id="m" value="Cita médica"></div>
+    </div>
+    <label class="pj-casilla" style="padding: 12px 14px"><input type="checkbox" checked><span>Entregué el volante con el aviso de privacidad</span></label>
+  </div>
+  <div class="pie">
+    <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Guardar visita</button>
+    <p class="apoyo" style="text-align: center">Se guarda en el teléfono y se envía apenas haya señal.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

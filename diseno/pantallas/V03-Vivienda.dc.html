@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · vivienda</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 3 DE 12</span><span class="apoyo">Vivienda</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.25)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 16px">
+    <div class="pj-campo"><label for="dir">Dirección o referencia</label><input id="dir" value="Vereda La Mina, km 3, junto a la escuela"></div>
+    <div>
+      <div class="texto-fuerte" style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">Tipo de vivienda</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Casa</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Finca</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Apartamento</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Habitación</button>
+      </div>
+    </div>
+    <div>
+      <div class="texto-fuerte" style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">Material</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Bahareque</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Ladrillo</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Madera</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Mixto</button>
+      </div>
+    </div>
+    <div>
+      <div class="texto-fuerte" style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">Servicios</div>
+      <div class="cuadricula-2">
+        <label class="pj-casilla" style="padding: 10px 12px"><input type="checkbox" checked><span>Agua</span></label>
+        <label class="pj-casilla" style="padding: 10px 12px"><input type="checkbox" checked><span>Luz</span></label>
+        <label class="pj-casilla" style="padding: 10px 12px"><input type="checkbox"><span>Gas</span></label>
+        <label class="pj-casilla" style="padding: 10px 12px"><input type="checkbox"><span>Internet</span></label>
+      </div>
+    </div>
+    <div>
+      <div class="texto-fuerte" style="font: 600 15px/20px var(--font-titulos); margin-bottom: 8px">Riesgos cercanos</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Derrumbe</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="true">Cerca de quebrada</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Inundación</button>
+      </div>
+    </div>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="V02-Foto.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="P12-Resultado.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

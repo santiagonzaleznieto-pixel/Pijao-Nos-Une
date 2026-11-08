@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · foto de fachada</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 2 DE 12</span><span class="apoyo">Foto de fachada</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.167)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 14px">
+    <div style="position: relative; height: 430px; border-radius: var(--radio-seccion); overflow: hidden; background: #1f2a24" role="img" aria-label="Visor de la cámara apuntando a la fachada">
+      <svg aria-hidden="true" width="354" height="430" viewBox="0 0 354 430" fill="none" style="position: absolute; inset: 0">
+        <rect width="354" height="430" fill="#2b3a31"></rect>
+        <path d="M40 210 L177 110 L314 210 Z" fill="#7a4b33"></path>
+        <rect x="64" y="208" width="226" height="150" fill="#d8cdb8"></rect>
+        <rect x="160" y="268" width="38" height="90" fill="#5b3a28"></rect>
+        <rect x="90" y="240" width="44" height="40" fill="#8fb3c4"></rect>
+        <rect x="222" y="240" width="44" height="40" fill="#8fb3c4"></rect>
+        <rect x="0" y="358" width="354" height="72" fill="#4c5e42"></rect>
+      </svg>
+      <div aria-hidden="true" style="position: absolute; inset: 24px 24px 72px; border: 2px solid rgba(255,255,255,0.85); border-radius: 14px"></div>
+      <span style="position: absolute; left: 50%; top: 18px; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: rgba(0,0,0,0.55); color: #ffffff; font: 600 13px/18px var(--font-titulos)">Encuadre toda la fachada</span>
+      <div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 14px; background: rgba(0,0,0,0.6); color: #ffffff; font: 500 12px/17px var(--font-texto)" class="pj-num">PIJAO NOS UNE · 07/11/2026 10:41 a. m. · 4.3334, -75.7045 · ±7 m</div>
+    </div>
+    <div class="fila" style="justify-content: space-between">
+      <button type="button" class="pj-boton pj-boton--suave pj-toque" style="min-height: 48px; padding: 0 16px">Sin foto</button>
+      <button type="button" class="pj-toque" aria-label="Tomar foto" style="width: 76px; height: 76px; border-radius: 50%; border: 5px solid var(--accion-secundaria); background: var(--fondo); display: flex; align-items: center; justify-content: center"><span style="width: 56px; height: 56px; border-radius: 50%; background: var(--accion-principal)"></span></button>
+      <span style="width: 96px"></span>
+    </div>
+    <p class="apoyo" style="text-align: center">La foto queda sellada con la fecha, la hora y el punto. No se guarda en la galería.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

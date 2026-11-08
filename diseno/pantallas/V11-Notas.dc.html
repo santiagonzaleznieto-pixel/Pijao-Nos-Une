@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · notas</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 11 DE 12</span><span class="apoyo">Notas</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.917)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 14px">
+    <h2 class="titulo-medio">¿Algo más que deba saber el equipo?</h2>
+    <div class="pj-campo">
+      <label for="nota">Nota de la visita</label>
+      <textarea id="nota" rows="5">Doña María Fernanda está pendiente de una cita médica en Armenia y pidió que la visitemos después del 20.</textarea>
+    </div>
+    <div class="pj-aviso pj-aviso--alerta" role="status"><span class="ic ic-alerta"></span><span>La nota parece hablar de <strong>salud</strong>. Si es así, márquela como sensible: solo la verán el Director y quien tenga permiso.</span></div>
+    <div class="fila" style="justify-content: space-between; padding: 6px 0">
+      <span class="texto-fuerte">Nota sensible</span>
+      <button type="button" class="interruptor pj-toque" role="switch" aria-checked="true" aria-label="Nota sensible"></button>
+    </div>
+    <div>
+      <div class="apoyo" style="margin-bottom: 8px">Notas rápidas</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px">
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Perro bravo</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Volver en la tarde</button>
+        <button type="button" class="pj-chip pj-toque" aria-pressed="false">Difícil acceso</button>
+      </div>
+    </div>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="P12-Autorizacion.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="V12-Cierre.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

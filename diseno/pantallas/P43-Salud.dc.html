@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-43 Salud del sistema</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;background:#f5f8fc} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj escritorio" data-theme="light">
+  <div style="flex: 0 0 240px"><dc-import name="MenuPanel" activo="salud" hint-size="240px,800px"></dc-import></div>
+  <main class="contenido-panel">
+    <div class="encabezado-panel"><h1>Salud del sistema</h1><button type="button" class="pj-boton pj-boton--contorno pj-toque" style="min-height: 44px"><span class="ic ic-reintentar"></span>Actualizar</button></div>
+    <div class="cuadricula-3" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+      <div class="tarjeta-panel"><div class="titulo-seccion"><span class="apoyo">Último respaldo</span><span class="pj-insignia ins-rojo"><span class="ic ic-exclama ic--s"></span>Atender ya</span></div><div style="font: 800 22px/30px var(--font-titulos); margin-top: 6px">Nunca</div><div class="apoyo" style="font-size: 13px">Configure el respaldo nocturno</div></div>
+      <div class="tarjeta-panel"><div class="titulo-seccion"><span class="apoyo">Base de datos</span><span class="pj-insignia ins-verde">Bien</span></div><div class="pj-num" style="font: 800 22px/30px var(--font-titulos); margin-top: 6px">38 MB · 8 %</div><div class="barra-h" style="margin-top: 8px"><i style="width: 8%; background: var(--marca-turquesa)"></i></div></div>
+      <div class="tarjeta-panel"><div class="titulo-seccion"><span class="apoyo">Fotos</span><span class="pj-insignia ins-verde">Bien</span></div><div class="pj-num" style="font: 800 22px/30px var(--font-titulos); margin-top: 6px">212 MB · 21 %</div><div class="barra-h" style="margin-top: 8px"><i style="width: 21%; background: var(--marca-turquesa)"></i></div></div>
+      <div class="tarjeta-panel"><div class="titulo-seccion"><span class="apoyo">Errores (24 h)</span><span class="pj-insignia ins-verde">Bien</span></div><div class="pj-num" style="font: 800 22px/30px var(--font-titulos); margin-top: 6px">2</div><div class="apoyo" style="font-size: 13px">Sin datos personales</div></div>
+    </div>
+    <div class="tarjeta-panel">
+      <h2 class="pj-etiqueta" style="margin-bottom: 12px">TELÉFONOS DEL EQUIPO</h2>
+      <div class="pj-tabla-caja">
+        <table class="pj-tabla">
+          <thead><tr><th scope="col">Colaborador</th><th scope="col">Teléfono</th><th scope="col">Versión</th><th scope="col">Por enviar</th><th scope="col">Batería</th><th scope="col">Última conexión</th></tr></thead>
+          <tbody>
+            <tr><td>Carolina R.</td><td>Samsung A05</td><td class="pj-num">0.15.0</td><td class="pj-num">2</td><td class="pj-num">64 %</td><td>Hace 3 min</td></tr>
+            <tr><td>Andrés M.</td><td>Motorola E13</td><td class="pj-num"><span class="pj-insignia ins-naranja">0.14.0 · actualizar</span></td><td class="pj-num">0</td><td class="pj-num">22 %</td><td>Hace 2 h</td></tr>
+            <tr><td>Luz Dary P.</td><td>Xiaomi Redmi 12</td><td class="pj-num">0.15.0</td><td class="pj-num" style="color: var(--texto-rojo); font-weight: 600">14 · más de 24 h</td><td class="pj-num">80 %</td><td>Hace 2 días</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":800}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

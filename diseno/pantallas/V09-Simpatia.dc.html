@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Visita · simpatía</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="V00-AntesDeEmpezar.dc.html" class="atras pj-toque" aria-label="Guardar y salir"><span class="ic ic-equis"></span></a>
+    <h1>Nueva visita</h1>
+    <span class="apoyo" style="padding-right: 12px">Borrador guardado</span>
+  </div>
+  <div style="padding: 0 18px 4px; display: flex; flex-direction: column; gap: 8px">
+    <div class="titulo-seccion"><span class="pj-etiqueta">PASO 9 DE 12</span><span class="apoyo">Simpatía</span></div>
+    <div class="pj-pasos__barra" aria-hidden="true"><div class="pj-pasos__lleno pj-degradado" style="transform: scaleX(0.75)"></div></div>
+  </div>
+  <div class="cuerpo" style="padding-top: 14px; gap: 12px">
+    <div class="pj-aviso pj-aviso--alerta" role="note"><span class="ic ic-candado"></span><span><strong>Dato sensible.</strong> No pregunte por quién va a votar. Anótelo solo si la persona lo cuenta y lo autoriza en el paso 10.</span></div>
+    <h2 class="titulo-medio">¿La persona expresó su simpatía?</h2>
+    <div role="radiogroup" aria-label="Simpatía de María Fernanda" style="display: flex; flex-direction: column; gap: 8px">
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="true"><span class="radio"></span>No lo contó (no se registra)</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Apoya a la campaña</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Está indecisa</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Apoya a otra opción</button>
+      <button type="button" class="opcion pj-toque" role="radio" aria-checked="false"><span class="radio"></span>Prefiere no decirlo</button>
+    </div>
+    <p class="apoyo">Si no autoriza este dato, se borra al guardar la visita. Nunca aparece en el mapa.</p>
+  </div>
+  <div class="pie" style="flex-direction: row">
+    <a href="V08-Participacion.dc.html" class="pj-boton pj-boton--suave pj-toque" style="flex: 1; text-decoration: none">Atrás</a>
+    <a href="P12-Autorizacion.dc.html" class="pj-boton pj-boton--solido pj-toque" style="flex: 2; text-decoration: none">Siguiente</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>

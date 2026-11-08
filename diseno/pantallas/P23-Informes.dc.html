@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>P-23 Informes</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/pijaonosune/tokens.css">
+<link rel="stylesheet" href="ds/pijaonosune/components/bundle.css">
+<link rel="stylesheet" href="pantallas.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>body{margin:0} a{color:#1d4e9e}</style>
+</helmet>
+<div class="pj pantalla" data-theme="light">
+  <div class="cabecera">
+    <a href="P44-Perfil.dc.html" class="atras pj-toque" aria-label="Volver"><span class="ic ic-atras"></span></a>
+    <h1>Informes</h1>
+  </div>
+  <div class="cuerpo" style="gap: 14px">
+    <h2 class="pj-etiqueta">AUTOMÁTICOS</h2>
+    <div class="lista">
+      <div class="lista-item"><span class="ficha ficha--azul"><span class="ic ic-documento"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Avance semanal</span><span class="apoyo">Lunes 3 de noviembre · PDF, 6 páginas</span></span><button type="button" class="pj-boton-icono pj-toque" aria-label="Descargar avance semanal"><span class="ic ic-descargar"></span></button></div>
+      <div class="lista-item"><span class="ficha ficha--turquesa"><span class="ic ic-documento"></span></span><span class="lista-item__texto"><span class="texto-fuerte">Lo que escuchamos · octubre</span><span class="apoyo">Necesidades por vereda · PDF</span></span><button type="button" class="pj-boton-icono pj-toque" aria-label="Descargar lo que escuchamos"><span class="ic ic-descargar"></span></button></div>
+    </div>
+    <section class="pj-seccion" style="display: flex; flex-direction: column; gap: 12px">
+      <h2 class="titulo-medio" style="font-size: 19px">Generar un informe</h2>
+      <div class="pj-campo"><label for="t">Tipo</label><select id="t"><option>Cobertura por zona</option></select></div>
+      <div class="pj-campo"><label for="mo">Motivo (queda registrado)</label><input id="mo" value="Reunión de equipo del lunes"></div>
+      <button type="button" class="pj-boton pj-boton--solido pj-boton--ancho pj-toque">Generar con marca de agua</button>
+    </section>
+    <p class="apoyo" style="display: flex; gap: 8px"><span class="ic ic-candado ic--s"></span>Cada descarga lleva su nombre como marca de agua y queda en la auditoría.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic { renderVals() { return {}; } }
+</script>
+</body>
+</html>
