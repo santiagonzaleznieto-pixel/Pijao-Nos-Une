@@ -31,7 +31,7 @@ export function Firma({ alCambiar }: { alCambiar: (trazos: Trazo[] | null) => vo
       <View {...responder.panHandlers} accessibilityLabel="Espacio para firmar con el dedo"
         style={{ height: 180, backgroundColor: color.blanco, borderWidth: 1, borderColor: color.borde, borderRadius: radio.m }}>
         <Svg width="100%" height="100%">
-          {[...trazos, actual.current].map((t, i) => <Path key={i} d={camino(t)} stroke={color.azul} strokeWidth={3} fill="none" />)}
+          {[...trazos, actual.current].map((t, i) => <Path key={i} d={camino(t)} stroke={color.negro} strokeWidth={3} fill="none" />)}
         </Svg>
       </View>
       <Boton texto="Borrar firma" variante="suave" onPress={() => { setTrazos([]); alCambiar(null); }} />

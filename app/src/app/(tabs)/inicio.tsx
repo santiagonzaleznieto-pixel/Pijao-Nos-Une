@@ -74,7 +74,7 @@ function BloqueRegistrar({ onPress }: { onPress: () => void }) {
           <View style={e.registrarIcono}><Icono nombre="pin" tam={22} color={color.sobreNaranja} grosor={2.4} /></View>
           <Text style={e.registrarTexto}>Registrar aquí</Text>
         </View>
-        <Icono nombre="derecha" tam={20} color={color.blanco} />
+        <Icono nombre="derecha" tam={20} color={color.invertida} />
       </Pressable>
     </Animated.View>
   );
@@ -219,7 +219,7 @@ const e = StyleSheet.create({
   cifraNota: { fontFamily: fuente.texto, fontSize: 12, lineHeight: 17, marginTop: 4 },
   registrar: { minHeight: 66, borderRadius: radio.seccion, backgroundColor: color.azul, paddingLeft: 12, paddingRight: 18, flexDirection: "row", alignItems: "center", justifyContent: "space-between", overflow: "hidden" },
   registrarIcono: { width: 44, height: 44, borderRadius: radio.m, backgroundColor: color.naranja, alignItems: "center", justifyContent: "center" },
-  registrarTexto: { fontFamily: fuente.tituloFuerte, fontSize: 17, color: color.blanco },
+  registrarTexto: { fontFamily: fuente.tituloFuerte, fontSize: 17, color: color.invertida },
   brillo: { position: "absolute", top: 0, bottom: 0, width: 110, backgroundColor: "rgba(255,255,255,0.16)" },
   seccion: { borderWidth: 1, borderColor: color.borde, borderRadius: radio.seccion, padding: 16 },
   grande: { fontFamily: fuente.titulo, fontSize: 44, lineHeight: 48, color: color.texto, fontVariant: ["tabular-nums"] },

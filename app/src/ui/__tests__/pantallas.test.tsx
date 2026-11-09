@@ -13,8 +13,9 @@ jest.mock("expo-asset", () => ({ Asset: { loadAsync: jest.fn(async () => [{ loca
 jest.mock("@maplibre/maplibre-react-native", () => {
   const { View: V } = jest.requireActual("react-native");
   const Caja = ({ children }: { children?: unknown }) => <V>{children as never}</V>;
-  return { Map: Caja, Camera: Caja, GeoJSONSource: Caja, Layer: Caja };
+  return { Map: Caja, Camera: Caja, GeoJSONSource: Caja, Layer: Caja, Images: Caja, UserLocation: Caja };
 });
+jest.mock("expo-location", () => ({ requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: true })), getLastKnownPositionAsync: jest.fn(async () => null), getCurrentPositionAsync: jest.fn(async () => null), Accuracy: { Balanced: 3 } }));
 jest.mock("expo-camera", () => ({ CameraView: () => null, useCameraPermissions: () => [{ granted: true }, jest.fn()] }));
 jest.mock("react-native-view-shot", () => ({ captureRef: jest.fn() }));
 jest.mock("react-native-qrcode-svg", () => () => null);
