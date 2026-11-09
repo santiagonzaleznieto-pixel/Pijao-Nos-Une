@@ -7,9 +7,9 @@ import { cliente, useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Campo, Cargando, ErrorReintentar, Ficha, Fila, ItemLista, Pantalla, SinPermiso, Texto, Vacio, type Tono } from "@/ui/componentes";
 import type { NombreIcono } from "@/ui/Icono";
 import { espacio } from "@/ui/tema";
+import { diaBogota, fechaLarga } from "@/core/formato";
 
 type Caso = { id: string; persona_id: string | null; tipo: string; canal: string | null; detalle: string | null; estado: string; recibido_en: string; plazo_interno: string; plazo_legal: string };
-const FECHA = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "long", timeZone: "America/Bogota" });
 const ICONO_TIPO: Record<string, [NombreIcono, Tono]> = {
   supresion: ["basura", "rojo"], revocatoria: ["equis", "rojo"], consulta: ["ojo", "azul"], acceso: ["ojo", "azul"],
   rectificacion: ["editar", "turquesa"], no_contactar: ["candado", "verde"], queja: ["alerta", "naranja"],
@@ -44,7 +44,7 @@ export default function Titulares() {
   if (!app.perfil?.puede("ver_titulares")) return <Pantalla><SinPermiso texto="Solo el Director y el Administrador atienden estos casos." /></Pantalla>;
   if (error) return <Pantalla><ErrorReintentar texto={error} onReintentar={cargar} /></Pantalla>;
   if (!casos) return <Pantalla><Cargando lista texto="Cargando los casos…" /></Pantalla>;
-  const hoy = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+  const hoy = diaBogota();
   const vencidos = casos.filter((c) => c.plazo_interno < hoy).length;
 
   return (
@@ -61,11 +61,11 @@ export default function Titulares() {
           return (
             <View key={c.id}>
               <ItemLista titulo={etiqueta("C-18", c.tipo)} izquierda={<Ficha icono={icono} tono={vencido ? "rojo" : tono} />} ultimo={i === casos.length - 1 && !ver}
-                detalle={`Caso ${c.id.replace(/-/g, "").slice(0, 8).toUpperCase()} · plazo ${FECHA.format(new Date(c.plazo_interno))}${vencido ? " · vencido" : ""} · legal ${FECHA.format(new Date(c.plazo_legal))}`}
+                detalle={`Caso ${c.id.replace(/-/g, "").slice(0, 8).toUpperCase()} · plazo ${fechaLarga(c.plazo_interno)}${vencido ? " · vencido" : ""} · legal ${fechaLarga(c.plazo_legal)}`}
                 onPress={() => setAbierto(ver ? null : c.id)} />
               {ver ? (
                 <View style={{ gap: espacio.m, paddingVertical: espacio.m, paddingLeft: 56 }}>
-                  <Texto suave>Recibido el {FECHA.format(new Date(c.recibido_en))} por {c.canal ?? "un canal sin registrar"}.</Texto>
+                  <Texto suave>Recibido el {fechaLarga(c.recibido_en)} por {c.canal ?? "un canal sin registrar"}.</Texto>
                   {c.detalle ? <Texto>{c.detalle}</Texto> : null}
                   <Campo etiqueta="Respuesta" value={respuesta[c.id] ?? ""} onChangeText={(v) => setRespuesta({ ...respuesta, [c.id]: v })} multiline />
                   <Fila>

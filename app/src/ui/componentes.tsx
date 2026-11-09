@@ -268,7 +268,7 @@ export function Contador({ etiqueta, valor, onCambio, min = 0 }: { etiqueta: str
 
 /** Barra de pasos del asistente: «PASO 3 DE 12 · Vivienda» y la barra con el degradado que se llena. */
 export function Pasos({ actual, total, nombre }: { actual: number; total: number; nombre?: string }) {
-  const v = useRef(new Animated.Value(actual / total)).current;
+  const v = useRef(new Animated.Value(Math.max(0, actual - 1) / total)).current;   // al montar avanza desde el paso anterior
   const [ancho, setAncho] = useState(0);
   const reducido = useMovimientoReducido();
   useEffect(() => {

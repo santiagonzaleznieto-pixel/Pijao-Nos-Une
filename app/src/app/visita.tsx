@@ -186,7 +186,7 @@ export default function Visita() {
   const paso = bb.paso;
 
   return (
-    <Pantalla arriba={<Pasos actual={paso + 1} total={PASOS.length} nombre={PASOS[paso]} />}
+    <Pantalla key={paso} arriba={<Pasos actual={paso + 1} total={PASOS.length} nombre={PASOS[paso]} />}
       pie={<>
         {error ? <Aviso tipo="error" texto={error} /> : null}
         <Fila>

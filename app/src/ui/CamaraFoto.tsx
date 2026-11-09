@@ -9,6 +9,7 @@ import { captureRef } from "react-native-view-shot";
 import { nuevoId } from "@/core/ids";
 import { Aviso, Boton, Casilla } from "./componentes";
 import { color, espacio } from "./tema";
+import { fechaNumerica, hora } from "@/core/formato";
 
 export interface FotoTomada { id: string; archivo: string; tam_bytes: number; con_personas: boolean; tomada_en: string }
 
@@ -24,7 +25,7 @@ export function CamaraFoto({ sello, alTomar, alCancelar }: {
   const [autorizo, setAutorizo] = useState(false);
   const [trabajando, setTrabajando] = useState(false);
   const ahora = new Date();
-  const textoSello = `${ahora.toLocaleDateString("es-CO")} ${ahora.toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit" })} · ` +
+  const textoSello = `${fechaNumerica(ahora)} ${hora(ahora)} · ` +
     `${sello.lat?.toFixed(6) ?? "?"}, ${sello.lng?.toFixed(6) ?? "?"} · ${sello.iniciales}`;
 
   if (!permiso?.granted) {

@@ -9,12 +9,12 @@ import { borrarBorrador, listarBorradores } from "@/servicios/campo";
 import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Ficha, Fila, ItemLista, Pantalla, Segmentos, Vacio } from "@/ui/componentes";
 import { color, fuente, tl } from "@/ui/tema";
+import { fechaHora } from "@/core/formato";
 
 const NOMBRE: Record<string, string> = {
   registrar_visita: "Visita", editar_visita: "Edición de visita", solicitud_titular: "Solicitud de datos", no_contactar: "No contactar",
   tarea_estado: "Tarea", anuncio_leido: "Anuncio leído", completar_ingreso: "Curso de ingreso", incidente: "Incidente",
 };
-const HORA = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", hour12: true, timeZone: "America/Bogota" });
 
 export default function Pendientes() {
   const app = useApp();
@@ -44,7 +44,7 @@ export default function Pendientes() {
           setSincronizando(true); await app.sincronizar(); setSincronizando(false);
         }} />
         <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave, textAlign: "center" }}>
-          {app.ultimaSyncEn ? `Último envío correcto: ${HORA.format(new Date(app.ultimaSyncEn))}` : "Todavía no hay envíos en esta sesión."}
+          {app.ultimaSyncEn ? `Último envío correcto: ${fechaHora(app.ultimaSyncEn)}` : "Todavía no hay envíos en esta sesión."}
         </Text>
       </>}>
       <Segmentos opciones={[["enviar", `Por enviar · ${porEnviar.length}`], ["borradores", `Borradores · ${borradores.length}`], ["revisar", `Revisar · ${revisar.length}`]]}
@@ -56,7 +56,7 @@ export default function Pendientes() {
         <View>
           {porEnviar.map((i, n) => (
             <ItemLista key={i.id} titulo={NOMBRE[i.tipo] ?? i.tipo} ultimo={n === porEnviar.length - 1}
-              detalle={`${HORA.format(new Date(i.creado_en))} · ${i.estado === "reintento" ? `error, reintentando (${i.intentos})` : "guardado en el teléfono"}`}
+              detalle={`${fechaHora(i.creado_en)} · ${i.estado === "reintento" ? `error, reintentando (${i.intentos})` : "guardado en el teléfono"}`}
               izquierda={<Ficha icono={i.estado === "reintento" ? "alerta" : "nube"} tono={i.estado === "reintento" ? "naranja" : "azul"} />} />
           ))}
         </View>

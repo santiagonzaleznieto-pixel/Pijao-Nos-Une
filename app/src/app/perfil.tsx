@@ -8,10 +8,10 @@ import { cliente, useApp } from "@/servicios/contexto";
 import { Aviso, Avatar, Boton, Dato, FilaEnlace, Interruptor, ItemLista, Pantalla, Seccion, Segmentos, Ficha, TituloMedio } from "@/ui/componentes";
 import type { Modo } from "@/ui/tema";
 import { color, fuente, tl } from "@/ui/tema";
+import { fechaHora } from "@/core/formato";
 
 type D = { id: string; modelo: string | null; ultimo_acceso: string; activo: boolean; version_app: string | null };
 const ROL: Record<string, string> = { admin: "Administrador", director: "Director", colaborador: "Colaborador o colaboradora" };
-const FECHA = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "long", hour: "numeric", minute: "2-digit", hour12: true, timeZone: "America/Bogota" });
 
 export default function Perfil() {
   const app = useApp();
@@ -74,7 +74,7 @@ export default function Perfil() {
         <Seccion titulo="Teléfonos con mi cuenta">
           {dispositivos.map((x, i) => (
             <View key={x.id} style={{ gap: 8 }}>
-              <ItemLista titulo={x.modelo ?? "Teléfono"} detalle={`Versión ${x.version_app ?? "?"} · ${x.activo ? "activo" : "cerrado"} · ${FECHA.format(new Date(x.ultimo_acceso))}`}
+              <ItemLista titulo={x.modelo ?? "Teléfono"} detalle={`Versión ${x.version_app ?? "?"} · ${x.activo ? "activo" : "cerrado"} · ${fechaHora(x.ultimo_acceso)}`}
                 izquierda={<Ficha icono="telefono" tono={x.activo ? "azul" : "gris"} />} ultimo={i === dispositivos.length - 1 && !x.activo} />
               {x.activo ? <Boton texto="Reportar perdido o robado" variante="peligro" icono="alerta" onPress={() => perdido(x.id)} /> : null}
             </View>

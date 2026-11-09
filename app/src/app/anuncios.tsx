@@ -7,9 +7,9 @@ import { useApp } from "@/servicios/contexto";
 import { Boton, Ficha, Insignia, ItemLista, Pantalla, Seccion, Vacio, Cargando } from "@/ui/componentes";
 import { Icono } from "@/ui/Icono";
 import { color, fuente, tl } from "@/ui/tema";
+import { fechaLarga } from "@/core/formato";
 
 type F = Record<string, any>;
-const FECHA = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "long", timeZone: "America/Bogota" });
 
 export default function Anuncios() {
   const app = useApp();
@@ -58,7 +58,7 @@ export default function Anuncios() {
           const ver = abierto === a.id;
           return (
             <View key={a.id}>
-              <ItemLista titulo={a.titulo} detalle={ver ? a.texto : `${a.creado_en ? FECHA.format(new Date(a.creado_en)) : ""}${urgente ? ` · ${a.prioridad}` : ""}${leidos.includes(a.id) ? " · leído" : ""}`}
+              <ItemLista titulo={a.titulo} detalle={ver ? a.texto : `${fechaLarga(a.creado_en)}${urgente ? ` · ${a.prioridad}` : ""}${leidos.includes(a.id) ? " · leído" : ""}`}
                 izquierda={<Ficha icono="megafono" tono={urgente ? "naranja" : leidos.includes(a.id) ? "gris" : "azul"} />}
                 onPress={() => setAbierto(ver ? null : a.id)} ultimo={i === resto.length - 1 && !ver} derecha={<Icono nombre={ver ? "arriba" : "abajo"} tam={20} color={color.textoSuave} />} />
               {ver && !leidos.includes(a.id) ? <View style={{ paddingLeft: 56, paddingBottom: 12 }}><Boton texto="Confirmar lectura" variante="contorno" onPress={() => leido(a.id)} /></View> : null}

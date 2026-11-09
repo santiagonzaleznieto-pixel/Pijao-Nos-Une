@@ -13,9 +13,8 @@ import { Aviso, Boton, Etiqueta, Fila, Tarjeta } from "@/ui/componentes";
 import { Icono, type NombreIcono } from "@/ui/Icono";
 import { Aparece, curvaSuave, useConteo, useMovimientoReducido, useToque } from "@/ui/movimiento";
 import { color, degradado, fuente, radio, sombra, tl } from "@/ui/tema";
+import { fechaConDia, miles } from "@/core/formato";
 
-const FECHA = new Intl.DateTimeFormat("es-CO", { weekday: "long", day: "numeric", month: "long", timeZone: "America/Bogota" });
-const miles = (n: number) => n.toLocaleString("es-CO");
 
 function TarjetaCifra({ titulo, valor, icono, fondo, tinta, nota, retraso }: {
   titulo: string; valor: number; icono: NombreIcono; fondo: string; tinta: string; nota?: string; retraso: number;
@@ -115,7 +114,7 @@ export default function Inicio() {
           <Path d="M0 142 C90 110 140 128 204 110 S320 76 440 106" stroke={color.verde} strokeOpacity={0.34} strokeWidth={1.4} fill="none" />
         </Svg>
         <Aparece retraso={100}>
-          <Etiqueta>{FECHA.format(new Date())}</Etiqueta>
+          <Etiqueta>{fechaConDia(new Date())}</Etiqueta>
           <Text accessibilityRole="header" style={e.saludo}>Hola, {nombre}</Text>
         </Aparece>
       </View>

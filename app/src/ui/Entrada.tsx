@@ -1,5 +1,5 @@
 // Entrada de la app (2.7): el anillo de cuatro colores se dibuja, el logo llega desde la izquierda, PIJAO · NOS · UNE sube
-// por líneas, se traza la línea fina y aparece el mensaje corto. Unos 4 segundos, una vez por apertura. Con «reducir
+// por líneas, se traza la línea fina y aparece el mensaje corto. Menos de 2 segundos (3.5), una vez por apertura. Con «reducir
 // movimiento» dura menos de un segundo y sin desplazamientos. Solo transform, opacity y el trazo de los arcos.
 import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Image, StyleSheet, Text, View } from "react-native";
@@ -50,14 +50,14 @@ export function Entrada({ alTerminar }: { alTerminar: () => void }) {
     const t = (v: Animated.Value, ms: number, delay: number, easing = curvaSuave, nativo = true) =>
       Animated.timing(v, { toValue: 1, duration: reducido ? 150 : ms, delay: reducido ? 0 : delay, easing, useNativeDriver: nativo });
     Animated.parallel([
-      ...arcos.map((a, i) => t(a, 600, 50 + i * 150, curvaSuave, false)),
-      t(logo, 1000, 450, rebote),
-      ...lineas.map((l, i) => t(l, 800, 1100 + i * 120)),
-      t(trazo, 900, 2250),
-      t(mensaje, 600, 2150),
+      ...arcos.map((a, i) => t(a, 420, 40 + i * 90, curvaSuave, false)),
+      t(logo, 640, 220, rebote),
+      ...lineas.map((l, i) => t(l, 480, 560 + i * 80)),
+      t(trazo, 480, 1000),
+      t(mensaje, 400, 940),
     ]).start();
-    const espera = reducido ? 700 : 3600;
-    const sale = reducido ? 150 : 550;
+    const espera = reducido ? 600 : 1520;
+    const sale = reducido ? 150 : 340;
     const fin = setTimeout(() => {
       setSaliendo(true);   // mientras se desvanece ya deja tocar lo que hay debajo
       Animated.timing(salida, { toValue: 1, duration: sale, easing: curvaAfilada, useNativeDriver: true }).start(() => terminar());

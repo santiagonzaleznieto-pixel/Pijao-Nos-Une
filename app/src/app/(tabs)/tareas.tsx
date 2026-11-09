@@ -7,19 +7,19 @@ import { useApp } from "@/servicios/contexto";
 import { Boton, Campo, Chip, Ficha, Fila, ItemLista, Pantalla, Vacio, Cargando, type Tono } from "@/ui/componentes";
 import type { NombreIcono } from "@/ui/Icono";
 import { espacio } from "@/ui/tema";
+import { diaBogota, fechaConDia } from "@/core/formato";
 
 type F = Record<string, any>;
-const DIA = new Intl.DateTimeFormat("es-CO", { weekday: "long", day: "numeric", month: "long", timeZone: "America/Bogota" });
-const hoyClave = () => new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+const hoyClave = () => diaBogota();
 
 function plazo(t: F): { texto: string; tono: Tono; icono: NombreIcono } {
   if (t.estado === "hecha") return { texto: "Hecha", tono: "verde", icono: "check" };
   if (t.estado === "bloqueada") return { texto: "Bloqueada", tono: "rojo", icono: "alerta" };
   if (!t.fecha_limite) return { texto: "Sin fecha", tono: "azul", icono: "tareas" };
-  const f = String(t.fecha_limite).slice(0, 10);
-  if (f < hoyClave()) return { texto: `Venció el ${DIA.format(new Date(t.fecha_limite))}`, tono: "rojo", icono: "reloj" };
+  const f = diaBogota(t.fecha_limite);
+  if (f < hoyClave()) return { texto: `Venció el ${fechaConDia(t.fecha_limite)}`, tono: "rojo", icono: "reloj" };
   if (f === hoyClave()) return { texto: "Vence hoy", tono: "naranja", icono: "reloj" };
-  return { texto: `Vence el ${DIA.format(new Date(t.fecha_limite))}`, tono: "azul", icono: "calendario" };
+  return { texto: `Vence el ${fechaConDia(t.fecha_limite)}`, tono: "azul", icono: "calendario" };
 }
 
 export default function Tareas() {
@@ -47,7 +47,7 @@ export default function Tareas() {
 
   if (!tareas) return <Pantalla titulo="Tareas"><Cargando lista texto="Cargando sus tareas…" /></Pantalla>;
   const abiertas = tareas.filter((t) => ["pendiente", "en_curso", "bloqueada"].includes(t.estado));
-  const vencidas = abiertas.filter((t) => t.fecha_limite && String(t.fecha_limite).slice(0, 10) < hoyClave());
+  const vencidas = abiertas.filter((t) => t.fecha_limite && diaBogota(t.fecha_limite) < hoyClave());
   const hechas = tareas.filter((t) => t.estado === "hecha");
   const lista = filtro === "mias" ? abiertas : filtro === "vencidas" ? vencidas : hechas;
 
