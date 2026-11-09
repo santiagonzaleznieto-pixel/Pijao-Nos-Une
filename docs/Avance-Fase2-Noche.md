@@ -9,9 +9,9 @@ Si la sesión se corta, se retoma aquí: el primer bloque sin ✅ es el siguient
 | # | Bloque | Estado |
 |---|---|---|
 | 1 | Mapa: marcadores con color y forma, pendientes punteados, ubicación con precisión, grupos con estado dominante, estilo de marca y ficha rápida | ✅ Marcadores generados en `app/assets/mapa` (13 tipos de 5.6 y números de grupo), estilo en tres modos, ficha P-10, leyenda, «mi ubicación». También: ícono nuevo de la app, ícono adaptable, notificaciones y arranque con el logo |
-| 2 | Componentes base, íconos y estados comunes (cargando, vacío, sin conexión, error, sin permiso) | 🟡 Componentes e íconos (incluidos los 14 ejes) hechos; falta usarlos en las pantallas |
-| 3 | Modos oscuro, sol y letra grande | 🟡 Tema con las tres paletas y la letra ×1,25 (se lee al arrancar); falta el selector en el perfil y revisar pantallas |
-| 4 | Pantallas de la app al detalle del lienzo | ⏳ |
+| 2 | Componentes base, íconos y estados comunes (cargando, vacío, sin conexión, error, sin permiso) | ✅ Componentes, íconos (14 ejes) y estados comunes usados en todas las pantallas |
+| 3 | Modos oscuro, sol y letra grande | ✅ Tres paletas y letra ×1,25; selector en Perfil (la app se recarga sola); barra de estado según el modo |
+| 4 | Pantallas de la app al detalle del lienzo | ✅ Entrar, Crear cuenta (3 pasos), Recuperar (medidor de fuerza), Dos pasos (6 casillas), Cuenta, Acuerdos (barra de lectura), Curso, Registrar aquí (ondas y precisión), Nueva visita (barra de pasos y resumen), Vivienda (línea de tiempo), Persona, Buscar, Pendientes, Tareas, Más, Perfil, Anuncios, Titulares, Carnet y Guion |
 | 5 | Ícono de la app, arranque, animaciones que faltan y textos | ⏳ |
 | 6 | Panel web interno con el diseño | ⏳ |
 | 7 | Accesibilidad, materiales, documentos, APK y lista del dueño | ⏳ |

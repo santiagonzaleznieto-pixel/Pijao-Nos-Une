@@ -1,12 +1,28 @@
-// P-05 y P-06: acuerdos (leídos hasta el final) y curso de ingreso con evaluación (10.6, R-03, R-45).
+// P-05 y P-06: acuerdos (leídos hasta el final) y curso de ingreso con evaluación (10.6, R-03, R-45). Diseño de la Fase 2.
 import { useState } from "react";
 import { Text, View } from "react-native";
 import { aprobado, LECCIONES, PREGUNTAS, puntaje, VERSION_ACUERDOS } from "@/core/curso";
 import { param } from "@/core/reglas";
 import { cliente, useApp } from "@/servicios/contexto";
-import { Aviso, Boton, Opciones, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
+import { Aviso, Boton, Etiqueta, Fila, Opciones, Pantalla, Seccion, TituloMedio } from "@/ui/componentes";
 import { LectorAcuerdos } from "@/ui/LectorAcuerdos";
-import { color, letra } from "@/ui/tema";
+import { Aparece } from "@/ui/movimiento";
+import { color, espacio, fuente, tl } from "@/ui/tema";
+
+/** Segmentos de avance de las lecciones (uno por lección). */
+function Segmentos({ actual, total }: { actual: number; total: number }) {
+  return (
+    <View style={{ flexDirection: "row", gap: 4, paddingHorizontal: espacio.pantalla, paddingTop: espacio.s, paddingBottom: espacio.m, backgroundColor: color.fondo }}
+      accessible accessibilityLabel={`Lección ${actual + 1} de ${total}`}>
+      {Array.from({ length: total }, (_, i) => (
+        <View key={i} style={{ flex: 1, height: 5, borderRadius: 3, backgroundColor: i <= actual ? color.azulOceano : color.superficiePanel }} />
+      ))}
+    </View>
+  );
+}
+
+/** Parte la lección en frases (sin expresiones con «lookbehind», para todos los motores de JavaScript). */
+const frases = (t: string) => t.split(/\.\s+/).filter(Boolean).map((f, i, a) => (i < a.length - 1 || t.trim().endsWith(".") ? f.replace(/\.$/, "") + "." : f));
 
 export default function Ingreso() {
   const { params, recargarPerfil } = useApp();
@@ -25,6 +41,7 @@ export default function Ingreso() {
     setPaso("resultado");
     if (!aprobado(p, minimo)) return;
     setEnviando(true);
+    setError(null);
     try {
       const { error: e } = await cliente.rpc("rpc_completar_ingreso", { p_puntaje: p, p_acuerdos_version: versionAcuerdos });
       if (e) throw new Error(e.message);
@@ -35,20 +52,30 @@ export default function Ingreso() {
   }
 
   if (paso === "acuerdos") {
-    return (
-      <LectorAcuerdos titulo="1. Acuerdos" textoBoton="Continuar al curso"
-        onAceptar={(v) => { setVersionAcuerdos(v); setPaso("lecciones"); }} />
-    );
+    return <LectorAcuerdos titulo="Acuerdos del equipo" textoBoton="Continuar al curso" onAceptar={(v) => { setVersionAcuerdos(v); setPaso("lecciones"); }} />;
   }
 
   if (paso === "lecciones") {
     const l = LECCIONES[leccion];
     const ultima = leccion === LECCIONES.length - 1;
     return (
-      <Pantalla titulo={`2. Curso · lección ${leccion + 1} de ${LECCIONES.length}`}>
-        <Tarjeta><Text style={{ fontSize: letra.mediana, fontWeight: "700", color: color.azul }}>{l.titulo}</Text><Texto>{l.texto}</Texto></Tarjeta>
-        <Boton texto={ultima ? "Ir a la evaluación" : "Siguiente lección"} onPress={() => (ultima ? setPaso("evaluacion") : setLeccion(leccion + 1))} />
-        {leccion > 0 ? <Boton texto="Lección anterior" variante="suave" onPress={() => setLeccion(leccion - 1)} /> : null}
+      <Pantalla arriba={<Segmentos actual={leccion} total={LECCIONES.length} />}
+        pie={<Fila>
+          {leccion > 0 ? <Boton texto="Anterior" variante="suave" onPress={() => setLeccion(leccion - 1)} estilo={{ flex: 1 }} /> : null}
+          <Boton texto={ultima ? "Ir a la evaluación" : "Siguiente lección"} onPress={() => (ultima ? setPaso("evaluacion") : setLeccion(leccion + 1))} estilo={{ flex: 1 }} />
+        </Fila>}>
+        <Aparece key={leccion} estilo={{ gap: espacio.m }}>
+          <Etiqueta>{`Lección ${leccion + 1} de ${LECCIONES.length}`}</Etiqueta>
+          <TituloMedio>{l.titulo}</TituloMedio>
+          {frases(l.texto).map((frase, i) => (
+            <View key={i} style={{ flexDirection: "row", gap: 12, alignItems: "flex-start" }}>
+              <View style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: color.tinteAzul, alignItems: "center", justifyContent: "center", marginTop: -1 }}>
+                <Text style={{ fontFamily: fuente.tituloFuerte, fontSize: tl(13), color: color.textoAzul }}>{i + 1}</Text>
+              </View>
+              <Text style={{ flex: 1, fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(25), color: color.texto }}>{frase}</Text>
+            </View>
+          ))}
+        </Aparece>
       </Pantalla>
     );
   }
@@ -56,24 +83,27 @@ export default function Ingreso() {
   if (paso === "evaluacion") {
     const completas = Object.keys(respuestas).length === PREGUNTAS.length;
     return (
-      <Pantalla titulo={`3. Evaluación · mínimo ${minimo} %`}>
+      <Pantalla etiqueta="Evaluación" titulo={`Mínimo ${minimo} %`} subtitulo={`${Object.keys(respuestas).length} de ${PREGUNTAS.length} preguntas respondidas.`}
+        pie={<Boton texto="Terminar evaluación" onPress={terminar} deshabilitado={!completas} />}>
         {PREGUNTAS.map((p, i) => (
-          <Tarjeta key={p.pregunta}>
-            <Texto negrita>{i + 1}. {p.pregunta}</Texto>
-            <Opciones opciones={p.opciones.map((o, j) => [String(j), o] as const)} valor={respuestas[i] !== undefined ? String(respuestas[i]) : null}
+          <Seccion key={p.pregunta} titulo={`Pregunta ${i + 1}`}>
+            <Text style={{ fontFamily: fuente.textoFuerte, fontSize: tl(16), lineHeight: tl(24), color: color.texto }}>{p.pregunta}</Text>
+            <Opciones lista opciones={p.opciones.map((o, j) => [String(j), o] as const)} valor={respuestas[i] !== undefined ? String(respuestas[i]) : null}
               onCambio={(v) => setRespuestas({ ...respuestas, [i]: Number(v) })} />
-          </Tarjeta>
+          </Seccion>
         ))}
-        <Boton texto="Terminar evaluación" onPress={terminar} deshabilitado={!completas} />
       </Pantalla>
     );
   }
 
   const paso_ = resultado !== null && aprobado(resultado, minimo);
   return (
-    <Pantalla titulo="Resultado">
-      <View><Text style={{ fontSize: 48, fontWeight: "700", color: paso_ ? color.verde : color.rojo }}>{resultado} %</Text></View>
-      {paso_ ? <Aviso tipo="ok" texto="¡Aprobó! Su certificado y su carnet quedan en «Más». Bienvenido o bienvenida al equipo." />
+    <Pantalla>
+      <View style={{ alignItems: "center", gap: 8, paddingVertical: espacio.xl }}>
+        <Text style={{ fontFamily: fuente.marca, fontSize: tl(64), color: paso_ ? color.textoVerde : color.textoRojo }}>{resultado} %</Text>
+        <TituloMedio>{paso_ ? "¡Aprobó el curso!" : "Todavía no alcanza"}</TituloMedio>
+      </View>
+      {paso_ ? <Aviso tipo="ok" icono="estrella" texto="Su certificado y su carnet quedan en «Más». Bienvenido o bienvenida al equipo." />
         : <Aviso tipo="alerta" texto={`Necesita al menos ${minimo} %. Repase las lecciones e inténtelo de nuevo.`} />}
       {error ? <><Aviso tipo="error" texto={error} /><Boton texto="Enviar otra vez" onPress={terminar} cargando={enviando} /></> : null}
       {!paso_ ? <Boton texto="Repasar e intentar de nuevo" onPress={() => { setRespuestas({}); setLeccion(0); setPaso("lecciones"); }} /> : null}

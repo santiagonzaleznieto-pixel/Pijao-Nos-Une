@@ -1,6 +1,7 @@
 // Íconos de línea del sistema de diseño (cuadrícula de 24, trazo de 2 px, puntas redondeadas). Son los mismos del lienzo
 // de pantallas (diseno/pantallas/pantallas.css). Decorativos por defecto: el texto o el aria-label dicen qué hacen.
 import Svg, { Circle, Path, Rect } from "react-native-svg";
+import { opciones } from "@/core/catalogos";
 import { color as tema } from "./tema";
 
 const P = (d: string) => ({ t: "p" as const, d });
@@ -88,6 +89,13 @@ export const ICONO_EJE: Record<string, NombreIcono> = {
   salud: "ejeSalud", seguridad: "ejeSeguridad", empleo_emprendimiento: "ejeEmpleo", poblaciones: "personas",
   gobierno_cercano: "ejeGobierno", otro: "estrella",
 };
+
+/** Ícono del eje a partir de su clave o de su nombre en el catálogo (las fichas muestran el nombre). */
+export function iconoEje(claveOTexto: string): NombreIcono {
+  if (ICONO_EJE[claveOTexto]) return ICONO_EJE[claveOTexto];
+  const k = opciones("C-08").find(([, t]) => claveOTexto.startsWith(t))?.[0];
+  return ICONO_EJE[k ?? "otro"] ?? "estrella";
+}
 
 export function Icono({ nombre, tam = 22, color = tema.texto, grosor = 2 }: { nombre: NombreIcono; tam?: number; color?: string; grosor?: number }) {
   return (

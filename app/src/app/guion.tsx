@@ -1,25 +1,34 @@
 // 13.3 y 1.11: guion de visita y preguntas frecuentes, disponibles sin señal. El texto vigente lo publica el
 // Administrador en P-42 y se descarga con los textos legales; si aún no hay copia, se muestra el borrador de la app.
+// Diseño de la Fase 2: segmentos, títulos de bloque y preguntas que se abren al tocarlas.
 import { useEffect, useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { bloques, filtrarPreguntas, preguntas, textoCampo, type TextoCampo } from "@/core/guion";
 import { useApp } from "@/servicios/contexto";
-import { Aviso, Campo, Fila, Boton, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
-import { color, espacio, letra } from "@/ui/tema";
+import { Aviso, Buscador, Pantalla, Seccion, Segmentos, Texto, Vacio } from "@/ui/componentes";
+import { Icono } from "@/ui/Icono";
+import { color, espacio, fuente, tl } from "@/ui/tema";
 
 function Contenido({ texto }: { texto: string }) {
   return (
-    <View style={{ gap: espacio.xs }}>
+    <View style={{ gap: espacio.s }}>
       {bloques(texto).map((b, i) => b.tipo === "titulo"
-        ? <Text key={i} accessibilityRole="header" style={{ fontSize: letra.mediana, fontWeight: "700", color: color.azul, marginTop: espacio.s }}>{b.texto}</Text>
-        : <Texto key={i}>{b.tipo === "punto" ? `• ${b.texto}` : b.texto}</Texto>)}
+        ? <Text key={i} accessibilityRole="header" style={{ fontFamily: fuente.titulo, fontSize: tl(18), lineHeight: tl(24), color: color.texto, marginTop: i ? espacio.m : 0 }}>{b.texto}</Text>
+        : b.tipo === "punto"
+          ? (
+            <View key={i} style={{ flexDirection: "row", gap: 10 }}>
+              <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: color.azulOceano, marginTop: tl(10) }} />
+              <Text style={{ flex: 1, fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(25), color: color.texto }}>{b.texto}</Text>
+            </View>
+          )
+          : <Text key={i} style={{ fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(25), color: color.texto }}>{b.texto}</Text>)}
     </View>
   );
 }
 
 export default function Guion() {
   const app = useApp();
-  const [vista, setVista] = useState<"guion" | "preguntas">("guion");
+  const [vista, setVista] = useState("guion");
   const [guion, setGuion] = useState<TextoCampo | null>(null);
   const [faq, setFaq] = useState<TextoCampo | null>(null);
   const [abierta, setAbierta] = useState<number | null>(null);
@@ -37,28 +46,33 @@ export default function Guion() {
   const lista = faq ? filtrarPreguntas(preguntas(faq.contenido), buscar) : [];
 
   return (
-    <Pantalla titulo="Guion y preguntas">
-      <Fila>
-        <Boton texto="Guion de visita" variante={vista === "guion" ? "secundario" : "suave"} onPress={() => setVista("guion")} estilo={{ flex: 1 }} />
-        <Boton texto="Preguntas" variante={vista === "preguntas" ? "secundario" : "suave"} onPress={() => setVista("preguntas")} estilo={{ flex: 1 }} />
-      </Fila>
+    <Pantalla>
+      <Segmentos opciones={[["guion", "Guion de visita"], ["preguntas", "Preguntas"]]} valor={vista} onCambio={setVista} />
       {actual?.borrador ? <Aviso tipo="alerta" texto="Borrador: el abogado todavía no lo ha revisado. Úselo como guía y no improvise compromisos." /> : null}
-      {vista === "guion" && guion ? <Tarjeta><Contenido texto={guion.contenido} /></Tarjeta> : null}
+      {vista === "guion" && guion ? <Seccion><Contenido texto={guion.contenido} /></Seccion> : null}
       {vista === "preguntas" ? (
         <>
-          <Campo etiqueta="Buscar una pregunta" value={buscar} onChangeText={setBuscar} placeholder="Por ejemplo: borrar, votar, regalo" />
-          {lista.map((p, i) => (
-            <Tarjeta key={p.pregunta}>
-              <Pressable accessibilityRole="button" accessibilityState={{ expanded: abierta === i }} onPress={() => setAbierta(abierta === i ? null : i)}>
-                <Text style={{ fontSize: letra.normal, fontWeight: "700", color: color.texto }}>{p.pregunta}</Text>
-              </Pressable>
-              {abierta === i || buscar.trim() ? <Texto>{p.respuesta}</Texto> : null}
-            </Tarjeta>
-          ))}
-          {!lista.length ? <Texto suave>No hay preguntas con esas palabras.</Texto> : null}
+          <Buscador valor={buscar} onCambio={setBuscar} texto="Buscar: borrar, votar, regalo…" />
+          {lista.length ? (
+            <Seccion>
+              {lista.map((p, i) => {
+                const ver = abierta === i || Boolean(buscar.trim());
+                return (
+                  <View key={p.pregunta} style={{ borderBottomWidth: i < lista.length - 1 ? 1 : 0, borderBottomColor: color.borde, paddingVertical: 4 }}>
+                    <Pressable accessibilityRole="button" accessibilityState={{ expanded: ver }} onPress={() => setAbierta(abierta === i ? null : i)}
+                      style={{ flexDirection: "row", alignItems: "center", gap: 10, minHeight: 48, paddingVertical: 8 }}>
+                      <Text style={{ flex: 1, fontFamily: fuente.textoFuerte, fontSize: tl(16), lineHeight: tl(22), color: color.texto }}>{p.pregunta}</Text>
+                      <Icono nombre={ver ? "arriba" : "abajo"} tam={20} color={color.textoSuave} />
+                    </Pressable>
+                    {ver ? <View style={{ paddingBottom: 10 }}><Texto suave>{p.respuesta}</Texto></View> : null}
+                  </View>
+                );
+              })}
+            </Seccion>
+          ) : <Vacio icono="buscar" titulo="No hay preguntas con esas palabras" texto="Pruebe con otra palabra más corta." />}
         </>
       ) : null}
-      {actual ? <Texto suave>Versión {actual.version}.</Texto> : null}
+      {actual ? <Texto suave tam="pequena" centrado>Versión {actual.version}. Disponible sin señal.</Texto> : null}
     </Pantalla>
   );
 }

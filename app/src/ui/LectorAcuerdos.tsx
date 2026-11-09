@@ -1,11 +1,12 @@
 // P-05 y R-45: los acuerdos que firma el equipo, leídos hasta el final. Usa los textos vigentes que publica el Administrador
-// (P-42, migración 0016); sin conexión muestra los de la app y su versión local.
+// (P-42, migración 0016); sin conexión muestra los de la app y su versión local. Diseño de la Fase 2: barra de lectura con
+// el degradado de la marca y la casilla que solo se activa al llegar al final.
 import { useEffect, useState } from "react";
-import { ScrollView } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { VERSION_ACUERDOS } from "@/core/curso";
 import { useApp } from "@/servicios/contexto";
-import { Boton, Cargando, Casilla, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
-import { espacio } from "@/ui/tema";
+import { Boton, Cargando, Casilla, Insignia, TituloMedio } from "@/ui/componentes";
+import { color, degradado, espacio, fuente, tl } from "@/ui/tema";
 
 const TITULOS: Record<string, string> = {
   acuerdo_confidencialidad: "Acuerdo de confidencialidad",
@@ -27,9 +28,10 @@ export function LectorAcuerdos({ titulo, introduccion, textoBoton, onAceptar, ca
   const { sesion, practica } = useApp();
   const [textos, setTextos] = useState<{ titulo: string; texto: string }[] | null>(null);
   const [version, setVersion] = useState(VERSION_ACUERDOS);
-  const [leido, setLeido] = useState(false);
+  const [avance, setAvance] = useState(0);
   const [acepto, setAcepto] = useState(false);
   const [altoVisible, setAltoVisible] = useState(0);
+  const leido = avance >= 0.999;
 
   useEffect(() => {
     let vivo = true;
@@ -52,21 +54,44 @@ export function LectorAcuerdos({ titulo, introduccion, textoBoton, onAceptar, ca
   if (!textos) return <Cargando texto="Cargando los acuerdos…" />;
 
   return (
-    <Pantalla titulo={titulo} desplazable={false}
-      pie={<>
-        <Casilla texto="Leí y acepto los acuerdos" valor={acepto} onCambio={setAcepto} detalle={leido ? undefined : "Lea hasta el final para poder aceptar."} />
-        <Boton texto={textoBoton} onPress={() => onAceptar(version)} cargando={cargando} deshabilitado={!acepto || !leido} />
-      </>}>
-      <ScrollView onScroll={({ nativeEvent: n }) => { if (n.layoutMeasurement.height + n.contentOffset.y >= n.contentSize.height - 24) setLeido(true); }}
-        onLayout={(e) => setAltoVisible(e.nativeEvent.layout.height)}
-        onContentSizeChange={(_w, h) => { if (altoVisible && h <= altoVisible + 24) setLeido(true); }}   // cabe sin desplazar
-        scrollEventThrottle={200} contentContainerStyle={{ gap: espacio.m }}>
-        {introduccion ? <Texto>{introduccion}</Texto> : null}
+    <View style={{ flex: 1, backgroundColor: color.fondo }}>
+      <View style={{ flexDirection: "row", alignItems: "baseline", justifyContent: "space-between", paddingHorizontal: espacio.pantalla, paddingTop: espacio.m, paddingBottom: 10 }}>
+        <Text accessibilityRole="header" style={{ fontFamily: fuente.titulo, fontSize: tl(19), color: color.texto, flex: 1 }}>{titulo}</Text>
+        <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave }}>{Math.round(avance * 100)} % leído</Text>
+      </View>
+      <View style={{ height: 4, backgroundColor: color.superficiePanel }} accessible accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: Math.round(avance * 100) }}>
+        <View style={{ height: 4, width: `${Math.round(avance * 100)}%`, flexDirection: "row", overflow: "hidden" }}>
+          {degradado.map((c) => <View key={c} style={{ flex: 1, backgroundColor: c }} />)}
+        </View>
+      </View>
+      <ScrollView
+        onScroll={({ nativeEvent: n }) => {
+          const total = n.contentSize.height - n.layoutMeasurement.height;
+          setAvance((a) => Math.max(a, total <= 24 ? 1 : Math.min(1, (n.contentOffset.y + 24) / total)));
+        }}
+        onLayout={(ev) => setAltoVisible(ev.nativeEvent.layout.height)}
+        onContentSizeChange={(_w, h) => { if (altoVisible && h <= altoVisible + 24) setAvance(1); }}   // cabe sin desplazar
+        scrollEventThrottle={100} contentContainerStyle={{ gap: espacio.l, padding: espacio.pantalla, paddingBottom: espacio.xl }}>
+        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
+          {textos.map((a) => <Insignia key={a.titulo} texto={a.titulo} tono="azul" />)}
+        </View>
+        {introduccion ? <Text style={{ fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(24), color: color.textoSuave }}>{introduccion}</Text> : null}
         {textos.map((a) => (
-          <Tarjeta key={a.titulo}><Texto negrita>{a.titulo}</Texto><Texto>{a.texto}</Texto></Tarjeta>
+          <View key={a.titulo} style={{ gap: 8 }}>
+            <TituloMedio>{a.titulo}</TituloMedio>
+            {a.texto.split(/\n+/).map((p, i) => (
+              <Text key={i} style={{ fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(25), color: color.texto }}>{p}</Text>
+            ))}
+          </View>
         ))}
-        <Texto suave>Versión de los textos: {version}. Los textos definitivos los revisa el abogado.</Texto>
+        <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave }}>Versión de los textos: {version}. Los textos definitivos los revisa el abogado.</Text>
       </ScrollView>
-    </Pantalla>
+      <View style={{ paddingHorizontal: espacio.pantalla, paddingTop: 14, paddingBottom: 26, borderTopWidth: 1, borderTopColor: color.borde, backgroundColor: color.tarjeta, gap: 10 }}>
+        <Casilla texto="Leí y acepto los acuerdos" valor={acepto} onCambio={(v) => { if (leido) setAcepto(v); }}
+          detalle={leido ? undefined : "Se activa al leer hasta el final."} estilo={leido ? undefined : { opacity: 0.55 }} />
+        <Boton texto={textoBoton} onPress={() => onAceptar(version)} cargando={cargando} deshabilitado={!acepto || !leido} />
+        <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(13), color: color.textoSuave, textAlign: "center" }}>Se guardan la fecha, la versión y el teléfono.</Text>
+      </View>
+    </View>
   );
 }

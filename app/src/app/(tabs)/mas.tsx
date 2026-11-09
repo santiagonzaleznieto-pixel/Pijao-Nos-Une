@@ -1,25 +1,36 @@
-// Menú «Más» (18.1): reúne el resto de pantallas según los permisos.
+// Menú «Más» (18.1): reúne el resto de pantallas según los permisos, agrupadas como en el diseño de la Fase 2.
 import { useRouter } from "expo-router";
+import { View } from "react-native";
 import { useApp } from "@/servicios/contexto";
-import { Boton, Pantalla, Texto } from "@/ui/componentes";
 import { VERSION_APP } from "@/servicios/version";
+import { Aviso, Etiqueta, FilaEnlace, Pantalla, Texto } from "@/ui/componentes";
 
 export default function Mas() {
   const app = useApp();
   const router = useRouter();
   return (
     <Pantalla titulo="Más">
-      <Boton texto="Buscar" variante="suave" onPress={() => router.push("/buscar")} />
-      <Boton texto="Mis visitas y pendientes" variante="suave" onPress={() => router.push("/pendientes")} />
-      <Boton texto="Guion de visita y preguntas frecuentes" variante="suave" onPress={() => router.push("/guion")} />
-      <Boton texto="Anuncios" variante="suave" onPress={() => router.push("/anuncios")} />
-      <Boton texto="Carnet digital" variante="suave" onPress={() => router.push("/carnet")} />
-      {app.perfil?.puede("ver_titulares") ? <Boton texto="Derechos de los titulares" variante="suave" onPress={() => router.push("/titulares")} /> : null}
-      <Boton texto="Verificación en dos pasos" variante="suave" onPress={() => router.push("/verificacion")} />
-      <Boton texto="Mi perfil" variante="suave" onPress={() => router.push("/perfil")} />
-      <Boton texto={app.practica ? "Salir del modo práctica" : "Entrar al modo práctica"} variante="secundario" onPress={() => app.cambiarPractica(!app.practica)} />
-      <Boton texto="Ocultar pantalla" variante="suave" onPress={app.ocultarPantalla} />
-      <Texto suave>Recuerde: no pase datos de personas por los chats de WhatsApp del equipo. Versión {VERSION_APP}.</Texto>
+      <View style={{ gap: 10 }}>
+        <Etiqueta>Trabajo de campo</Etiqueta>
+        <FilaEnlace texto="Buscar" detalle="Dirección, vereda, finca o nombre" icono="buscar" onPress={() => router.push("/buscar")} />
+        <FilaEnlace texto="Mis visitas y pendientes" detalle={app.cola.pendientes ? `${app.cola.pendientes} por enviar` : "Todo enviado"} icono="nube" onPress={() => router.push("/pendientes")} />
+        <FilaEnlace texto="Guion de visita y preguntas" icono="libro" onPress={() => router.push("/guion")} />
+      </View>
+      <View style={{ gap: 10 }}>
+        <Etiqueta>Equipo</Etiqueta>
+        <FilaEnlace texto="Anuncios" icono="megafono" onPress={() => router.push("/anuncios")} />
+        {app.perfil?.puede("ver_titulares") ? <FilaEnlace texto="Derechos de los titulares" detalle="Solicitudes de las personas sobre sus datos" icono="escudo" onPress={() => router.push("/titulares")} /> : null}
+      </View>
+      <View style={{ gap: 10 }}>
+        <Etiqueta>Mi cuenta</Etiqueta>
+        <FilaEnlace texto="Perfil y ajustes" detalle="Modo claro, oscuro o sol y letra grande" icono="persona" onPress={() => router.push("/perfil")} />
+        <FilaEnlace texto="Carnet digital" icono="qr" onPress={() => router.push("/carnet")} />
+        <FilaEnlace texto="Verificación en dos pasos" icono="candado" onPress={() => router.push("/verificacion")} />
+        <FilaEnlace texto={app.practica ? "Salir del modo práctica" : "Modo práctica"} detalle="Datos de ejemplo; nada se envía" icono="play" onPress={() => app.cambiarPractica(!app.practica)} />
+        <FilaEnlace texto="Ocultar pantalla" detalle="Tapa todo si alguien se acerca a mirar" icono="ocultar" onPress={app.ocultarPantalla} />
+      </View>
+      <Aviso tipo="info" icono="mensaje" texto="No pase datos de personas por los chats de WhatsApp del equipo: los datos solo van en la app." />
+      <Texto suave tam="pequena" centrado>Versión {VERSION_APP}</Texto>
     </Pantalla>
   );
 }

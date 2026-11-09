@@ -4,6 +4,7 @@ import { Montserrat_600SemiBold, Montserrat_700Bold, Montserrat_800ExtraBold, Mo
 import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -12,7 +13,7 @@ import { ProveedorApp, useApp } from "@/servicios/contexto";
 import { BotonOcultar } from "@/ui/BotonOcultar";
 import { Entrada } from "@/ui/Entrada";
 import { Boton, Cargando, Pantalla, Texto } from "@/ui/componentes";
-import { color, espacio, fuente } from "@/ui/tema";
+import { color, espacio, fuente, modoOscuro, tl } from "@/ui/tema";
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -52,8 +53,8 @@ function Guardian() {
         <View style={{ width: 104, height: 104, borderRadius: 52, overflow: "hidden", backgroundColor: color.blanco, elevation: 6 }}>
           <Image source={require("../../assets/images/logo-circular.jpg")} style={{ width: 127, height: 127, marginLeft: -12, marginTop: -10 }} accessibilityIgnoresInvertColors />
         </View>
-        <Text accessibilityRole="header" style={{ fontFamily: fuente.titulo, fontSize: 22, color: color.texto, textAlign: "center" }}>{app.oculto ? "Pantalla oculta" : "App bloqueada"}</Text>
-        <Text style={{ fontFamily: fuente.texto, fontSize: 16, lineHeight: 24, color: color.textoSuave, textAlign: "center", maxWidth: 280 }}>
+        <Text accessibilityRole="header" style={{ fontFamily: fuente.titulo, fontSize: tl(22), color: color.texto, textAlign: "center" }}>{app.oculto ? "Pantalla oculta" : "App bloqueada"}</Text>
+        <Text style={{ fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(24), color: color.textoSuave, textAlign: "center", maxWidth: 280 }}>
           {app.oculto ? "Nadie puede ver los datos. Para volver, confirme que es usted." : "Se bloqueó por seguridad tras unos minutos sin uso."}
         </Text>
         <Boton texto="Volver con huella o rostro" onPress={app.desbloquear} />
@@ -76,7 +77,7 @@ function Guardian() {
           <Text style={{ textAlign: "center", fontFamily: fuente.titulo, fontSize: 13, letterSpacing: 1.5, color: color.sobreNaranja }}>MODO PRÁCTICA · DATOS DE EJEMPLO</Text>
         </View>
       ) : null}
-      <Stack screenOptions={{ headerTintColor: color.texto, headerTitleStyle: { fontFamily: fuente.titulo, fontSize: 19 }, headerShadowVisible: false,
+      <Stack screenOptions={{ headerTintColor: color.texto, headerTitleStyle: { fontFamily: fuente.titulo, fontSize: tl(19) }, headerShadowVisible: false,
         headerStyle: { backgroundColor: color.fondo }, contentStyle: { backgroundColor: color.fondo }, animation: "slide_from_right",
         headerRight: app.usuarioId ? () => <BotonOcultar tam={40} /> : undefined }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -108,6 +109,7 @@ function Guardian() {
 export default function Raiz() {
   return (
     <SafeAreaProvider>
+      <StatusBar style={modoOscuro ? "light" : "dark"} />
       <ProveedorApp>
         <Guardian />
       </ProveedorApp>

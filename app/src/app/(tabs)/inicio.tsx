@@ -12,7 +12,7 @@ import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Etiqueta, Fila, Tarjeta } from "@/ui/componentes";
 import { Icono, type NombreIcono } from "@/ui/Icono";
 import { Aparece, curvaSuave, useConteo, useMovimientoReducido, useToque } from "@/ui/movimiento";
-import { color, degradado, fuente, radio, sombra } from "@/ui/tema";
+import { color, degradado, fuente, radio, sombra, tl } from "@/ui/tema";
 
 const FECHA = new Intl.DateTimeFormat("es-CO", { weekday: "long", day: "numeric", month: "long", timeZone: "America/Bogota" });
 const miles = (n: number) => n.toLocaleString("es-CO");
@@ -193,7 +193,7 @@ export default function Inicio() {
         <Aparece retraso={680}>
           <Pressable accessibilityRole="button" onPress={() => router.push("/guion")} style={({ pressed }) => [e.filaEnlace, pressed && { transform: [{ scale: 0.98 }] }]}>
             <Icono nombre="libro" tam={22} color={color.texto} />
-            <Text style={[e.subtitulo, { flex: 1, fontSize: 15 }]}>Guion de visita y preguntas frecuentes</Text>
+            <Text style={[e.subtitulo, { flex: 1, fontSize: tl(15) }]}>Guion de visita y preguntas frecuentes</Text>
             <Icono nombre="derecha" tam={18} color={color.textoSuave} />
           </Pressable>
         </Aparece>
@@ -206,27 +206,27 @@ export default function Inicio() {
 const e = StyleSheet.create({
   panel: { backgroundColor: color.superficiePanel, borderBottomLeftRadius: radio.panel, borderBottomRightRadius: radio.panel, paddingHorizontal: 18, paddingTop: 14, paddingBottom: 24, overflow: "hidden" },
   lomas: { position: "absolute", left: 0, bottom: -18, opacity: 0.9 },
-  saludo: { fontFamily: fuente.titulo, fontSize: 30, lineHeight: 34, letterSpacing: -0.3, color: color.texto, marginTop: 6 },
+  saludo: { fontFamily: fuente.titulo, fontSize: tl(30), lineHeight: tl(34), letterSpacing: -0.3, color: color.texto, marginTop: 6 },
   cuerpo: { paddingHorizontal: 18, paddingTop: 20, gap: 16 },
   titulo: { flexDirection: "row", justifyContent: "space-between", alignItems: "baseline" },
-  enlace: { fontFamily: fuente.tituloMedio, fontSize: 14, color: color.azulOceano },
+  enlace: { fontFamily: fuente.tituloMedio, fontSize: tl(14), color: color.azulOceano },
   cuadricula: { flexDirection: "row", flexWrap: "wrap", gap: 10, marginTop: -6 },
   cifra: { width: "48.5%", flexGrow: 1, flexBasis: "45%", borderRadius: radio.l, padding: 16 },
   cifraCabeza: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  cifraTitulo: { fontFamily: fuente.tituloMedio, fontSize: 13 },
+  cifraTitulo: { fontFamily: fuente.tituloMedio, fontSize: tl(13) },
   cifraChip: { width: 28, height: 28, borderRadius: radio.s, backgroundColor: color.fondo, alignItems: "center", justifyContent: "center" },
-  cifraValor: { fontFamily: fuente.titulo, fontSize: 40, lineHeight: 44, color: color.texto, marginTop: 10, fontVariant: ["tabular-nums"] },
-  cifraNota: { fontFamily: fuente.texto, fontSize: 12, lineHeight: 17, marginTop: 4 },
+  cifraValor: { fontFamily: fuente.titulo, fontSize: tl(40), lineHeight: tl(44), color: color.texto, marginTop: 10, fontVariant: ["tabular-nums"] },
+  cifraNota: { fontFamily: fuente.texto, fontSize: tl(12), lineHeight: tl(17), marginTop: 4 },
   registrar: { minHeight: 66, borderRadius: radio.seccion, backgroundColor: color.azul, paddingLeft: 12, paddingRight: 18, flexDirection: "row", alignItems: "center", justifyContent: "space-between", overflow: "hidden" },
   registrarIcono: { width: 44, height: 44, borderRadius: radio.m, backgroundColor: color.naranja, alignItems: "center", justifyContent: "center" },
-  registrarTexto: { fontFamily: fuente.tituloFuerte, fontSize: 17, color: color.invertida },
+  registrarTexto: { fontFamily: fuente.tituloFuerte, fontSize: tl(17), color: color.invertida },
   brillo: { position: "absolute", top: 0, bottom: 0, width: 110, backgroundColor: "rgba(255,255,255,0.16)" },
   seccion: { borderWidth: 1, borderColor: color.borde, borderRadius: radio.seccion, padding: 16 },
-  grande: { fontFamily: fuente.titulo, fontSize: 44, lineHeight: 48, color: color.texto, fontVariant: ["tabular-nums"] },
-  mediana: { fontFamily: fuente.titulo, fontSize: 22, lineHeight: 28, color: color.texto, fontVariant: ["tabular-nums"] },
-  subtitulo: { fontFamily: fuente.tituloFuerte, fontSize: 14, color: color.texto },
-  texto: { fontFamily: fuente.texto, fontSize: 14, color: color.texto, textTransform: "capitalize" },
-  textoFuerte: { fontFamily: fuente.textoFuerte, fontSize: 14, color: color.texto },
-  apoyo: { fontFamily: fuente.texto, fontSize: 13, lineHeight: 18, color: color.textoSuave },
+  grande: { fontFamily: fuente.titulo, fontSize: tl(44), lineHeight: tl(48), color: color.texto, fontVariant: ["tabular-nums"] },
+  mediana: { fontFamily: fuente.titulo, fontSize: tl(22), lineHeight: tl(28), color: color.texto, fontVariant: ["tabular-nums"] },
+  subtitulo: { fontFamily: fuente.tituloFuerte, fontSize: tl(14), color: color.texto },
+  texto: { fontFamily: fuente.texto, fontSize: tl(14), color: color.texto, textTransform: "capitalize" },
+  textoFuerte: { fontFamily: fuente.textoFuerte, fontSize: tl(14), color: color.texto },
+  apoyo: { fontFamily: fuente.texto, fontSize: tl(13), lineHeight: tl(18), color: color.textoSuave },
   filaEnlace: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 56, paddingHorizontal: 16, borderRadius: 18, backgroundColor: color.superficie },
 });

@@ -15,9 +15,9 @@ import { borradorVacio, type Borrador, type PersonaBorrador } from "@/core/visit
 import { guardarBorrador, guardarVisita } from "@/servicios/campo";
 import { useApp } from "@/servicios/contexto";
 import { CamaraFoto } from "@/ui/CamaraFoto";
-import { Aviso, Boton, Campo, Cargando, Casilla, Contador, Fila, Opciones, Pantalla, Tarjeta, Texto } from "@/ui/componentes";
+import { Aviso, Avatar, Boton, Campo, Cargando, Casilla, Contador, Dato, Enlace, Etiqueta, Fila, ItemLista, Opciones, Pantalla, Pasos, Seccion, Semaforo, Texto, Vacio } from "@/ui/componentes";
 import { Firma } from "@/ui/Firma";
-import { color, colorCalidad } from "@/ui/tema";
+import { color, fuente, radio, tl } from "@/ui/tema";
 
 const PASOS = ["Antes de empezar", "Ubicación", "Foto de fachada", "Vivienda", "Resultado", "Hogar", "Personas", "Necesidades",
   "Participación", "Simpatía", "Autorización", "Notas", "Cierre"];
@@ -150,13 +150,11 @@ export default function Visita() {
 
   if (guardado) {
     return (
-      <Pantalla titulo="Visita guardada">
-        <Aviso tipo={guardado.color === "verde" ? "ok" : guardado.color === "amarillo" ? "alerta" : "error"}
-          texto={app.conectado ? "Guardado. Se está enviando." : "Guardado en el teléfono, pendiente de enviar. Se enviará solo cuando haya señal."} />
-        <Text style={{ fontSize: 22, fontWeight: "700", color: colorCalidad[guardado.color] }}>Semáforo: {guardado.color}</Text>
-        {guardado.motivos.map((m) => <Texto key={m}>• {m}</Texto>)}
-        <Texto>Todo guardado. Gracias por recorrer Pijao.</Texto>
-        <Boton texto="Volver al mapa" onPress={() => router.replace("/mapa")} />
+      <Pantalla>
+        <Vacio icono="check" tono="verde" titulo="Visita guardada" texto={app.conectado ? "Se está enviando. Gracias por recorrer Pijao." : "Quedó en el teléfono y se enviará sola cuando haya señal. Gracias por recorrer Pijao."} />
+        <View style={{ alignItems: "center" }}><Semaforo nivel={guardado.color} /></View>
+        {guardado.motivos.length ? <Seccion titulo="Para revisar">{guardado.motivos.map((m) => <Texto key={m}>• {m}</Texto>)}</Seccion> : null}
+        <Boton texto="Volver al mapa" icono="mapa" onPress={() => router.replace("/mapa")} />
       </Pantalla>
     );
   }
@@ -188,41 +186,51 @@ export default function Visita() {
   const paso = bb.paso;
 
   return (
-    <Pantalla titulo={`Paso ${paso + 1} de ${PASOS.length}: ${PASOS[paso]}`}
+    <Pantalla arriba={<Pasos actual={paso + 1} total={PASOS.length} nombre={PASOS[paso]} />}
       pie={<>
         {error ? <Aviso tipo="error" texto={error} /> : null}
         <Fila>
           {paso > 0 ? <Boton texto="Atrás" variante="suave" onPress={() => ir(-1)} estilo={{ flex: 1 }} /> : null}
-          {paso < PASOS.length - 1 ? <Boton texto="Siguiente" onPress={() => ir(1)} estilo={{ flex: 1 }} /> : <Boton texto="Guardar" onPress={guardar} estilo={{ flex: 1 }} />}
+          {paso < PASOS.length - 1 ? <Boton texto="Siguiente" onPress={() => ir(1)} estilo={{ flex: 1 }} /> : <Boton texto="Guardar visita" icono="check" onPress={guardar} estilo={{ flex: 1 }} />}
         </Fila>
-        <Boton texto="Guardar y seguir después" variante="suave" onPress={() => router.back()} />
+        <Enlace centrado texto="Guardar el borrador y seguir después" onPress={() => router.back()} />
       </>}>
 
       {paso === 0 ? (
-        <Tarjeta>
-          <Texto>• Salude y preséntese con su nombre y el de la campaña.</Texto>
-          <Texto>• Explique que visita para conocer las necesidades de la familia y escuchar, no para pedir nada a cambio.</Texto>
-          <Texto>• Pregunte si puede registrar la visita y ofrezca el aviso de privacidad (QR o volante).</Texto>
-          <Texto>• No fotografíe a niños ni a personas sin permiso. Si le dicen que no, agradezca y deje constancia. No insista.</Texto>
-          <Texto>• No ofrezca regalos, favores ni promesas personales.</Texto>
+        <Seccion titulo="Antes de tocar la puerta">
+          {["Salude y preséntese con su nombre y el de la campaña.",
+            "Explique que visita para conocer las necesidades de la familia y escuchar, no para pedir nada a cambio.",
+            "Pregunte si puede registrar la visita y ofrezca el aviso de privacidad (QR o volante).",
+            "No fotografíe a niños ni a personas sin permiso. Si le dicen que no, agradezca y deje constancia. No insista.",
+            "No ofrezca regalos, favores ni promesas personales."].map((t, i) => (
+            <View key={i} style={{ flexDirection: "row", gap: 12, alignItems: "flex-start", paddingVertical: 4 }}>
+              <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: color.tinteAzul, alignItems: "center", justifyContent: "center" }}>
+                <Text style={{ fontFamily: fuente.tituloFuerte, fontSize: tl(13), color: color.textoAzul }}>{i + 1}</Text>
+              </View>
+              <Text style={{ flex: 1, fontFamily: fuente.texto, fontSize: tl(16), lineHeight: tl(24), color: color.texto }}>{t}</Text>
+            </View>
+          ))}
           {vistas >= 3 ? <Texto suave>Ya vio esta tarjeta {vistas} veces: puede pasarla rápido.</Texto> : null}
-          <Boton texto="Ver el guion completo y las preguntas frecuentes" variante="suave" onPress={() => router.push("/guion")} />
-        </Tarjeta>
+          <Boton texto="Ver el guion completo y las preguntas" variante="suave" icono="libro" onPress={() => router.push("/guion")} />
+        </Seccion>
       ) : null}
 
       {paso === 1 ? (
-        <Tarjeta>
-          <Texto>Punto: {Number(bb.vivienda.lat).toFixed(6)}, {Number(bb.vivienda.lng).toFixed(6)}</Texto>
-          <Texto>{bb.visita.ubicacion_manual ? `Ubicación manual · motivo: ${etiqueta("C-20", bb.visita.motivo_manual as string)}` : `GPS · precisión ±${Math.round(Number(bb.vivienda.precision_m ?? 0))} m`}</Texto>
-        </Tarjeta>
+        <Seccion titulo="Ubicación de la vivienda">
+          <Dato etiqueta="Punto" valor={`${Number(bb.vivienda.lat).toFixed(6)}, ${Number(bb.vivienda.lng).toFixed(6)}`} />
+          <Dato etiqueta="Fuente" valor={bb.visita.ubicacion_manual ? "Ubicación manual" : "GPS"} />
+          <Dato etiqueta={bb.visita.ubicacion_manual ? "Motivo" : "Precisión"} ultimo
+            valor={bb.visita.ubicacion_manual ? etiqueta("C-20", bb.visita.motivo_manual as string) : `±${Math.round(Number(bb.vivienda.precision_m ?? 0))} m`} />
+        </Seccion>
       ) : null}
 
       {paso === 2 ? (
         <>
-          {fachada ? <Image source={{ uri: fachada.archivo_local }} style={{ width: "100%", aspectRatio: 3 / 4 }} accessibilityLabel="Foto de fachada" /> : null}
-          <Boton texto={fachada ? "Tomar otra foto de fachada" : "Tomar foto de fachada"} onPress={() => setCamara("fachada")} />
+          {fachada ? <Image source={{ uri: fachada.archivo_local }} style={{ width: "100%", aspectRatio: 3 / 4, borderRadius: radio.l }} accessibilityLabel="Foto de fachada" />
+            : <Vacio icono="camara" titulo="Falta la foto de fachada" texto="Tómela desde la calle, sin personas. La app le pone el sello con la hora y el punto." />}
+          <Boton texto={fachada ? "Tomar otra foto de fachada" : "Tomar foto de fachada"} icono="camara" onPress={() => setCamara("fachada")} />
           <Casilla texto="No autorizó la foto" valor={Boolean(bb.visita.no_autorizo_foto)} onCambio={(v) => vis("no_autorizo_foto", v)} />
-          <Boton texto="Agregar foto de un problema (vía, derrumbe…)" variante="suave" onPress={() => setCamara("problema")} />
+          <Boton texto="Agregar foto de un problema (vía, derrumbe…)" variante="suave" icono="alerta" onPress={() => setCamara("problema")} />
           <Texto suave>{bb.fotos.length} de {param(app.params, "fotos_max_visita")} fotos.</Texto>
         </>
       ) : null}
@@ -258,7 +266,7 @@ export default function Visita() {
       {paso === 5 ? (
         <>
           <Contador etiqueta="Personas que viven en el hogar" valor={Number(bb.hogar?.total_personas ?? 0)} onCambio={(n) => hog("total_personas", n)} min={1} />
-          <Texto negrita>Personas por rango de edad (sin nombres de menores)</Texto>
+          <Etiqueta>Personas por rango de edad (sin nombres de menores)</Etiqueta>
           {claves("C-11").map((k) => (
             <Contador key={k} etiqueta={etiqueta("C-11", k)} valor={Number((bb.hogar?.edades as Record<string, number> | undefined)?.[k] ?? 0)}
               onCambio={(n) => hog("edades", { ...((bb.hogar?.edades as object) ?? {}), [k]: n })} />
@@ -269,7 +277,7 @@ export default function Visita() {
           <Contador etiqueta="Adultos que votan en otro municipio" valor={Number(bb.hogar?.votantes_otro_mpio_est ?? 0)} onCambio={(n) => hog("votantes_otro_mpio_est", n)} />
           <Contador etiqueta="Adultos que no saben dónde votan" valor={Number(bb.hogar?.votantes_no_sabe_est ?? 0)} onCambio={(n) => hog("votantes_no_sabe_est", n)} />
           <Contador etiqueta="Jóvenes que cumplen 18 antes de la elección" valor={Number(bb.hogar?.futuros_primeros_votantes ?? 0)} onCambio={(n) => hog("futuros_primeros_votantes", n)} />
-          <Texto negrita>Principal sostén del hogar</Texto>
+          <Etiqueta>Principal sostén del hogar</Etiqueta>
           <Opciones etiqueta="Relación" opciones={RELACION} valor={bb.hogar?.sosten_relacion as string} onCambio={(v) => hog("sosten_relacion", v)} />
           <Opciones etiqueta="Sexo" opciones={SEXO} valor={bb.hogar?.sosten_sexo as string} onCambio={(v) => hog("sosten_sexo", v)} />
           <Opciones etiqueta="Ocupación" opciones={opciones("C-07")} valor={bb.hogar?.sosten_ocupacion as string} onCambio={(v) => hog("sosten_ocupacion", v)} />
@@ -283,17 +291,23 @@ export default function Visita() {
 
       {paso === 6 ? (
         <>
-          <Texto>Solo adultos que autoricen. Los menores solo se cuentan en el paso anterior.</Texto>
-          {bb.personas.map((p) => (
-            <Tarjeta key={p.id}>
-              <Texto negrita>{p.primer_nombre} {p.primer_apellido}{p.es_sosten ? " · sostén del hogar" : ""}</Texto>
-              <Fila>
-                <Boton texto="Editar" variante="suave" onPress={() => setPersona(p)} />
-                <Boton texto="Quitar" variante="peligro" onPress={() => cambiar({ ...bb, personas: bb.personas.filter((x) => x.id !== p.id) })} />
-              </Fila>
-            </Tarjeta>
-          ))}
-          <Boton texto="Agregar persona" onPress={() => setPersona({ id: nuevoId() })} />
+          <Aviso tipo="info" texto="Solo adultos que autoricen. Los menores solo se cuentan en el paso anterior." />
+          {bb.personas.length ? (
+            <View>
+              {bb.personas.map((p, i) => (
+                <View key={p.id} style={{ gap: 8, paddingBottom: 10 }}>
+                  <ItemLista titulo={`${p.primer_nombre ?? ""} ${p.primer_apellido ?? ""}`.trim() || "Persona"} detalle={p.es_sosten ? "Sostén del hogar" : undefined}
+                    izquierda={<Avatar nombre={`${p.primer_nombre ?? ""} ${p.primer_apellido ?? ""}`} />} ultimo />
+                  <Fila>
+                    <Boton texto="Editar" variante="suave" icono="editar" onPress={() => setPersona(p)} estilo={{ flex: 1 }} />
+                    <Boton texto="Quitar" variante="peligro" onPress={() => cambiar({ ...bb, personas: bb.personas.filter((x) => x.id !== p.id) })} estilo={{ flex: 1 }} />
+                  </Fila>
+                  {i < bb.personas.length - 1 ? <View style={{ height: 1, backgroundColor: color.borde, marginTop: 6 }} /> : null}
+                </View>
+              ))}
+            </View>
+          ) : <Vacio icono="personas" titulo="Todavía no hay personas" texto="Agregue a cada adulto que quiera quedar registrado." />}
+          <Boton texto="Agregar persona" icono="mas" onPress={() => setPersona({ id: nuevoId() })} />
         </>
       ) : null}
 
@@ -308,8 +322,7 @@ export default function Visita() {
               cambiar({ ...bb, necesidades: lista.filter(Boolean) });
             };
             return (
-              <Tarjeta key={i}>
-                <Texto negrita>Necesidad {i + 1}</Texto>
+              <Seccion key={i} titulo={`Necesidad ${i + 1}`}>
                 <Opciones opciones={opciones("C-08")} valor={n.tema as string} onCambio={(v) => poner("tema", v)} />
                 {n.tema ? (
                   <>
@@ -318,7 +331,7 @@ export default function Visita() {
                     <Casilla texto="Quiere que le contemos cómo va su propuesta" valor={Boolean(n.desea_respuesta)} onCambio={(v) => poner("desea_respuesta", v)} />
                   </>
                 ) : null}
-              </Tarjeta>
+              </Seccion>
             );
           })}
         </>
@@ -335,18 +348,17 @@ export default function Visita() {
         <>
           <Aviso tipo="alerta" texto="Registre lo que la persona dijo, no lo que usted supone. Solo si lo expresó por iniciativa propia." />
           {bb.personas.map((p) => (
-            <Tarjeta key={p.id}>
-              <Texto negrita>{p.primer_nombre}</Texto>
+            <Seccion key={p.id} titulo={String(p.primer_nombre ?? "Persona")}>
               <Opciones opciones={opciones("C-09")} valor={(p.simpatia as string) ?? "no_registrado"}
                 onCambio={(v) => cambiar({ ...bb, personas: bb.personas.map((x) => (x.id === p.id ? { ...x, simpatia: v } : x)) })} />
-            </Tarjeta>
+            </Seccion>
           ))}
         </>
       ) : null}
 
       {paso === 10 ? (
         <>
-          <Tarjeta><Texto>{textoPara(app.perfil?.d.nombre ?? "", canales.correo, canales.whatsapp, textoAut.contenido ?? undefined)}</Texto></Tarjeta>
+          <Seccion titulo="Léale este texto a la persona"><Texto>{textoPara(app.perfil?.d.nombre ?? "", canales.correo, canales.whatsapp, textoAut.contenido ?? undefined)}</Texto></Seccion>
           <Casilla texto="(a) Registrar la vivienda y los datos del hogar" valor={aut.registro} onCambio={(v) => setAut({ ...aut, registro: v })} />
           <Casilla texto="(b) Guardar los datos personales" valor={aut.datos} onCambio={(v) => setAut({ ...aut, datos: v })} />
           <Casilla texto="(c) Recibir información de la campaña por el canal elegido" valor={aut.contacto} onCambio={(v) => setAut({ ...aut, contacto: v })} />
@@ -355,7 +367,7 @@ export default function Visita() {
           <Opciones etiqueta="¿Cómo autoriza?" opciones={[["firma_pantalla", "Firma en pantalla"], ["verbal", "Verbal"], ["papel", "Formulario en papel"]]}
             valor={aut.metodo} onCambio={(v) => setAut({ ...aut, metodo: v as Metodo })} />
           {aut.metodo === "firma_pantalla" ? <Firma alCambiar={(t) => setAut((a) => ({ ...a, firma: t }))} /> : null}
-          {aut.metodo === "papel" ? <Boton texto="Tomar foto de la autorización" variante="secundario" onPress={() => setCamara("autorizacion")} /> : null}
+          {aut.metodo === "papel" ? <Boton texto="Tomar foto de la autorización" variante="contorno" icono="camara" onPress={() => setCamara("autorizacion")} /> : null}
           <Texto suave>Entregue el aviso de privacidad (QR o volante).</Texto>
         </>
       ) : null}
@@ -373,15 +385,23 @@ export default function Visita() {
       ) : null}
 
       {paso === 12 ? (
-        <Tarjeta>
-          <Texto negrita>Resumen</Texto>
-          <Texto>{etiqueta("C-02", bb.visita.resultado)} · {bb.personas.length} persona(s) · {bb.necesidades.filter((n) => n.tema).length} necesidad(es) · {bb.fotos.length} foto(s)</Texto>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: colorCalidad[calidad.color] }} />
-            <Text style={{ fontSize: 18, fontWeight: "700", color: color.texto }}>Semáforo: {calidad.color}</Text>
+        <>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+            <Avatar icono={calidad.color === "verde" ? "check" : "exclama"} tono={calidad.color === "verde" ? "verde" : calidad.color === "amarillo" ? "naranja" : "rojo"} tam={52} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text style={{ fontFamily: fuente.titulo, fontSize: tl(20), color: color.texto }}>{calidad.color === "verde" ? "Registro completo" : calidad.color === "amarillo" ? "Registro por revisar" : "Registro incompleto"}</Text>
+              <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave }}>{calidad.color === "verde" ? "Cuenta en las estadísticas oficiales." : "Revise lo que falta antes de guardar."}</Text>
+            </View>
           </View>
-          {calidad.motivos.map((m) => <Texto key={m}>• {m}</Texto>)}
-        </Tarjeta>
+          <Seccion titulo="Resumen">
+            <Dato etiqueta="Resultado" valor={etiqueta("C-02", bb.visita.resultado)} />
+            <Dato etiqueta="Personas" valor={String(bb.personas.length)} />
+            <Dato etiqueta="Necesidades" valor={String(bb.necesidades.filter((n) => n.tema).length)} />
+            <Dato etiqueta="Fotos" valor={String(bb.fotos.length)} ultimo />
+          </Seccion>
+          <Semaforo nivel={calidad.color} />
+          {calidad.motivos.length ? <Seccion titulo="Para revisar">{calidad.motivos.map((m) => <Texto key={m}>• {m}</Texto>)}</Seccion> : null}
+        </>
       ) : null}
     </Pantalla>
   );
@@ -405,21 +425,25 @@ function FormularioPersona({ inicial, alGuardar, alCancelar }: { inicial: Person
   }
 
   return (
-    <Pantalla titulo="Persona" pie={<>{error ? <Aviso tipo="error" texto={error} /> : null}<Fila><Boton texto="Cancelar" variante="suave" onPress={alCancelar} estilo={{ flex: 1 }} /><Boton texto="Guardar persona" onPress={guardar} estilo={{ flex: 1 }} /></Fila></>}>
+    <Pantalla etiqueta="Nueva visita" titulo="Persona" pie={<>{error ? <Aviso tipo="error" texto={error} /> : null}<Fila><Boton texto="Cancelar" variante="suave" onPress={alCancelar} estilo={{ flex: 1 }} /><Boton texto="Guardar persona" onPress={guardar} estilo={{ flex: 1 }} /></Fila></>}>
+      <Etiqueta>Nombre</Etiqueta>
       <Campo etiqueta="Primer nombre" value={txt("primer_nombre")} onChangeText={poner("primer_nombre")} />
       <Campo etiqueta="Segundo nombre" value={txt("segundo_nombre")} onChangeText={poner("segundo_nombre")} />
       <Campo etiqueta="Primer apellido" value={txt("primer_apellido")} onChangeText={poner("primer_apellido")} />
       <Campo etiqueta="Segundo apellido" value={txt("segundo_apellido")} onChangeText={poner("segundo_apellido")} />
       <Campo etiqueta="Cómo le gusta que le llamen" value={txt("apodo")} onChangeText={poner("apodo")} />
+      <Etiqueta>Documento y edad</Etiqueta>
       <Opciones etiqueta="Tipo de documento" opciones={[["CC", "Cédula de ciudadanía"], ["CE", "Cédula de extranjería de residente"]]} valor={txt("tipo_documento")} onCambio={poner("tipo_documento")} />
       <Campo etiqueta="Número de documento (solo con su autorización)" value={txt("cedula")} onChangeText={poner("cedula")} keyboardType="number-pad" />
       <Campo etiqueta="Fecha de nacimiento (día/mes/año)" value={txt("fecha_nacimiento")} onChangeText={poner("fecha_nacimiento")} />
       {!p.fecha_nacimiento ? <Casilla texto="Confirmo que es mayor de 18 años" valor={Boolean(p.mayor_edad_confirmada)} onCambio={poner("mayor_edad_confirmada")} /> : null}
       <Opciones etiqueta="Sexo" opciones={SEXO} valor={txt("sexo")} onCambio={poner("sexo")} />
       <Opciones etiqueta="Ocupación" opciones={opciones("C-07")} valor={txt("ocupacion")} onCambio={poner("ocupacion")} />
+      <Etiqueta>Contacto</Etiqueta>
       <Campo etiqueta="Teléfono" value={txt("telefono")} onChangeText={poner("telefono")} keyboardType="phone-pad" />
       <Casilla texto="El teléfono es WhatsApp" valor={Boolean(p.telefono_es_whatsapp)} onCambio={poner("telefono_es_whatsapp")} />
       <Campo etiqueta="Correo" value={txt("correo")} onChangeText={poner("correo")} autoCapitalize="none" keyboardType="email-address" />
+      <Etiqueta>Participación</Etiqueta>
       <Opciones etiqueta="¿Vota en Pijao?" opciones={SI_NO} valor={txt("vota_en_pijao")} onCambio={poner("vota_en_pijao")} />
       <Opciones etiqueta="Años viviendo en Pijao" opciones={[["menos_1", "Menos de 1"], ["1_5", "1 a 5"], ["5_mas", "Más de 5"]]} valor={txt("anios_en_pijao")} onCambio={poner("anios_en_pijao")} />
       {p.vota_en_pijao === "si" && p.anios_en_pijao === "menos_1" ? <Aviso tipo="alerta" texto="La inscripción de cédula solo corresponde donde la persona vive realmente (14.8). La app nunca promueve inscripciones." /> : null}

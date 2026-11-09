@@ -13,7 +13,7 @@ import { cargarCasa } from "@/servicios/casa";
 import { useApp } from "@/servicios/contexto";
 import { pedirPermiso } from "@/servicios/gps";
 import { FotoCasa } from "@/ui/FotoCasa";
-import { ICONO_EJE, Icono } from "@/ui/Icono";
+import { Icono, iconoEje } from "@/ui/Icono";
 import { Aviso, Boton, BotonIcono, Chip, Enlace, ErrorReintentar, Insignia, Semaforo, TituloMedio } from "@/ui/componentes";
 import { CENTRO_PIJAO, estiloPijao } from "@/ui/estiloMapa";
 import { ESCALA_IMAGEN, ICONO_ESTADO, IMAGENES_MAPA, LEYENDA, NUMERO_GRUPO, PROPIEDADES_GRUPO, colorDominante } from "@/ui/marcadoresMapa";
@@ -243,7 +243,7 @@ function FichaRapida({ v, casa, resumen, pendiente, onCerrar, onDetalle, onVisit
             <View style={{ gap: 8 }}>
               <Text style={e.apoyo}>Necesidades</Text>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-                {resumen.necesidades.map((n) => <Insignia key={n} texto={n} tono="turquesa" icono={ICONO_EJE[claveEje(n)] ?? "estrella"} />)}
+                {resumen.necesidades.map((n) => <Insignia key={n} texto={n} tono="turquesa" icono={iconoEje(n)} />)}
               </View>
             </View>
           ) : null}
@@ -255,15 +255,6 @@ function FichaRapida({ v, casa, resumen, pendiente, onCerrar, onDetalle, onVisit
     </>
   );
 }
-
-// Las necesidades llegan con la etiqueta del catálogo; se busca su clave para el ícono del eje.
-const ETIQUETA_A_CLAVE: Record<string, string> = {
-  "Educación y conocimiento": "educacion", "Deporte y juventud": "deporte_juventud", "Campo y café": "campo_cafe", "Vivienda y entorno": "vivienda_entorno",
-  "Bienestar animal": "bienestar_animal", "Vías, movilidad y conectividad": "vias_movilidad", "Agua y medio ambiente": "agua_ambiente",
-  "Turismo y cultura": "turismo_cultura", "Salud y bienestar": "salud", "Seguridad y convivencia": "seguridad",
-  "Empleo y emprendimiento": "empleo_emprendimiento", "Atención a poblaciones específicas": "poblaciones", "Gobierno cercano y transparente": "gobierno_cercano",
-};
-const claveEje = (etiqueta: string) => ETIQUETA_A_CLAVE[etiqueta] ?? "otro";
 
 const flotante = { borderWidth: 1, borderColor: color.borde, backgroundColor: color.tarjeta, ...sombra.flotante };
 const e = StyleSheet.create({

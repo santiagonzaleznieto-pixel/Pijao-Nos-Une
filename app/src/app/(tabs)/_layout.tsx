@@ -8,7 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useApp } from "@/servicios/contexto";
 import { BotonOcultar } from "@/ui/BotonOcultar";
 import { Icono, type NombreIcono } from "@/ui/Icono";
-import { color, fuente, radio, sombra } from "@/ui/tema";
+import { color, fuente, modoSol, radio, sombra, tl } from "@/ui/tema";
 
 function PuntoEstado({ conectado }: { conectado: boolean }) {
   const onda = useRef(new Animated.Value(0)).current;
@@ -41,7 +41,7 @@ function Franja() {
         style={{ flex: 1, flexDirection: "row", alignItems: "center", gap: 10, alignSelf: "flex-start", paddingVertical: 7, paddingLeft: 12, paddingRight: 14,
           borderRadius: radio.pastilla, borderWidth: 1, borderColor: color.borde, backgroundColor: color.superficie }}>
         <PuntoEstado conectado={conectado} />
-        <Text numberOfLines={1} style={{ flex: 1, fontFamily: fuente.textoMedio, fontSize: 13, color: color.texto }}>{estado}{pendientes}</Text>
+        <Text numberOfLines={1} style={{ flex: 1, fontFamily: fuente.textoMedio, fontSize: tl(13), color: color.texto }}>{estado}{pendientes}</Text>
       </Pressable>
       <BotonOcultar />
     </View>
@@ -71,7 +71,7 @@ function BarraInferior({ state, emitter, navigateToTab }: BottomTabBarProps) {
   return (
     <View pointerEvents="box-none" style={{ position: "absolute", left: 14, right: 14, bottom: Math.max(16, insets.bottom + 8) }}>
       <View onLayout={(ev) => setAncho(ev.nativeEvent.layout.width)}
-        style={[{ height: 70, borderRadius: radio.barra, backgroundColor: color.fondo, borderWidth: 1, borderColor: color.borde, flexDirection: "row", alignItems: "center" }, sombra.flotante]}>
+        style={[{ height: 70, borderRadius: radio.barra, backgroundColor: color.tarjeta, borderWidth: modoSol ? 1.5 : 1, borderColor: color.borde, flexDirection: "row", alignItems: "center" }, sombra.flotante]}>
         {celda ? <Animated.View pointerEvents="none" style={{ position: "absolute", top: 9, left: 0, width: 56, height: 50, borderRadius: 16, backgroundColor: color.tinteAzul, transform: [{ translateX: x }] }} /> : null}
         {state.routes.map((r, i) => {
           if (r.name === "nuevo") {
@@ -95,7 +95,7 @@ function BarraInferior({ state, emitter, navigateToTab }: BottomTabBarProps) {
                 if (!activa && !ev.defaultPrevented) navigateToTab(r.key);
               }} style={{ flex: 1, minHeight: 56, alignItems: "center", justifyContent: "center", gap: 3 }}>
               <Icono nombre={item.icono} tam={22} color={tinta} grosor={activa ? 2.2 : 2} />
-              <Text style={{ fontFamily: fuente.tituloMedio, fontSize: 12, color: tinta }}>{item.titulo}</Text>
+              <Text style={{ fontFamily: fuente.tituloMedio, fontSize: tl(12), color: tinta }}>{item.titulo}</Text>
             </Pressable>
           );
         })}
