@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Carnet para imprimir</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Carnet (P-48) en tamaño tarjeta CR80 (8,56 × 5,4 cm), frente y reverso. Mismo diseño que el carnet digital de la app.
+     El QR verifica en la página del carnet si la persona está activa; no muestra sus datos. Campos entre corchetes. */
+  @page { size: letter; margin: 1.5cm; }
+  :root { --tinta: #122b52; --suave: #5a6b80; --degradado: linear-gradient(90deg, #1d4e9e, #1aa0c8 45%, #6db33f 72%, #f39a1e); }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); }
+  .par { display: flex; gap: 1cm; margin-bottom: 1cm; }
+  .tarjeta { width: 8.56cm; height: 5.4cm; border-radius: 0.32cm; border: 1px solid #e3e9f1; overflow: hidden; position: relative; background: #fff; }
+  .franja { height: 0.18cm; background: var(--degradado); }
+  .frente { padding: 0.3cm 0.4cm; display: grid; grid-template-columns: 1.9cm 1fr; gap: 0.35cm; align-items: center; height: calc(100% - 0.18cm); }
+  .cabeza { grid-column: 1 / -1; display: flex; align-items: center; gap: 0.2cm; }
+  .logo { width: 0.9cm; height: 0.9cm; border-radius: 50%; overflow: hidden; }
+  .logo img { width: 118%; height: 118%; margin: -9% 0 0 -9%; object-fit: cover; }
+  .marca { font: 900 10pt/1 Montserrat, sans-serif; background: var(--degradado); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .foto { width: 1.9cm; height: 2.3cm; border-radius: 0.25cm; background: #edf3fb; display: flex; align-items: center; justify-content: center; font: 800 16pt Montserrat; color: #1f4e8c; }
+  .nombre { font: 800 10.5pt/1.2 Montserrat, sans-serif; }
+  .rol { font-size: 7.5pt; color: var(--suave); margin-top: 0.05cm; }
+  .vigente { display: inline-block; margin-top: 0.2cm; padding: 0.06cm 0.22cm; border-radius: 1cm; background: #eef6e8; color: #2f6b1e; font: 700 6.5pt/1.4 Montserrat, sans-serif; }
+  .reverso { padding: 0.4cm; display: flex; gap: 0.4cm; align-items: center; height: calc(100% - 0.18cm); }
+  .reverso .qr { width: 3cm; height: 3cm; border: 1px dashed #c6cfdb; border-radius: 0.2cm; display: flex; align-items: center; justify-content: center; font-size: 7pt; color: var(--suave); text-align: center; flex: none; }
+  .reverso p { font-size: 7pt; line-height: 1.45; margin: 0 0 0.15cm; color: var(--suave); }
+  .reverso strong { color: var(--tinta); font-family: Montserrat, sans-serif; }
+</style>
+</head>
+<body>
+<div class="par">
+  <div class="tarjeta">
+    <div class="franja"></div>
+    <div class="frente">
+      <div class="cabeza"><div class="logo"><img src="../../app/assets/images/logo-circular.jpg" alt=""></div><div class="marca">PIJAO NOS UNE</div></div>
+      <div class="foto">[IN]</div>
+      <div>
+        <div class="nombre">[Nombres y apellidos]</div>
+        <div class="rol">[Equipo de campo · zona]</div>
+        <div class="vigente">Vigente hasta [día/mes/año]</div>
+      </div>
+    </div>
+  </div>
+  <div class="tarjeta">
+    <div class="franja"></div>
+    <div class="reverso">
+      <div class="qr">[QR del carnet digital]</div>
+      <div>
+        <p><strong>¿Quiere comprobar este carnet?</strong></p>
+        <p>Escanee el código: la página dice si la persona está activa en el equipo. No muestra sus datos.</p>
+        <p>Nadie del equipo le pedirá dinero ni le ofrecerá regalos o favores a cambio de su voto.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -75,6 +75,24 @@ Se hacen a su ritmo, pero las marcadas con ⏰ tienen fecha. Cuando termine una,
 - [ ] Seguridad: en las veredas siempre en parejas y con hora de regreso. La jornada y el SOS llegan en la Fase 3.
 - [ ] Revisar cada semana el tablero **Métricas del piloto** del panel web.
 
+### 7. Para cerrar la Fase 2 (diseño) y empezar la Fase 3
+
+Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es lo que solo usted o el equipo pueden hacer:
+
+- [ ] **Probar la app 0.17.0 en un teléfono real** (el enlace está en GitHub → Releases, la más reciente). Revisar en especial:
+  - el **mapa**: que cargue Pijao, que se vean los marcadores con su forma y que «Ir a mi ubicación» funcione;
+  - el **modo oscuro**, el **modo sol** y la **letra grande** (Más → Perfil y ajustes): la app se recarga sola al cambiarlos;
+  - el **ícono nuevo** (grano de café) en la pantalla del teléfono y la **entrada** con el logo.
+- [ ] **Logos en vector** (el mismo punto 4): con ellos Claude saca los colores exactos con cuentagotas, hace la versión horizontal, la de un solo color y la marca de agua, y reemplaza el logo de los materiales.
+- [ ] **Aprobar o cambiar el mensaje de entrada.** Hoy dice «Juntos, casa por casa.». Si quiere otro, escríbalo y Claude lo cambia.
+- [ ] **Aprobar el ícono de la app** (grano de café con el degradado de la marca sobre azul marino) con el Director y el candidato.
+- [ ] **Fotografías reales de Pijao** tomadas por el equipo (café, montaña, río, pueblo y veredas), con permiso escrito de quien aparezca. Con ellas se arma el tablero de inspiración y las ilustraciones.
+- [ ] **Abogado:** revisar el texto del **volante de privacidad** (`diseno/materiales/volante-privacidad.html`) y el uso de la marca, el logo y el nombre del candidato en el carnet y los materiales (23.2-18).
+- [ ] **Piloto (febrero de 2027):** la prueba de uso con 5 colaboradores, incluidos adultos mayores, y la **prueba bajo el sol real** en una vereda. Anotar dónde se confunden, qué tarda y qué no se lee bien; Claude ajusta el diseño con eso.
+- [ ] **Aprobación final del diseño** por el Director y el candidato (criterio de salida de la Fase 2).
+- [ ] **Decidir si se publica la versión a main.** Todo el diseño está en la rama `fase-2/diseno`; pasar a `main` necesita su aprobación.
+- [ ] **Más adelante:** la página de la campaña y el kit para redes y piezas públicas (13.2), cuando haya mensaje definitivo. Las páginas públicas actuales (verificar carnet, Mis datos, política) siguen funcionando como están.
+
 ---
 
 ### Lo que Claude ya dejó hecho o hace sin usted
@@ -82,3 +100,4 @@ Se hacen a su ritmo, pero las marcadas con ⏰ tienen fecha. Cuando termine una,
 - Toda la construcción de la Fase 1: app, servidor, panel web y páginas públicas, con pruebas automáticas en cada cambio.
 - Aplicar las migraciones en producción (la 0016 y la 0017 quedaron aplicadas el 7 de noviembre de 2026) y publicar cada versión de la app en GitHub Releases.
 - Mantener al día `docs/Plan-de-Construccion.md`, `docs/Entrega-y-Firma.md` y la bitácora `docs/Bitacora-del-Proyecto.md`.
+- **Fase 2 (9 de noviembre de 2026, app 0.17.0):** mapa con marcadores de color y forma, grupos, «por enviar» punteado y ficha rápida; ícono de la app, ícono adaptable, notificaciones y arranque; modos claro, oscuro, sol y letra grande; todas las pantallas de la app con el diseño del lienzo y sus estados (cargando, vacío, sin señal, error, sin permiso); íconos de los 14 ejes; formatos de fecha, hora y pesos; auditoría de accesibilidad (`docs/Accesibilidad-Fase2.md`); panel web interno con el diseño; volante, certificado y carnet para imprimir (`diseno/materiales/`).

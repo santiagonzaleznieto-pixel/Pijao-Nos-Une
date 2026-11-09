@@ -120,6 +120,9 @@ Este archivo guarda el contexto de las conversaciones con Claude Code, para que 
 - «Ya están en la app? Si no, hazla y corre el runworkflow para instalar la app»
 - «Sí, sigue» (seguir llevando las demás pantallas al detalle del lienzo)
 - «Espera, antes de que continúes. La versión que me diste a descargar, tiene un error. Cuando ingreso a las funciones de abajo como mapa y las demás; se me queda la pantalla así en blando, solucióname para ya para descargarla y mostrarla. Hazle un chequeo a qué nada esté fallando»
+- «Primero que todo, háblame en español. Segundo: que falta para terminar esta segunda fase?»
+- «Primero: el panel web déjalo solo para nosotros, el director y administrador. No quiero algo para el público como lo estás haciendo, ya que después, más adelante, crearemos una página de la campaña. Por ahora, todo lo que sea parte del equipo, déjalo en espera, pero todo lo que puedas hacer tú de esta fase dos, adelántalo. Empieza por los mapas, y continúa con todo lo demás hasta terminar toda la fase dos. Yo me iré a dormir, y cuando me levante, quiero que todo lo que tú puedes hacer de la fase dos esté hecho, subido a GitHub y corriendo su runworkflow para instalarlo apenas despierte. Trabaja duro esta noche, y haz todo lo que te hace falta de la fase dos, súbelo a GitHub, y déjame una lista de lo que tengo que hacer de mi parte para terminar toda esta fase dos y quedar listos para empezar la tercera.»
+- «Otra cosa. Si acabas el límite, Vuelve a retomar apenas se restablezca. Ahora si, empieza a trabajar»
 
 ---
 
@@ -247,3 +250,19 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
 
   - Resultado del chequeo: las 22 pantallas se abren sin errores con los datos de ejemplo y pasan las 106 pruebas. En las pruebas, el mapa `.pmtiles` se reemplaza por un recurso falso (`app/jest/archivo.js`) y `@/assets` apunta a `app/assets`, como en la app.
   - GitHub ahora revisa los tipos también de las pantallas y los componentes (`app/tsconfig.nucleo.json`), no solo de la lógica.
+
+### Resumen 6 (9 de noviembre de 2026, madrugada): la Fase 2 de Claude, terminada
+
+- Decisiones del dueño: **responder siempre en español**; el **panel web es solo para el Director y el Administrador**; **no se hacen páginas públicas** (la campaña hará su propia página después; las actuales siguen como están); lo que le toca al equipo queda en espera. Avance de la noche en `docs/Avance-Fase2-Noche.md`.
+- **Mapa (2.4, 2.5):** marcadores PNG generados con el sistema de diseño (`app/assets/mapa`, a 3x y dibujados con `icon-size` 1/3) para los 13 tipos de 5.6, con color y forma; los números de los grupos también son imágenes porque el mapa sin conexión no lleva fuentes; grupos con el color del estado dominante (`clusterProperties`); «por enviar» con anillo punteado; ubicación propia con círculo de precisión (`UserLocation`); estilo con la paleta de la marca en claro, oscuro y sol; ficha rápida P-10 como hoja que sube; leyenda y «Ir a mi ubicación».
+- **Generador de imágenes:** sin Pillow ni binarios descargados. Una página local dibuja los SVG en el navegador integrado y un servidor propio de 20 líneas (en el scratchpad, no en el repositorio) guarda los PNG en `app/assets`. Así salieron también el **ícono de la app** (la app todavía tenía el ícono por defecto de Expo), el ícono adaptable, el de notificaciones y el arranque con el logo.
+- **Tema (2.3):** `app/src/ui/tema.ts` tiene las tres paletas del sistema y la letra ×1,25. La apariencia se lee al arrancar de forma sincrónica (`SecureStore.getItem`) para que todos los estilos salgan con la paleta correcta; al cambiarla en Perfil se guarda y la app se recarga con `expo-updates`. Nuevo color `invertida` para el texto sobre el botón sólido (en oscuro el botón es claro).
+- **Componentes:** botón con ícono, botón de ícono, enlace, fila de enlace, buscador, chips, segmentos, interruptor, barra de pasos con el degradado, sección, dato, ficha, insignia, semáforo con palabra, avatar, fila de lista, cifra pequeña, separador y los **estados comunes** (esqueleto, vacío, sin señal, error con «Reintentar», sin permiso). Campo de contraseña con «mostrar». ~70 íconos, incluidos los 14 ejes del programa.
+- **Pantallas (2.11):** todas al detalle del lienzo: Entrar, Crear cuenta en 3 pasos, Recuperar con medidor de fuerza, Dos pasos con 6 casillas, Cuenta, Acuerdos con barra de lectura, Curso, Registrar aquí con ondas y precisión, Nueva visita con barra de pasos y resumen, Vivienda con línea de tiempo, Persona, Buscar, Pendientes con segmentos, Tareas, Más, Perfil con modos, Anuncios, Titulares, Carnet y Guion.
+- **Movimiento y textos (2.7, 2.8):** bienvenida de 1,9 s (el plan pide menos de 2); transición entre pasos de la visita; formatos comunes en `app/src/core/formato.ts` (día/mes/año, 12 horas con «a. m.»/«p. m.», hora de Bogotá, puntos de mil) sin depender de Intl, con pruebas.
+- **Accesibilidad (2.9):** `app/scripts/contraste.js` calcula el contraste desde `tema.ts`: las 51 combinaciones pasan AA. Filtros y segmentos con margen de toque hasta 48. Informe en `docs/Accesibilidad-Fase2.md`.
+- **Panel web:** solo `web/src/estilo/panel.css` y el menú de `App.tsx` (íconos, nombre con el degradado, avatar). Letras con `@fontsource` (OFL) servidas desde el mismo sitio, sin pedirlas a Google. Las páginas públicas siguen con `base.css` y no cambiaron.
+- **Materiales (2.10):** volante con aviso de privacidad y QR a «Mis datos», certificado del curso y carnet para imprimir en `diseno/materiales/`.
+- **Pruebas:** la prueba de humo abre las 22 pantallas con los datos de práctica; se agregaron las de formatos. Notas técnicas: `renderRouter` de expo-router usa relojes simulados (no esperar con `setTimeout`), `render` de Testing Library 14 es asíncrono, y la sesión falsa no debe responder a `then`.
+- **Queda para el equipo:** la lista «7. Para cerrar la Fase 2» en `docs/Pendientes-del-Equipo.md`.
+

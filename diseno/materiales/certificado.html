@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificado de capacitación</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Certificado del curso de ingreso (10.6) y de voluntariado (12.1). Carta horizontal. Los campos entre corchetes los
+     llena el panel web cuando se emita el certificado (Fase 3); el código verifica en la página del carnet. */
+  @page { size: letter landscape; margin: 0; }
+  :root { --tinta: #122b52; --suave: #5a6b80; --degradado: linear-gradient(90deg, #1d4e9e, #1aa0c8 45%, #6db33f 72%, #f39a1e); }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); background: #eef3f9; }
+  .hoja { width: 27.94cm; height: 21.59cm; margin: 0 auto; background: #fff; position: relative; padding: 2.2cm 2.6cm; display: flex; flex-direction: column; }
+  .marco { position: absolute; inset: 0.9cm; border: 1.5px solid #e3e9f1; border-radius: 0.6cm; }
+  .franja { position: absolute; left: 0.9cm; right: 0.9cm; top: 0.9cm; height: 0.32cm; border-radius: 0.6cm 0.6cm 0 0; background: var(--degradado); }
+  .cabeza { display: flex; align-items: center; gap: 0.6cm; position: relative; }
+  .logo { width: 2.6cm; height: 2.6cm; border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 6px 18px rgba(18,43,82,.16); }
+  .logo img { width: 118%; height: 118%; margin: -9% 0 0 -9%; object-fit: cover; }
+  .marca { font: 900 26pt/1 Montserrat, sans-serif; letter-spacing: 0.02em; background: var(--degradado); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .marca small { display: block; font: 600 9pt/1.7 Montserrat, sans-serif; letter-spacing: 0.4em; color: var(--tinta); -webkit-text-fill-color: var(--tinta); }
+  .cuerpo { margin: auto 0; text-align: center; position: relative; }
+  .etiqueta { font: 700 10pt/1.4 Montserrat, sans-serif; letter-spacing: 0.3em; text-transform: uppercase; color: var(--suave); }
+  h1 { font: 800 34pt/1.1 Montserrat, sans-serif; margin: 0.4cm 0 0.6cm; }
+  .nombre { font: 800 26pt/1.2 Montserrat, sans-serif; border-bottom: 2px solid #e3e9f1; display: inline-block; padding: 0 1cm 0.2cm; }
+  p { font-size: 13pt; line-height: 1.55; color: var(--suave); max-width: 18cm; margin: 0.5cm auto 0; }
+  .pie { display: flex; justify-content: space-between; align-items: flex-end; position: relative; font-size: 10pt; color: var(--suave); }
+  .firma { text-align: center; min-width: 7cm; }
+  .firma .linea { border-top: 1.5px solid var(--tinta); padding-top: 0.2cm; font: 700 11pt Montserrat, sans-serif; color: var(--tinta); }
+  .codigo { font: 600 10pt/1.4 Montserrat, sans-serif; letter-spacing: 0.08em; }
+  @media screen { body { padding: 24px; } .hoja { box-shadow: 0 14px 34px rgba(18,43,82,.16); } }
+</style>
+</head>
+<body>
+<div class="hoja">
+  <div class="marco"></div><div class="franja"></div>
+  <div class="cabeza">
+    <div class="logo"><img src="../../app/assets/images/logo-circular.jpg" alt=""></div>
+    <div class="marca">PIJAO<small>NOS</small>UNE</div>
+  </div>
+  <div class="cuerpo">
+    <div class="etiqueta">Certificado de capacitación</div>
+    <h1>Curso de ingreso al equipo</h1>
+    <div class="nombre">[Nombre de la persona]</div>
+    <p>Completó y aprobó el curso de ingreso con [puntaje] %: visita respetuosa, autorización de cada persona, protección de los datos, conducta y seguridad en terreno.</p>
+  </div>
+  <div class="pie">
+    <div class="codigo">Código de verificación<br>[CÓDIGO]<br>Pijao, Quindío · [día/mes/año]</div>
+    <div class="firma"><div class="linea">[Nombre del Director]</div>Director de la campaña</div>
+  </div>
+</div>
+</body>
+</html>

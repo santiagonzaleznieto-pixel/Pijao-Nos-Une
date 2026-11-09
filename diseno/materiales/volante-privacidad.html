@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es-CO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volante · aviso de privacidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /* Volante con el aviso de privacidad y su QR (6.2 y 16.4). Media carta (14 × 21,6 cm), dos por hoja carta horizontal.
+     BORRADOR: el texto definitivo lo revisa el abogado (pendiente del equipo). */
+  @page { size: letter landscape; margin: 0; }
+  :root { --tinta: #122b52; --suave: #5a6b80; --borde: #e3e9f1; --degradado: linear-gradient(90deg, #1d4e9e, #1aa0c8 45%, #6db33f 72%, #f39a1e); }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, system-ui, sans-serif; color: var(--tinta); background: #eef3f9; }
+  .hoja { width: 27.94cm; height: 21.59cm; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; background: #fff; }
+  .volante { padding: 1.1cm 1.1cm 0.9cm; display: flex; flex-direction: column; gap: 0.32cm; border-right: 1px dashed #c6cfdb; position: relative; }
+  .volante:last-child { border-right: 0; }
+  .franja { position: absolute; left: 0; right: 0; top: 0; height: 0.28cm; background: var(--degradado); }
+  .marca { font: 900 22pt/1 Montserrat, sans-serif; letter-spacing: 0.02em; background: var(--degradado); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .marca small { display: block; font: 600 8pt/1.6 Montserrat, sans-serif; letter-spacing: 0.4em; color: var(--tinta); -webkit-text-fill-color: var(--tinta); }
+  h1 { font: 800 15pt/1.15 Montserrat, sans-serif; margin: 0.1cm 0 0; }
+  p, li { font-size: 9.6pt; line-height: 1.45; margin: 0; }
+  ul { margin: 0; padding-left: 0.45cm; display: grid; gap: 0.08cm; }
+  .qr { display: flex; gap: 0.4cm; align-items: center; margin-top: auto; padding: 0.3cm; border: 1px solid var(--borde); border-radius: 0.35cm; }
+  .qr svg { width: 3.1cm; height: 3.1cm; flex: none; }
+  .qr strong { font: 800 10.5pt/1.2 Montserrat, sans-serif; display: block; margin-bottom: 0.08cm; }
+  .borrador { font: 600 7pt/1.3 Montserrat, sans-serif; letter-spacing: 0.1em; color: #8a4a05; text-transform: uppercase; }
+  @media screen { body { padding: 24px; } .hoja { box-shadow: 0 14px 34px rgba(18,43,82,.16); } }
+</style>
+</head>
+<body>
+<div class="hoja">
+  <section class="volante">
+    <div class="franja"></div>
+    <div class="marca">PIJAO<small>NOS</small>UNE</div>
+    <h1>Sus datos, protegidos</h1>
+    <p>Gracias por recibirnos. Lo que nos contó se guarda cifrado y solo lo ve el equipo autorizado de la campaña, para conocer las necesidades de Pijao y, si usted lo autorizó, contarle cómo avanzan las propuestas.</p>
+    <ul>
+      <li><strong>Responsable:</strong> Campaña Pijao Nos Une · candidato Jaime González · Pijao, Quindío.</li>
+      <li>No vendemos ni compartimos sus datos. Nadie le pedirá dinero ni le ofrecerá regalos o favores.</li>
+      <li>Puede conocer, corregir o pedir que borremos sus datos, o decir que no lo contactemos más, cuando quiera.</li>
+      <li>Si autorizó registrar su simpatía, puede retirar esa autorización en cualquier momento.</li>
+    </ul>
+    <div class="qr">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39 39" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h39v39H0z"/><path stroke="#122B52" d="M1 1.5h7m1 0h1m1 0h3m1 0h1m4 0h4m1 0h1m1 0h1m3 0h7M1 2.5h1m5 0h1m1 0h4m1 0h1m2 0h2m1 0h1m2 0h1m5 0h1m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m2 0h2m2 0h2m1 0h2m1 0h1m1 0h4m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m3 0h4m2 0h2m2 0h2m2 0h2m1 0h2m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h2m1 0h6m1 0h3m1 0h1m2 0h2m1 0h1m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m3 0h1m2 0h1m1 0h2m4 0h1m1 0h1m2 0h1m3 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 8.5h1m1 0h8m4 0h2m1 0h2M1 9.5h1m2 0h6m2 0h2m1 0h2m7 0h1m2 0h4m2 0h1m1 0h3M1 10.5h1m1 0h1m1 0h2m1 0h2m4 0h1m2 0h1m1 0h1m3 0h2m1 0h4m2 0h2m1 0h2M1 11.5h2m4 0h4m5 0h2m2 0h5m1 0h1m1 0h4m2 0h1m2 0h1M1 12.5h1m2 0h1m9 0h2m1 0h2m1 0h2m1 0h1m8 0h6M4 13.5h1m1 0h2m2 0h1m4 0h3m3 0h1m3 0h1m2 0h2m1 0h1m2 0h1m2 0h1M2 14.5h2m2 0h1m1 0h3m1 0h1m2 0h3m1 0h1m2 0h1m1 0h1m3 0h2m3 0h2m1 0h2M1 15.5h1m1 0h2m1 0h2m1 0h1m1 0h1m1 0h1m2 0h2m1 0h5m1 0h2m1 0h1m1 0h1m2 0h5M5 16.5h1m3 0h1m2 0h2m1 0h2m6 0h2m4 0h2m1 0h1m1 0h3M2 17.5h1m1 0h2m1 0h1m2 0h5m3 0h2m3 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1M3 18.5h2m1 0h1m4 0h2m9 0h1m3 0h3m3 0h1M4 19.5h2m1 0h5m1 0h1m3 0h4m3 0h2m1 0h5m1 0h1m1 0h1m1 0h1M2 20.5h2m1 0h1m2 0h1m2 0h1m1 0h2m1 0h2m2 0h2m1 0h1m2 0h6m2 0h1m2 0h1M2 21.5h2m1 0h1m1 0h4m1 0h1m2 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h6M3 22.5h2m3 0h3m2 0h1m2 0h3m1 0h1m2 0h2m2 0h2m4 0h1m1 0h1M2 23.5h3m2 0h3m2 0h2m2 0h1m4 0h12m1 0h1m1 0h2M2 24.5h3m3 0h3m3 0h1m1 0h2m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m2 0h4M1 25.5h4m1 0h2m1 0h1m2 0h3m1 0h1m1 0h1m2 0h1m5 0h1m1 0h4M1 26.5h2m1 0h2m2 0h4m1 0h1m1 0h1m3 0h2m1 0h1m1 0h1m1 0h4m2 0h2m1 0h1M1 27.5h2m1 0h2m1 0h3m1 0h1m2 0h3m5 0h1m3 0h1m1 0h1m1 0h1m2 0h2m1 0h2M1 28.5h1m1 0h4m3 0h1m1 0h1m1 0h1m2 0h1m1 0h2m4 0h1m6 0h1m1 0h2m1 0h1M1 29.5h1m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1m3 0h1m2 0h2m1 0h1m1 0h9M9 30.5h3m2 0h1m1 0h1m1 0h5m3 0h1m2 0h1m3 0h1m1 0h2M1 31.5h7m1 0h4m1 0h3m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1M1 32.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h2m1 0h1m2 0h1m1 0h2m3 0h1m2 0h2M1 33.5h1m1 0h3m1 0h1m1 0h4m3 0h2m1 0h1m5 0h1m1 0h7M1 34.5h1m1 0h3m1 0h1m1 0h4m5 0h1m2 0h1m1 0h2m1 0h2m1 0h3m3 0h1m1 0h1M1 35.5h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m3 0h2m1 0h2m1 0h2m7 0h1m3 0h1M1 36.5h1m5 0h1m3 0h2m1 0h1m1 0h1m1 0h2m1 0h1m1 0h2m3 0h2m3 0h5M1 37.5h7m1 0h5m1 0h1m5 0h1m2 0h2m3 0h1m1 0h2m1 0h1m2 0h1"/></svg>
+      <div><strong>Mis datos</strong><p>Escanee el código para leer la política completa y hacer sus solicitudes. También puede pedírselo a quien lo visitó.</p></div>
+    </div>
+    <div class="borrador">Borrador · el texto definitivo lo revisa el abogado</div>
+  </section>
+  <section class="volante">
+    <div class="franja"></div>
+    <div class="marca">PIJAO<small>NOS</small>UNE</div>
+    <h1>Sus datos, protegidos</h1>
+    <p>Gracias por recibirnos. Lo que nos contó se guarda cifrado y solo lo ve el equipo autorizado de la campaña, para conocer las necesidades de Pijao y, si usted lo autorizó, contarle cómo avanzan las propuestas.</p>
+    <ul>
+      <li><strong>Responsable:</strong> Campaña Pijao Nos Une · candidato Jaime González · Pijao, Quindío.</li>
+      <li>No vendemos ni compartimos sus datos. Nadie le pedirá dinero ni le ofrecerá regalos o favores.</li>
+      <li>Puede conocer, corregir o pedir que borremos sus datos, o decir que no lo contactemos más, cuando quiera.</li>
+      <li>Si autorizó registrar su simpatía, puede retirar esa autorización en cualquier momento.</li>
+    </ul>
+    <div class="qr">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 39 39" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h39v39H0z"/><path stroke="#122B52" d="M1 1.5h7m1 0h1m1 0h3m1 0h1m4 0h4m1 0h1m1 0h1m3 0h7M1 2.5h1m5 0h1m1 0h4m1 0h1m2 0h2m1 0h1m2 0h1m5 0h1m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m2 0h2m2 0h2m1 0h2m1 0h1m1 0h4m3 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m3 0h4m2 0h2m2 0h2m2 0h2m1 0h2m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h2m1 0h6m1 0h3m1 0h1m2 0h2m1 0h1m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m3 0h1m2 0h1m1 0h2m4 0h1m1 0h1m2 0h1m3 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M11 8.5h1m1 0h8m4 0h2m1 0h2M1 9.5h1m2 0h6m2 0h2m1 0h2m7 0h1m2 0h4m2 0h1m1 0h3M1 10.5h1m1 0h1m1 0h2m1 0h2m4 0h1m2 0h1m1 0h1m3 0h2m1 0h4m2 0h2m1 0h2M1 11.5h2m4 0h4m5 0h2m2 0h5m1 0h1m1 0h4m2 0h1m2 0h1M1 12.5h1m2 0h1m9 0h2m1 0h2m1 0h2m1 0h1m8 0h6M4 13.5h1m1 0h2m2 0h1m4 0h3m3 0h1m3 0h1m2 0h2m1 0h1m2 0h1m2 0h1M2 14.5h2m2 0h1m1 0h3m1 0h1m2 0h3m1 0h1m2 0h1m1 0h1m3 0h2m3 0h2m1 0h2M1 15.5h1m1 0h2m1 0h2m1 0h1m1 0h1m1 0h1m2 0h2m1 0h5m1 0h2m1 0h1m1 0h1m2 0h5M5 16.5h1m3 0h1m2 0h2m1 0h2m6 0h2m4 0h2m1 0h1m1 0h3M2 17.5h1m1 0h2m1 0h1m2 0h5m3 0h2m3 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1M3 18.5h2m1 0h1m4 0h2m9 0h1m3 0h3m3 0h1M4 19.5h2m1 0h5m1 0h1m3 0h4m3 0h2m1 0h5m1 0h1m1 0h1m1 0h1M2 20.5h2m1 0h1m2 0h1m2 0h1m1 0h2m1 0h2m2 0h2m1 0h1m2 0h6m2 0h1m2 0h1M2 21.5h2m1 0h1m1 0h4m1 0h1m2 0h1m1 0h2m1 0h1m2 0h1m1 0h1m1 0h1m1 0h6M3 22.5h2m3 0h3m2 0h1m2 0h3m1 0h1m2 0h2m2 0h2m4 0h1m1 0h1M2 23.5h3m2 0h3m2 0h2m2 0h1m4 0h12m1 0h1m1 0h2M2 24.5h3m3 0h3m3 0h1m1 0h2m1 0h1m3 0h1m1 0h1m1 0h1m1 0h1m2 0h4M1 25.5h4m1 0h2m1 0h1m2 0h3m1 0h1m1 0h1m2 0h1m5 0h1m1 0h4M1 26.5h2m1 0h2m2 0h4m1 0h1m1 0h1m3 0h2m1 0h1m1 0h1m1 0h4m2 0h2m1 0h1M1 27.5h2m1 0h2m1 0h3m1 0h1m2 0h3m5 0h1m3 0h1m1 0h1m1 0h1m2 0h2m1 0h2M1 28.5h1m1 0h4m3 0h1m1 0h1m1 0h1m2 0h1m1 0h2m4 0h1m6 0h1m1 0h2m1 0h1M1 29.5h1m1 0h1m2 0h2m2 0h2m1 0h1m2 0h1m3 0h1m2 0h2m1 0h1m1 0h9M9 30.5h3m2 0h1m1 0h1m1 0h5m3 0h1m2 0h1m3 0h1m1 0h2M1 31.5h7m1 0h4m1 0h3m1 0h3m1 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h1m3 0h1M1 32.5h1m5 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m2 0h2m1 0h1m2 0h1m1 0h2m3 0h1m2 0h2M1 33.5h1m1 0h3m1 0h1m1 0h4m3 0h2m1 0h1m5 0h1m1 0h7M1 34.5h1m1 0h3m1 0h1m1 0h4m5 0h1m2 0h1m1 0h2m1 0h2m1 0h3m3 0h1m1 0h1M1 35.5h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h1m3 0h2m1 0h2m1 0h2m7 0h1m3 0h1M1 36.5h1m5 0h1m3 0h2m1 0h1m1 0h1m1 0h2m1 0h1m1 0h2m3 0h2m3 0h5M1 37.5h7m1 0h5m1 0h1m5 0h1m2 0h2m3 0h1m1 0h2m1 0h1m2 0h1"/></svg>
+      <div><strong>Mis datos</strong><p>Escanee el código para leer la política completa y hacer sus solicitudes. También puede pedírselo a quien lo visitó.</p></div>
+    </div>
+    <div class="borrador">Borrador · el texto definitivo lo revisa el abogado</div>
+  </section>
+</div>
+</body>
+</html>

@@ -215,7 +215,7 @@ export function Opciones({ etiqueta, opciones, valor, onCambio, multiple, lista 
 /** Ficha de filtro suelta (chip), para filas desplazables de filtros. */
 export function Chip({ texto, activo, onPress, sombra: conSombra }: { texto: string; activo: boolean; onPress: () => void; sombra?: boolean }) {
   return (
-    <Pressable accessibilityRole="button" accessibilityState={{ selected: activo }} onPress={onPress}
+    <Pressable accessibilityRole="button" accessibilityState={{ selected: activo }} onPress={onPress} hitSlop={{ top: 4, bottom: 4 }}
       style={({ pressed }) => [e.chip, conSombra && e.chipFlotante, activo && { backgroundColor: color.azul, borderColor: color.azul }, pressed && { transform: [{ scale: 0.97 }] }]}>
       <Text style={[e.fichaTexto, { fontSize: tl(14) }, activo && { color: color.invertida }]}>{texto}</Text>
     </Pressable>
@@ -229,7 +229,7 @@ export function Segmentos({ opciones, valor, onCambio }: { opciones: readonly (r
       {opciones.map(([k, t]) => {
         const activo = k === valor;
         return (
-          <Pressable key={k} accessibilityRole="tab" accessibilityState={{ selected: activo }} onPress={() => onCambio(k)}
+          <Pressable key={k} accessibilityRole="tab" accessibilityState={{ selected: activo }} onPress={() => onCambio(k)} hitSlop={{ top: 4, bottom: 4 }}
             style={[e.segmento, activo && e.segmentoActivo]}>
             <Text numberOfLines={1} style={[e.segmentoTexto, activo && { color: color.texto }]}>{t}</Text>
           </Pressable>
