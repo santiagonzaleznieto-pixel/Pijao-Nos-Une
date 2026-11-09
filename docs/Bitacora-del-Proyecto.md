@@ -115,6 +115,12 @@ Este archivo guarda el contexto de las conversaciones con Claude Code, para que 
 - «Terminamos con la fase 1?»
 - «Quiero que dejes dentro de lo que se puede ya, esta primera fase para empezar ya la segunda. Mejor dicho, antes de iniciar el próximo año, ya deben de estar las fases terminadas para el próximo año usar la app con datos y textos reales. Las cosas que TENGO, POR OBLIGACIÓN que hacer yo, déjalas en una lista y en mi tiempo las iré haciendo. Lo que puedas hacer tú, HAZLO. Yo solo hago lo que si o si por obligación me corresponde a mí. También, todo el contexto y conversaciones comprimidas de este chat, déjalo en un archivo en el mismo repositorio de GitHub para no perder registros de ningún dato. Ahora si, termina toda esta fase uno, para que empecemos ya con la fase dos del diseño»
 
+
+**8 de noviembre:**
+- «Ya están en la app? Si no, hazla y corre el runworkflow para instalar la app»
+- «Sí, sigue» (seguir llevando las demás pantallas al detalle del lienzo)
+- «Espera, antes de que continúes. La versión que me diste a descargar, tiene un error. Cuando ingreso a las funciones de abajo como mapa y las demás; se me queda la pantalla así en blando, solucióname para ya para descargarla y mostrarla. Hazle un chequeo a qué nada esté fallando»
+
 ---
 
 ## 9. Resúmenes comprimidos de las conversaciones
@@ -233,3 +239,11 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
   - Inicio de la opción C con animaciones y pantalla de bloqueo con el logo.
 
   La lógica no se tocó: pasan las 81 pruebas y la revisión de tipos. Se subió a `fase-2/diseno` para que GitHub construya el APK.
+- **Error de la 0.16.0 en el teléfono del dueño:** al tocar Mapa, Tareas o Más la app quedaba en blanco.
+  - Causa: la barra inferior propia llamaba a `navigation.navigate`, y expo-router 58 no le entrega `navigation` (solo `state`, `descriptors`, `emitter`, `navigateToTab` e `insets`). El toque lanzaba `Cannot read properties of undefined (reading 'navigate')` y la app se caía. Una conversión forzada de tipos (`as unknown as`) escondía el error a TypeScript y las pruebas eran solo de lógica.
+  - Arreglo (app 0.16.1): la barra usa el tipo real `BottomTabBarProps` de `expo-router/tabs`, sin conversión, y cambia de pestaña con `emitter.emit("tabPress")` y `navigateToTab(route.key)`, como la barra estándar.
+  - La entrada animada ahora se quita sola aunque el teléfono no avise el final de la animación, y deja tocar mientras se desvanece.
+  - Pruebas nuevas con `@testing-library/react-native` (solo desarrollo): `src/ui/__tests__/barra.test.tsx` toca cada pestaña y el botón naranja (se comprobó que falla con la barra de la 0.16.0), y `src/ui/__tests__/pantallas.test.tsx` abre todas las pantallas con los datos del modo práctica.
+
+  - Resultado del chequeo: las 22 pantallas se abren sin errores con los datos de ejemplo y pasan las 106 pruebas. En las pruebas, el mapa `.pmtiles` se reemplaza por un recurso falso (`app/jest/archivo.js`) y `@/assets` apunta a `app/assets`, como en la app.
+  - GitHub ahora revisa los tipos también de las pantallas y los componentes (`app/tsconfig.nucleo.json`), no solo de la lógica.

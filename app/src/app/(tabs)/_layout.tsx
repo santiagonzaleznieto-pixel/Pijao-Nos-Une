@@ -1,6 +1,7 @@
 // Barra inferior flotante (18.1): Inicio · Mapa · [Registrar aquí] · Tareas · Más, con la pastilla que se desliza.
 // Franja superior con la conexión, lo que falta por enviar y «Ocultar pantalla».
 import { Tabs, useRouter } from "expo-router";
+import type { BottomTabBarProps } from "expo-router/tabs";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -54,9 +55,10 @@ const ITEMS: Record<string, { titulo: string; icono: NombreIcono }> = {
   mas: { titulo: "Más", icono: "menu" },
 };
 
-type PropsBarra = { state: { index: number; routes: { key: string; name: string }[] }; navigation: { navigate: (nombre: string) => void } };
-
-function BarraInferior({ state, navigation }: PropsBarra) {
+// Barra propia con el tipo real de expo-router 58 (sin conversiones forzadas, para que TypeScript lo revise). Estas props
+// NO traen `navigation`: se cambia de pestaña con `navigateToTab(route.key)` tras avisar «tabPress», como la barra estándar.
+// Usar `navigation.navigate` rompió la app 0.16.0 (pantalla en blanco al tocar Mapa, Tareas o Más).
+function BarraInferior({ state, emitter, navigateToTab }: BottomTabBarProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [ancho, setAncho] = useState(0);
@@ -88,7 +90,10 @@ function BarraInferior({ state, navigation }: PropsBarra) {
           const tinta = activa ? color.texto : color.textoSuave;
           return (
             <Pressable key={r.key} accessibilityRole="tab" accessibilityState={{ selected: activa }} accessibilityLabel={item.titulo}
-              onPress={() => navigation.navigate(r.name)} style={{ flex: 1, minHeight: 56, alignItems: "center", justifyContent: "center", gap: 3 }}>
+              onPress={() => {
+                const ev = emitter.emit({ type: "tabPress", target: r.key, canPreventDefault: true });
+                if (!activa && !ev.defaultPrevented) navigateToTab(r.key);
+              }} style={{ flex: 1, minHeight: 56, alignItems: "center", justifyContent: "center", gap: 3 }}>
               <Icono nombre={item.icono} tam={22} color={tinta} grosor={activa ? 2.2 : 2} />
               <Text style={{ fontFamily: fuente.tituloMedio, fontSize: 12, color: tinta }}>{item.titulo}</Text>
             </Pressable>
@@ -103,7 +108,7 @@ export default function Pestanas() {
   return (
     <View style={{ flex: 1, backgroundColor: color.fondo }}>
       <Franja />
-      <Tabs tabBar={(props) => <BarraInferior {...(props as unknown as PropsBarra)} />} screenOptions={{ headerShown: false }}>
+      <Tabs tabBar={(props) => <BarraInferior {...props} />} screenOptions={{ headerShown: false }}>
         <Tabs.Screen name="inicio" options={{ title: "Inicio" }} />
         <Tabs.Screen name="mapa" options={{ title: "Mapa" }} />
         <Tabs.Screen name="nuevo" options={{ title: "Registrar" }} />

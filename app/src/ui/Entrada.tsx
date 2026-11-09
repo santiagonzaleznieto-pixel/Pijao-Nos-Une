@@ -1,7 +1,7 @@
 // Entrada de la app (2.7): el anillo de cuatro colores se dibuja, el logo llega desde la izquierda, PIJAO · NOS · UNE sube
 // por líneas, se traza la línea fina y aparece el mensaje corto. Unos 4 segundos, una vez por apertura. Con «reducir
 // movimiento» dura menos de un segundo y sin desplazamientos. Solo transform, opacity y el trazo de los arcos.
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Image, StyleSheet, Text, View } from "react-native";
 import Svg, { Defs, LinearGradient, Path, Stop, Text as SvgText } from "react-native-svg";
 import { curvaAfilada, curvaSuave, useMovimientoReducido } from "./movimiento";
@@ -42,6 +42,10 @@ export function Entrada({ alTerminar }: { alTerminar: () => void }) {
   const mensaje = useRef(new Animated.Value(0)).current;
   const salida = useRef(new Animated.Value(0)).current;
 
+  const terminada = useRef(false);
+  const [saliendo, setSaliendo] = useState(false);
+  const terminar = () => { if (!terminada.current) { terminada.current = true; alTerminar(); } };
+
   useEffect(() => {
     const t = (v: Animated.Value, ms: number, delay: number, easing = curvaSuave, nativo = true) =>
       Animated.timing(v, { toValue: 1, duration: reducido ? 150 : ms, delay: reducido ? 0 : delay, easing, useNativeDriver: nativo });
@@ -52,15 +56,20 @@ export function Entrada({ alTerminar }: { alTerminar: () => void }) {
       t(trazo, 900, 2250),
       t(mensaje, 600, 2150),
     ]).start();
+    const espera = reducido ? 700 : 3600;
+    const sale = reducido ? 150 : 550;
     const fin = setTimeout(() => {
-      Animated.timing(salida, { toValue: 1, duration: reducido ? 150 : 550, easing: curvaAfilada, useNativeDriver: true }).start(() => alTerminar());
-    }, reducido ? 700 : 3600);
-    return () => clearTimeout(fin);
+      setSaliendo(true);   // mientras se desvanece ya deja tocar lo que hay debajo
+      Animated.timing(salida, { toValue: 1, duration: sale, easing: curvaAfilada, useNativeDriver: true }).start(() => terminar());
+    }, espera);
+    // Respaldo: aunque el teléfono no avise el final de la animación, la capa se quita y nunca bloquea la app.
+    const tope = setTimeout(terminar, espera + sale + 500);
+    return () => { clearTimeout(fin); clearTimeout(tope); };
   }, [reducido]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   const desplazar = (v: Animated.Value, desde: number) => (reducido ? 0 : v.interpolate({ inputRange: [0, 1], outputRange: [desde, 0] }));
   return (
-    <Animated.View accessible accessibilityLabel="Pijao Nos Une. Juntos, casa por casa." style={[StyleSheet.absoluteFill, e.raiz,
+    <Animated.View accessible accessibilityLabel="Pijao Nos Une. Juntos, casa por casa." pointerEvents={saliendo ? "none" : "auto"} style={[StyleSheet.absoluteFill, e.raiz,
       { opacity: salida.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }), transform: [{ translateX: salida.interpolate({ inputRange: [0, 1], outputRange: [0, reducido ? 0 : 60] }) }] }]}>
       <View style={{ width: 220, height: 220 }}>
         <Svg width={220} height={220} viewBox="0 0 220 220" style={StyleSheet.absoluteFill}>

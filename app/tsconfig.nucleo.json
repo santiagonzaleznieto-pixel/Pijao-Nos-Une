@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src/core/**/*.ts", "src/datos/**/*.ts", "src/servicios/**/*.ts"]
+  "include": ["src/core/**/*.ts", "src/datos/**/*.ts", "src/servicios/**/*.ts", "src/servicios/**/*.tsx", "src/ui/**/*.ts", "src/ui/**/*.tsx", "src/app/**/*.tsx", "expo-env.d.ts"]
 }

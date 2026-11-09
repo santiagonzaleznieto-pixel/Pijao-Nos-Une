@@ -43,9 +43,9 @@ jobs:
           cache-dependency-path: app/package-lock.json
       - name: Instalar dependencias
         run: npm ci
-      - name: Tipos de las reglas, los datos y los servicios
+      - name: Tipos de las reglas, los datos, los servicios, las pantallas y los componentes
         run: npx tsc --noEmit -p tsconfig.nucleo.json
-      - name: Pruebas de la app (reglas, sincronización y sesión)
+      - name: Pruebas de la app (reglas, sincronización, sesión, barra inferior y todas las pantallas)
         run: npx jest --ci
 
   web:
