@@ -15,6 +15,26 @@ import { Titulares } from "./paginas/Titulares";
 import { Vivienda } from "./paginas/Vivienda";
 import { ContextoPanel, esAdmin, useCarga } from "./ui";
 
+// Íconos de línea del sistema de diseño (los mismos de la app), para el menú.
+const ICONOS: Record<string, string> = {
+  inicio: "M3 11l9-7 9 7 M5 10v10h14V10",
+  colaboradores: "M9 4.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z M2 20a7 7 0 0 1 14 0 M16 4.5a3.5 3.5 0 0 1 0 7 M18 14a6 6 0 0 1 4 6",
+  titulares: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z",
+  auditoria: "M9 6h12 M9 12h12 M9 18h12 M4 6h.01 M4 12h.01 M4 18h.01",
+  mapa: "M9 4L3 6v14l6-2 6 2 6-2V4l-6 2-6-2z M9 4v14 M15 6v14",
+  piloto: "M4 19V9 M10 19V5 M16 19v-7 M22 19H2",
+  configuracion: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z",
+  salud: "M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z",
+};
+function IconoMenu({ ruta }: { ruta: string }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {(ICONOS[ruta] ?? ICONOS.inicio).split(" M").map((d, i) => <path key={i} d={i ? `M${d}` : d} />)}
+    </svg>
+  );
+}
+const iniciales = (n: string) => n.replace(/[^\p{L}\s]/gu, "").split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]!.toUpperCase()).join("");
+
 // El mapa (MapLibre) pesa: se descarga solo cuando se abre esa sección.
 const Mapa = lazy(() => import("./paginas/Mapa"));
 
@@ -117,13 +137,17 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
       {fuente.modo === "demo" && <div className="franja-demo">Demostración con datos de ejemplo: nada se guarda en el servidor.</div>}
       <div className="marco">
         <nav className="lateral" aria-label="Secciones">
-          <a className="marca" href="#/inicio">Pijao <span>Nos Une</span></a>
+          <a className="marca" href="#/inicio" aria-label="Pijao Nos Une, inicio del panel">
+            <span className="linea-marca">PIJAO</span><span className="nos">NOS</span><span className="linea-marca">UNE</span>
+            <small>Panel del equipo</small>
+          </a>
           {menu.map(([ruta, texto, n]) => (
             <a key={ruta} className="nav" href={`#/${ruta}`} aria-current={pagina === ruta || (ruta === "colaboradores" && pagina === "colaborador") || (ruta === "mapa" && vivienda) ? "page" : undefined}>
-              {texto}{n ? <span className="insignia-num" aria-label={`${n} pendientes`}>{n}</span> : null}
+              <IconoMenu ruta={ruta} /><span className="txt">{texto}</span>{n ? <span className="insignia-num" aria-label={`${n} pendientes`}>{n}</span> : null}
             </a>
           ))}
           <div className="quien">
+            <span className="avatar" aria-hidden="true">{iniciales(perfil.nombre)}</span>
             <div><strong>{perfil.nombre}</strong><br />{perfil.rol === "admin" ? "Administrador" : "Director"}</div>
             <button type="button" className="boton secundario chico" onClick={() => void salir()}>Cerrar sesión</button>
           </div>

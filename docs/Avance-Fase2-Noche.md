@@ -13,5 +13,5 @@ Si la sesión se corta, se retoma aquí: el primer bloque sin ✅ es el siguient
 | 3 | Modos oscuro, sol y letra grande | ✅ Tres paletas y letra ×1,25; selector en Perfil (la app se recarga sola); barra de estado según el modo |
 | 4 | Pantallas de la app al detalle del lienzo | ✅ Entrar, Crear cuenta (3 pasos), Recuperar (medidor de fuerza), Dos pasos (6 casillas), Cuenta, Acuerdos (barra de lectura), Curso, Registrar aquí (ondas y precisión), Nueva visita (barra de pasos y resumen), Vivienda (línea de tiempo), Persona, Buscar, Pendientes, Tareas, Más, Perfil, Anuncios, Titulares, Carnet y Guion |
 | 5 | Ícono de la app, arranque, animaciones que faltan y textos | ✅ Ícono y arranque (bloque 1); bienvenida de 1,9 s; transición entre pasos de la visita; ondas del GPS; formatos comunes en `core/formato.ts` (día/mes/año, 12 horas, Bogotá, puntos de mil) con pruebas; tono de «usted» revisado |
-| 6 | Panel web interno con el diseño | ⏳ |
+| 6 | Panel web interno con el diseño | ✅ Solo el panel (las páginas públicas no se tocaron): menú lateral blanco con íconos, nombre con el degradado, tarjetas, tablas, pestañas en pastilla, botones, avisos, claro y oscuro; Montserrat e Inter servidas desde el mismo sitio (@fontsource, OFL) |
 | 7 | Accesibilidad, materiales, documentos, APK y lista del dueño | ⏳ |
