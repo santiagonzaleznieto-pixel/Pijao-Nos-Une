@@ -4,6 +4,7 @@ import { mascaraCorreo, nombreVisible } from "../core/enmascarado";
 import { nuevoId } from "../core/ids";
 import { estadoViviendaPorResultado, iso } from "../core/reglas";
 import { edad } from "../core/validadores";
+import { borradorDesdeRechazo } from "../core/envio";
 import { construirPayload, type Borrador } from "../core/visita";
 import type { Almacen } from "../datos/tipos";
 
@@ -21,7 +22,16 @@ export async function borrarBorrador(almacen: Almacen, id: string) {
 export async function guardarVisita(almacen: Almacen, b: Borrador): Promise<{ color: string; motivos: string[] }> {
   const { payload, subidas } = construirPayload(b);
   const { color, motivos } = evaluarRegistro(b);
-  await almacen.encolar({ id: b.id, tipo: "registrar_visita", payload, usuario_id: b.usuario_id, depende_de: null });
+  // Una visita a una casa que todavía no llega al servidor espera a que se envíe la que la crea (24.4); si no, el
+  // servidor la rechazaría con «la vivienda no existe».
+  let dependeDe: string | null = null;
+  if (b.vivienda_existente && (await almacen.estaPendiente("viviendas", b.vivienda.id))) {
+    const creadora = (await almacen.listarCola(b.usuario_id)).find((i) => i.tipo === "registrar_visita" && i.estado !== "enviado"
+      && (i.payload as { vivienda?: { id?: string; solo_visita?: boolean } } | null)?.vivienda?.id === b.vivienda.id
+      && !(i.payload as { vivienda?: { solo_visita?: boolean } }).vivienda?.solo_visita);
+    dependeDe = creadora?.id ?? null;
+  }
+  await almacen.encolar({ id: b.id, tipo: "registrar_visita", payload, usuario_id: b.usuario_id, depende_de: dependeDe });
   for (const s of subidas) {
     await almacen.encolarSubida({ id: s.foto_id, outbox_id: b.id, archivo: s.archivo_local, ruta: s.storage_path, usuario_id: b.usuario_id });
   }
@@ -45,6 +55,20 @@ export async function guardarVisita(almacen: Almacen, b: Borrador): Promise<{ co
   for (const n of b.necesidades) await almacen.guardar("necesidades", { ...n, vivienda_id: b.vivienda.id }, true);
   await borrarBorrador(almacen, b.id);
   return { color, motivos };
+}
+
+/** Reabre como borrador una visita que el servidor rechazó (cuarentena), con sus fotos, para corregirla y enviarla
+ *  de nuevo. Primero se guarda el borrador y solo después se quita el envío rechazado: nunca se pierde nada. */
+export async function reabrirRechazada(almacen: Almacen, itemId: string): Promise<string | null> {
+  const item = await almacen.obtenerItem(itemId);
+  if (!item || item.tipo !== "registrar_visita" || item.estado !== "cuarentena" || !item.payload) return null;
+  const fotos = (await almacen.subidasDe(item.id)).map((s) => ({ id: s.id, archivo: s.archivo }));
+  const b = borradorDesdeRechazo(item.payload, item.usuario_id, fotos);
+  await guardarBorrador(almacen, b);
+  // Las visitas que esperaban a esta ahora esperan a la corregida (que tendrá el id del borrador).
+  for (const i of await almacen.listarCola(item.usuario_id)) if (i.depende_de === item.id) await almacen.marcarItem(i.id, { depende_de: b.id });
+  await almacen.quitarDeCola(item.id);
+  return b.id;
 }
 
 /** Encola una acción sencilla (solicitud de un titular, «No contactar», estado de una tarea, anuncio leído…). */

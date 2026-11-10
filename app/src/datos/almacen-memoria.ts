@@ -53,6 +53,12 @@ export class AlmacenMemoria implements Almacen {
     if (s) this.subidas.set(id, { ...s, ...c });
   }
 
+  async subidasDe(outboxId: string) { return [...this.subidas.values()].filter((s) => s.outbox_id === outboxId); }
+  async quitarDeCola(id: string) {
+    for (const s of [...this.subidas.values()]) if (s.outbox_id === id && s.estado !== "marcada") this.subidas.delete(s.id);
+    if (this.cola.get(id)?.estado !== "enviado") this.cola.delete(id);
+  }
+
   private tabla(t: string) {
     let m = this.tablas.get(t);
     if (!m) { m = new Map(); this.tablas.set(t, m); }

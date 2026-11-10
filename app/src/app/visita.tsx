@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { Image, Modal, Text, View } from "react-native";
 import { evaluarRegistro } from "@/core/calidad";
 import { claves, etiqueta, opciones, RESULTADOS_CON_CONTACTO, RESULTADOS_SOLO_PUNTO } from "@/core/catalogos";
-import { autorizacionVigente, CANAL_A_PROPOSITO, canalesAtencion, evidenciaPara, nuevoConsentimiento, textoPara, TEXTO_SENSIBLE, VERSION_TEXTO_LOCAL, type Metodo, type TextoVigente } from "@/core/consentimiento";
+import { autorizacionVigente, canalesAtencion, textoPara, TEXTO_SENSIBLE, VERSION_TEXTO_LOCAL, type Metodo, type TextoVigente } from "@/core/consentimiento";
+import { aplicarAutorizacion, problemasDeEnvio } from "@/core/envio";
 import { zonaDePunto, type Geometria } from "@/core/geo";
 import { nuevoId } from "@/core/ids";
 import { param } from "@/core/reglas";
@@ -103,34 +104,33 @@ export default function Visita() {
   }
 
   async function ir(delta: number) {
+    // Las autorizaciones del paso 10 viajan en el MISMO guardado que cambia de paso. Antes se guardaban aparte y el
+    // cambio de paso las borraba con una copia vieja del borrador: el servidor rechazaba la visita (R-15).
+    let actual = bb;
     if (delta > 0) {
       const v = validarPaso(bb.paso);
       if (v) { setError(v); return; }
-      if (bb.paso === 10) await construirConsentimientos();
+      if (bb.paso === 10 && !soloPunto) actual = aplicarAutorizacion(bb, aut, textoAut.version);
+      if (bb.paso === 10 && soloPunto && aut.noVolver) actual = { ...bb, visita: { ...bb.visita, resultado: "pidio_no_ser_visitado" } };
     }
     setError(null);
     let p = bb.paso + delta;
     while (p > 0 && p < PASOS.length - 1 && saltar(p)) p += delta;
     if (bb.paso === 0) await app.almacen.setMeta("vistas_antes_de_empezar", vistas + 1);
-    await cambiar({ ...bb, paso: Math.max(0, Math.min(PASOS.length - 1, p)) });
-  }
-
-  async function construirConsentimientos() {
-    const base = { versionTexto: textoAut.version, lat: bb.dispositivo.lat ?? null, lng: bb.dispositivo.lng ?? null, evidencia: evidenciaPara(aut.metodo!, { firma: aut.firma }) };
-    const cons = [nuevoConsentimiento("registro_vivienda", aut.metodo!, base)];
-    for (const p of bb.personas) {
-      if (aut.datos) cons.push(nuevoConsentimiento("datos_personales", aut.metodo!, { ...base, personaId: p.id }));
-      if (aut.contacto && p.interes_info && CANAL_A_PROPOSITO[p.canal_preferido as string]) cons.push(nuevoConsentimiento(CANAL_A_PROPOSITO[p.canal_preferido as string], aut.metodo!, { ...base, personaId: p.id }));
-      if (aut.simpatia && p.simpatia && p.simpatia !== "no_registrado") cons.push(nuevoConsentimiento("dato_sensible_simpatia", aut.metodo!, { ...base, personaId: p.id }));
-      if (aut.historia) cons.push(nuevoConsentimiento("uso_historia", aut.metodo!, { ...base, personaId: p.id }));
-    }
-    const personas = bb.personas.map((p) => (aut.simpatia ? p : { ...p, simpatia: null }));   // R-19
-    const visita = aut.noVolver ? { ...bb.visita, resultado: "pidio_no_ser_visitado" } : bb.visita;   // 6.3 paso 8
-    await cambiar({ ...bb, consentimientos: cons, personas, visita });
+    await cambiar({ ...actual, paso: Math.max(0, Math.min(PASOS.length - 1, p)) });
   }
 
   async function guardar() {
-    const r = await guardarVisita(app.almacen, bb);
+    // Se revisan aquí las reglas con las que el servidor rechazaría la visita completa: mejor corregir frente a la familia.
+    const problemas = problemasDeEnvio(bb, { fotosMax: param(app.params, "fotos_max_visita") });
+    if (problemas.length) { setError(`Antes de guardar: ${problemas.join(" ")}`); return; }
+    let r: { color: string; motivos: string[] };
+    try {
+      r = await guardarVisita(app.almacen, bb);
+    } catch (e) {
+      setError(`No se pudo guardar en el teléfono: ${(e as Error).message}. El borrador sigue guardado; inténtelo de nuevo.`);
+      return;
+    }
     setGuardado(r);
     // 22.3: tiempo por registro, calidad y registros sin señal, sin datos de la casa ni de las personas.
     const seg = segundosRegistro(bb.creado_en);

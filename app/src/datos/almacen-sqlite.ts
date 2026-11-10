@@ -110,6 +110,14 @@ export class AlmacenSqlite implements Almacen {
     if (sets.length) await this.db.execute(`update subidas set ${sets.join(", ")} where id = ?`, [...Object.values(c) as Scalar[], id]);
   }
 
+  async subidasDe(outboxId: string) {
+    return (await this.filas("select * from subidas where outbox_id = ?", [outboxId])).map((f) => ({ ...f, intentos: Number(f.intentos) }) as unknown as Subida);
+  }
+  async quitarDeCola(id: string) {
+    await this.db.execute("delete from subidas where outbox_id = ? and estado <> 'marcada'", [id]);
+    await this.db.execute("delete from cola where id = ? and estado <> 'enviado'", [id]);
+  }
+
   async guardar(tabla: string, fila: Fila, pendiente = false) {
     await this.db.execute("insert or replace into espejo (tabla, id, datos, pendiente) values (?, ?, ?, ?)",
       [tabla, fila.id, JSON.stringify(fila), pendiente ? 1 : 0]);

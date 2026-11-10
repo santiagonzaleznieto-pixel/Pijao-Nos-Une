@@ -3,7 +3,7 @@
 import type { Consentimiento } from "./consentimiento";
 import { nuevoId } from "./ids";
 import { iso } from "./reglas";
-import { limpiarVacios } from "./validadores";
+import { limpiarVacios, parseFecha } from "./validadores";
 
 export type Fila = Record<string, unknown>;
 
@@ -79,7 +79,10 @@ export function construirPayload(b: Borrador): { payload: Fila; subidas: Subida[
   const hogar: (Fila & { id: string }) | null = b.hogar ? { ...filtrar(b.hogar, CAMPOS_HOGAR), id: b.hogar.id } : null;
   const personas = b.personas.map((p) => {
     if (hogar && p.es_sosten) hogar.sosten_persona_id = p.id;
-    return filtrar(p, CAMPOS_PERSONA);
+    const f = filtrar(p, CAMPOS_PERSONA);
+    // El servidor lee las fechas como mes/día: se envía siempre AAAA-MM-DD (la app la pide como día/mes/año).
+    if (f.fecha_nacimiento) { const d = parseFecha(f.fecha_nacimiento); f.fecha_nacimiento = d ? d.toISOString().slice(0, 10) : null; }
+    return f;
   });
   const subidas: Subida[] = [];
   const fotos = b.fotos.map((f) => {

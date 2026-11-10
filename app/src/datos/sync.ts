@@ -110,6 +110,8 @@ export class MotorSync {
       if (item.depende_de) {
         const dep = await this.almacen.obtenerItem(item.depende_de);
         if (dep && dep.estado !== "enviado") continue;                       // espera a su registro base
+        // Su registro base se está corrigiendo como borrador: espera a que vuelva a la cola.
+        if (!dep && (await this.almacen.obtener("borradores", item.depende_de))) continue;
       }
       const envio = ENVIOS[item.tipo];
       try {

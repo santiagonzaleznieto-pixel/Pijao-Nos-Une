@@ -35,13 +35,17 @@ export interface Almacen {
   encolar(item: Omit<ItemCola, "estado" | "intentos" | "siguiente_intento_en" | "error" | "creado_en">): Promise<void>;
   siguientes(usuarioId: string, ahora: Date, limite: number): Promise<ItemCola[]>;
   obtenerItem(id: string): Promise<ItemCola | null>;
-  marcarItem(id: string, cambios: Partial<Pick<ItemCola, "estado" | "intentos" | "siguiente_intento_en" | "error" | "payload">>): Promise<void>;
+  marcarItem(id: string, cambios: Partial<Pick<ItemCola, "estado" | "intentos" | "siguiente_intento_en" | "error" | "payload" | "depende_de">>): Promise<void>;
   contarCola(usuarioId: string): Promise<{ pendientes: number; cuarentena: number; masAntiguo: string | null }>;
   listarCola(usuarioId: string): Promise<ItemCola[]>;
 
   encolarSubida(s: Omit<Subida, "estado" | "intentos" | "siguiente_intento_en" | "error">): Promise<void>;
   subidasSiguientes(usuarioId: string, ahora: Date, limite: number): Promise<Subida[]>;
   marcarSubida(id: string, cambios: Partial<Pick<Subida, "estado" | "intentos" | "siguiente_intento_en" | "error">>): Promise<void>;
+  /** Fotos que dependen de un envío. */
+  subidasDe(outboxId: string): Promise<Subida[]>;
+  /** Quita de la cola un envío rechazado y sus fotos pendientes (solo al reabrirlo como borrador, que guarda todo). */
+  quitarDeCola(id: string): Promise<void>;
 
   /** Copia local del servidor (solo lo que el servidor deja ver; las personas, enmascaradas). */
   guardar(tabla: string, fila: Record<string, unknown> & { id: string }, pendiente?: boolean): Promise<void>;

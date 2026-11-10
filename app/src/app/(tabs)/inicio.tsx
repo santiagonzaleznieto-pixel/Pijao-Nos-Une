@@ -139,7 +139,7 @@ export default function Inicio() {
         {app.telefonoModificado ? <Aviso tipo="error" texto="Este teléfono parece modificado (rooteado). Por seguridad, avise al Administrador." /> : null}
         {necesita2fa ? <Aviso tipo="alerta" texto="Active la verificación en dos pasos para usar sus permisos de riesgo alto." /> : null}
         {necesita2fa ? <Boton texto="Activar verificación" variante="secundario" onPress={() => router.push("/verificacion")} /> : null}
-        {app.cola.cuarentena ? <Aviso tipo="error" texto={`${app.cola.cuarentena} registro(s) necesitan revisión. Toque «Pendientes».`} /> : null}
+        {app.cola.cuarentena ? <Pressable accessibilityRole="button" onPress={() => router.push("/pendientes")}><Aviso tipo="error" texto={`${app.cola.cuarentena} ${app.cola.cuarentena === 1 ? "visita no se pudo enviar" : "visitas no se pudieron enviar"}. Toque aquí para corregirlas y enviarlas de nuevo.`} /></Pressable> : null}
 
         <Aparece retraso={200} estilo={e.titulo}>
           <Etiqueta>Su trabajo</Etiqueta>

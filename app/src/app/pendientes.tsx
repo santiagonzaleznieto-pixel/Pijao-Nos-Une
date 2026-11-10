@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 import type { Borrador } from "@/core/visita";
 import type { ItemCola } from "@/datos/tipos";
-import { borrarBorrador, listarBorradores } from "@/servicios/campo";
+import { borrarBorrador, listarBorradores, reabrirRechazada } from "@/servicios/campo";
 import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Ficha, Fila, ItemLista, Pantalla, Segmentos, Vacio } from "@/ui/componentes";
 import { color, fuente, tl } from "@/ui/tema";
@@ -21,7 +21,7 @@ export default function Pendientes() {
   const router = useRouter();
   const [borradores, setBorradores] = useState<Borrador[]>([]);
   const [cola, setCola] = useState<ItemCola[]>([]);
-  const [vista, setVista] = useState("enviar");
+  const [vista, setVista] = useState(app.cola.cuarentena ? "revisar" : "enviar");
   const [sincronizando, setSincronizando] = useState(false);
 
   useEffect(() => {
@@ -79,10 +79,24 @@ export default function Pendientes() {
 
       {vista === "revisar" ? (revisar.length ? (
         <View>
-          {revisar.map((i, n) => (
-            <ItemLista key={i.id} titulo={NOMBRE[i.tipo] ?? i.tipo} ultimo={n === revisar.length - 1}
-              detalle={i.error ?? "El servidor pidió revisarlo."} izquierda={<Ficha icono="exclama" tono="rojo" />} />
-          ))}
+          {revisar.map((i, n) => {
+            const v = (i.payload as { vivienda?: { direccion?: string } } | null)?.vivienda;
+            return (
+              <View key={i.id} style={{ gap: 8, paddingBottom: 12 }}>
+                <ItemLista titulo={`${NOMBRE[i.tipo] ?? i.tipo}${v?.direccion ? ` · ${v.direccion}` : ""}`} ultimo
+                  detalle={`${fechaHora(i.creado_en)} · ${i.error ?? "El servidor pidió revisarlo."}`} izquierda={<Ficha icono="exclama" tono="rojo" />} />
+                {i.tipo === "registrar_visita" && i.payload ? (
+                  <Boton texto="Corregir y enviar de nuevo" icono="editar" onPress={async () => {
+                    const id = await reabrirRechazada(app.almacen, i.id);
+                    app.avisarCambio();
+                    if (id) router.push({ pathname: "/visita", params: { borrador: id } });
+                  }} />
+                ) : null}
+                {n < revisar.length - 1 ? <View style={{ height: 1, backgroundColor: color.borde, marginTop: 4 }} /> : null}
+              </View>
+            );
+          })}
+          <Aviso tipo="info" texto="Al corregir, la visita se abre en el paso de autorización con todos sus datos y fotos. Revise y toque «Guardar visita»: se envía de nuevo." />
         </View>
       ) : <Vacio icono="check" tono="verde" titulo="Nada por revisar" texto="Cuando el servidor rechace algo, aparece aquí con el motivo." />) : null}
 
