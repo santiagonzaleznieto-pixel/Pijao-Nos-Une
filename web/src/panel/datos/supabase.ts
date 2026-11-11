@@ -3,6 +3,8 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../../config";
 import { mensajeDeError } from "../../logica/utiles";
+import { diaMas } from "../../logica/utiles";
+import type { AlertaCalidadPanel, CumpleaneroPanel, IncidentePanel, NecesidadPanel, Seguridad } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto, CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
@@ -276,5 +278,29 @@ export class FuenteSupabase implements Fuente {
       if (tramo.length < 1000) break;
     }
     return todos;
+  }
+
+  // ------------------------------------------------------------------------------------------- Fase 3
+
+  seguridad() { return this.rpc<Seguridad>("rpc_seguridad_panel"); }
+  async atenderSos(id: string) { await this.rpc("rpc_atender_sos", { p_id: id }); }
+  incidentes() {
+    return this.leer<IncidentePanel[]>(this.sb.from("incidentes").select("id, tipo, descripcion, lat, lng, estado, resolucion, creado_en").order("creado_en", { ascending: false }).limit(300));
+  }
+  async estadoIncidente(id: string, estado: string, resolucion: string) { await this.rpc("rpc_incidente_estado", { p_id: id, p_estado: estado, p_resolucion: resolucion }); }
+  necesidades() {
+    return this.leer<NecesidadPanel[]>(this.sb.from("necesidades").select("id, tema, texto, alcance, estado, prioridad, desea_respuesta, creado_en")
+      .is("eliminado_en", null).order("creado_en", { ascending: false }).limit(1000));
+  }
+  async estadoNecesidad(id: string, estado: string) { await this.rpc("rpc_necesidad_estado", { p_id: id, p_estado: estado }); }
+  alertasCalidad() {
+    return this.leer<AlertaCalidadPanel[]>(this.sb.from("alertas_calidad").select("id, tipo, severidad, detalle, creada_en, resuelta_en, resolucion").order("creada_en", { ascending: false }).limit(300));
+  }
+  async resolverAlerta(id: string, resolucion: string) { await this.rpc("rpc_resolver_alerta", { p_id: id, p_resolucion: resolucion }); }
+  async cumpleanerosHoy(): Promise<CumpleaneroPanel[]> {
+    const [, m, d] = diaMas(0).split("-").map(Number);
+    const filas = await this.leer<Record<string, unknown>[]>(this.sb.from("personas_v").select("id, nombre_visible, edad_anios, tiene_contacto_autorizado, cumple_mes, cumple_dia, estado")
+      .eq("estado", "activa").eq("cumple_mes", m).in("cumple_dia", m === 2 && d === 28 ? [28, 29] : [d]).limit(500));
+    return filas.map((p) => ({ id: String(p.id), nombre: String(p.nombre_visible ?? "Persona"), edad: (p.edad_anios as number) ?? null, contactable: p.tiene_contacto_autorizado === true }));
   }
 }

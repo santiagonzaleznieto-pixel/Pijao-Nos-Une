@@ -7,6 +7,7 @@ import { Entrar } from "./Entrar";
 import { Auditoria } from "./paginas/Auditoria";
 import { Colaboradores } from "./paginas/Colaboradores";
 import { Configuracion } from "./paginas/Configuracion";
+import { Calidad, Cumpleaneros, Incidentes, Necesidades, Seguridad } from "./paginas/Fase3";
 import { FichaColaborador } from "./paginas/FichaColaborador";
 import { Inicio } from "./paginas/Inicio";
 import { Piloto } from "./paginas/Piloto";
@@ -25,6 +26,11 @@ const ICONOS: Record<string, string> = {
   piloto: "M4 19V9 M10 19V5 M16 19v-7 M22 19H2",
   configuracion: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z",
   salud: "M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z",
+  seguridad: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z M9 12l2 2 4-4",
+  incidentes: "M12 3l9.5 17h-19z M12 10v4 M12 17h.01",
+  necesidades: "M4 5h16v11H9l-5 4z",
+  calidad: "M5 12l4 4 10-10",
+  cumpleanos: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z",
 };
 function IconoMenu({ ruta }: { ruta: string }) {
   return (
@@ -109,10 +115,15 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
   const r = resumen.datos;
   const menu: [string, string, number?][] = [
     ["inicio", "Inicio"],
+    ["seguridad", "Seguridad en terreno"],
     ["colaboradores", "Colaboradores", r?.pendientes],
     ["titulares", "Derechos de titulares", r?.titularesPendientes],
     ["auditoria", "Auditoría"],
     ["mapa", "Mapa del avance"],
+    ["necesidades", "Necesidades"],
+    ["calidad", "Calidad"],
+    ["incidentes", "Incidentes"],
+    ["cumpleanos", "Cumpleañeros de hoy"],
     ["piloto", "Métricas del piloto"],
     ...(esAdmin(perfil) ? [["configuracion", "Configuración"], ["salud", "Salud del sistema"]] as [string, string][] : []),
   ];
@@ -129,6 +140,11 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
     case "configuracion": vista = <Configuracion pestanaInicial={param} />; break;
     case "salud": vista = <Salud />; break;
     case "piloto": vista = <Piloto />; break;
+    case "seguridad": vista = <Seguridad />; break;
+    case "necesidades": vista = <Necesidades />; break;
+    case "calidad": vista = <Calidad />; break;
+    case "incidentes": vista = <Incidentes />; break;
+    case "cumpleanos": vista = <Cumpleaneros />; break;
     default: vista = <Inicio resumen={resumen} />;
   }
 

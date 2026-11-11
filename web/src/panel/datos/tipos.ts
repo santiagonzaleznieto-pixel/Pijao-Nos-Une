@@ -121,6 +121,15 @@ export interface MetricasPiloto {
   por_dia: { dia: string; registros: number; mediana_seg: number | null; gps_errores: number; envio_errores: number }[];
 }
 
+// ----------------------------------------------------------------------------- Fase 3 (solo el equipo)
+export interface JornadaActiva { id: string; usuario_id: string; nombre: string; celular: string | null; inicio: string; lat: number | null; lng: number | null; visto_en: string | null }
+export interface AlertaSos { id: string; nombre: string; celular: string | null; emergencia: string | null; emergencia_celular: string | null; lat: number | null; lng: number | null; nota: string | null; creada_en: string; atendida_en: string | null }
+export interface Seguridad { jornadas: JornadaActiva[]; sos: AlertaSos[] }
+export interface IncidentePanel { id: string; tipo: string; descripcion: string; lat: number | null; lng: number | null; estado: "abierto" | "en_revision" | "resuelto"; resolucion: string | null; creado_en: string }
+export interface NecesidadPanel { id: string; tema: string | null; texto: string | null; alcance: string | null; estado: string; prioridad: number | null; desea_respuesta: boolean; creado_en: string }
+export interface AlertaCalidadPanel { id: string; tipo: string; severidad: "baja" | "media" | "alta"; detalle: Record<string, unknown>; creada_en: string; resuelta_en: string | null; resolucion: string | null }
+export interface CumpleaneroPanel { id: string; nombre: string; edad: number | null; contactable: boolean }
+
 export interface Fuente {
   readonly modo: "real" | "demo";
   // sesión (17.5: la misma cuenta del teléfono y siempre con verificación en dos pasos)
@@ -175,4 +184,14 @@ export interface Fuente {
   // mapa del avance
   puntosMapa(): Promise<PuntoMapa[]>;
   casa(id: string): Promise<CasaPanel | null>;
+  // Fase 3: seguridad en terreno, incidentes, necesidades, calidad y cumpleaños
+  seguridad(): Promise<Seguridad>;
+  atenderSos(id: string): Promise<void>;
+  incidentes(): Promise<IncidentePanel[]>;
+  estadoIncidente(id: string, estado: string, resolucion: string): Promise<void>;
+  necesidades(): Promise<NecesidadPanel[]>;
+  estadoNecesidad(id: string, estado: string): Promise<void>;
+  alertasCalidad(): Promise<AlertaCalidadPanel[]>;
+  resolverAlerta(id: string, resolucion: string): Promise<void>;
+  cumpleanerosHoy(): Promise<CumpleaneroPanel[]>;
 }

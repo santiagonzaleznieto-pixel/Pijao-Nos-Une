@@ -6,6 +6,7 @@ import { PERMISOS, PLANTILLAS } from "@nucleo/permisos";
 import { PARAMS_POR_DEFECTO } from "@nucleo/reglas";
 import { diaMas } from "../../logica/utiles";
 import { ErrorPanel } from "./supabase";
+import type { AlertaCalidadPanel, AlertaSos, CumpleaneroPanel, IncidentePanel, NecesidadPanel, Seguridad } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto,
   CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
@@ -482,4 +483,41 @@ export class FuenteDemo implements Fuente {
       texto: "La familia lo contó durante la visita (ejemplo).", estado: "recibida" }];
     return { datos: { vivienda, hogares, personas, visitas, necesidades, fotos: [] }, fotos: [{ id: `${id}-f`, tipo: "fachada", url: fotoEjemplo(i) }] };
   }
+
+  // ------------------------------------------------------------------------------------------- Fase 3 (ejemplo)
+
+  private sosL: AlertaSos[] = [{ id: "sos-1", nombre: "Colaboradora de ejemplo", celular: "3000000000", emergencia: "Contacto de ejemplo", emergencia_celular: "3110000000",
+    lat: 4.3338, lng: -75.7049, nota: "SOS desde la app", creada_en: new Date(Date.now() - 6 * 60_000).toISOString(), atendida_en: null }];
+  private incidentesL: IncidentePanel[] = [
+    { id: "inc-1", tipo: "rumor_desinformacion", descripcion: "Circula un audio falso sobre la campaña en la vereda.", lat: null, lng: null, estado: "abierto", resolucion: null, creado_en: new Date(Date.now() - 3 * 3600_000).toISOString() },
+    { id: "inc-2", tipo: "dano_propaganda", descripcion: "Pendón roto en la entrada del pueblo.", lat: 4.334, lng: -75.703, estado: "resuelto", resolucion: "Se reemplazó.", creado_en: new Date(Date.now() - 50 * 3600_000).toISOString() },
+  ];
+  private necesidadesL: NecesidadPanel[] = [
+    { id: "nec-1", tema: "vias_movilidad", texto: "Arreglar la vía a la vereda", alcance: "colectiva", estado: "recibida", prioridad: 1, desea_respuesta: true, creado_en: new Date(Date.now() - 86400_000).toISOString() },
+    { id: "nec-2", tema: "agua_ambiente", texto: "Agua potable todo el día", alcance: "colectiva", estado: "clasificada", prioridad: 1, desea_respuesta: false, creado_en: new Date(Date.now() - 2 * 86400_000).toISOString() },
+    { id: "nec-3", tema: "empleo_emprendimiento", texto: "Trabajo para los jóvenes", alcance: "hogar", estado: "recibida", prioridad: 2, desea_respuesta: true, creado_en: new Date(Date.now() - 3 * 86400_000).toISOString() },
+  ];
+  private alertasL: AlertaCalidadPanel[] = [
+    { id: "al-1", tipo: "posible_duplicado", severidad: "baja", detalle: {}, creada_en: new Date(Date.now() - 5 * 3600_000).toISOString(), resuelta_en: null, resolucion: null },
+    { id: "al-2", tipo: "distancia_excedida", severidad: "media", detalle: { metros: 85 }, creada_en: new Date(Date.now() - 9 * 3600_000).toISOString(), resuelta_en: null, resolucion: null },
+  ];
+
+  async seguridad(): Promise<Seguridad> {
+    await espera();
+    return { jornadas: [{ id: "j-1", usuario_id: "c-1", nombre: "Colaboradora de ejemplo", celular: "3000000000", inicio: new Date(Date.now() - 2 * 3600_000).toISOString(),
+      lat: 4.3338, lng: -75.7049, visto_en: new Date(Date.now() - 4 * 60_000).toISOString() }], sos: this.sosL.map((x) => ({ ...x })) };
+  }
+  async atenderSos(id: string) { await espera(); const s = this.sosL.find((x) => x.id === id); if (s) s.atendida_en = ahora(); this.auditar("atender_sos", "seguridad", id, {}); }
+  async incidentes() { await espera(); return this.incidentesL.map((x) => ({ ...x })); }
+  async estadoIncidente(id: string, estado: string, resolucion: string) {
+    await espera();
+    const x = this.incidentesL.find((i) => i.id === id);
+    if (!x) throw new ErrorPanel("Incidente no encontrado");
+    Object.assign(x, { estado, resolucion: resolucion || x.resolucion });
+  }
+  async necesidades() { await espera(); return this.necesidadesL.map((x) => ({ ...x })); }
+  async estadoNecesidad(id: string, estado: string) { await espera(); const x = this.necesidadesL.find((n) => n.id === id); if (x) x.estado = estado; }
+  async alertasCalidad() { await espera(); return this.alertasL.map((x) => ({ ...x })); }
+  async resolverAlerta(id: string, resolucion: string) { await espera(); const x = this.alertasL.find((a) => a.id === id); if (x) Object.assign(x, { resuelta_en: ahora(), resolucion }); }
+  async cumpleanerosHoy(): Promise<CumpleaneroPanel[]> { await espera(); return [{ id: "p-1", nombre: "Persona de ejemplo", edad: 52, contactable: true }]; }
 }
