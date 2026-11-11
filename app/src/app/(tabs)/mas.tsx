@@ -25,6 +25,7 @@ export default function Mas() {
       <View style={{ gap: 10 }}>
         <Etiqueta>Equipo</Etiqueta>
         <FilaEnlace texto="Anuncios" icono="megafono" onPress={() => router.push("/anuncios")} />
+        <FilaEnlace texto="Eventos" detalle="Próximos encuentros de la campaña" icono="calendario" onPress={() => router.push("/eventos")} />
         {app.perfil?.puede("ver_titulares") ? <FilaEnlace texto="Derechos de los titulares" detalle="Solicitudes de las personas sobre sus datos" icono="escudo" onPress={() => router.push("/titulares")} /> : null}
       </View>
       <View style={{ gap: 10 }}>

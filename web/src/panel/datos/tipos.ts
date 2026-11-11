@@ -138,6 +138,9 @@ export interface InformePanel {
   tareas_vencidas: number; colaboradores_activos: number;
 }
 
+export interface EventoPanel { id: string; titulo: string; tipo: string; descripcion: string | null; lugar: string | null; inicio: string; fin: string | null }
+export interface NuevoEvento { titulo: string; tipo: string; descripcion: string; lugar: string; inicio: string; fin: string | null }
+
 export interface Fuente {
   readonly modo: "real" | "demo";
   // sesión (17.5: la misma cuenta del teléfono y siempre con verificación en dos pasos)
@@ -205,4 +208,7 @@ export interface Fuente {
   tareasEquipo(): Promise<TareaPanel[]>;
   crearTarea(t: NuevaTarea): Promise<void>;
   informe(desde: string): Promise<InformePanel>;
+  eventosEquipo(): Promise<EventoPanel[]>;
+  guardarEvento(e: NuevoEvento): Promise<void>;
+  cancelarEvento(id: string): Promise<void>;
 }

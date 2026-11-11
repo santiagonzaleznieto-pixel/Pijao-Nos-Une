@@ -24,6 +24,7 @@ export const TABLAS_DESCARGA: readonly [string, string, string][] = [
   ["necesidades", "necesidades", "id"],
   ["tareas", "tareas", "id"],
   ["anuncios", "anuncios", "id"],
+  ["eventos", "eventos", "id"],   // Fase 3 (0019)
 ];
 
 export type Evento =
@@ -209,7 +210,15 @@ export class MotorSync {
   // ------------------------------------------------------------ descarga
   async descargar(): Promise<number> {
     let total = 0;
-    for (const [remota, local, clave] of TABLAS_DESCARGA) total += await this.descargarTabla(remota, local, clave);
+    for (const [remota, local, clave] of TABLAS_DESCARGA) {
+      try {
+        total += await this.descargarTabla(remota, local, clave);
+      } catch (e) {
+        // Una tabla nueva que el servidor todavía no tiene (migración pendiente) no frena la descarga de las demás.
+        if (e instanceof ErrorRemoto && (e.status === 404 || /does not exist|PGRST20[0-9]|schema cache|no existe/i.test(e.message))) continue;
+        throw e;
+      }
+    }
     await this.guardarParametros();
     return total;
   }

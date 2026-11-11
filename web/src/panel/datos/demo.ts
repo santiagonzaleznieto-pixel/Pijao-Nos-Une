@@ -6,7 +6,7 @@ import { PERMISOS, PLANTILLAS } from "@nucleo/permisos";
 import { PARAMS_POR_DEFECTO } from "@nucleo/reglas";
 import { diaMas } from "../../logica/utiles";
 import { ErrorPanel } from "./supabase";
-import type { AlertaCalidadPanel, AlertaSos, CumpleaneroPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, Seguridad, TareaPanel } from "./tipos";
+import type { AlertaCalidadPanel, AlertaSos, CumpleaneroPanel, EventoPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, NuevoEvento, Seguridad, TareaPanel } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto,
   CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
@@ -536,4 +536,14 @@ export class FuenteDemo implements Fuente {
     return { desde, visitas: 18, verdes: 14, amarillas: 3, rojas: 1, viviendas_nuevas: 12, personas_nuevas: 21, alertas_abiertas: 2, incidentes_abiertos: 1, sos_sin_atender: 1,
       tareas_vencidas: 1, colaboradores_activos: 4, necesidades_por_tema: [{ tema: "vias_movilidad", n: 7 }, { tema: "agua_ambiente", n: 4 }, { tema: "empleo_emprendimiento", n: 3 }] };
   }
+
+  private eventosL: EventoPanel[] = [{ id: "ev-1", titulo: "Encuentro con caficultores", tipo: "reunion_vereda", descripcion: "Escuchar las propuestas del campo.",
+    lugar: "Escuela La Mina", inicio: new Date(Date.now() + 2 * 86400_000).toISOString(), fin: null }];
+  async eventosEquipo() { await espera(); return this.eventosL.map((x) => ({ ...x })); }
+  async guardarEvento(e: NuevoEvento) {
+    await espera();
+    if (e.titulo.trim().length < 3) throw new ErrorPanel("Escriba el nombre del evento");
+    this.eventosL.push({ id: `ev-${this.eventosL.length + 1}`, ...e });
+  }
+  async cancelarEvento(id: string) { await espera(); this.eventosL = this.eventosL.filter((x) => x.id !== id); }
 }

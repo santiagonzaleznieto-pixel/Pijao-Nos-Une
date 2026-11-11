@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../../config";
 import { mensajeDeError } from "../../logica/utiles";
 import { diaMas } from "../../logica/utiles";
-import type { AlertaCalidadPanel, CumpleaneroPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, Seguridad, TareaPanel } from "./tipos";
+import type { AlertaCalidadPanel, CumpleaneroPanel, EventoPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, NuevoEvento, Seguridad, TareaPanel } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto, CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
@@ -333,4 +333,11 @@ export class FuenteSupabase implements Fuente {
     return { desde, visitas, verdes, amarillas, rojas, viviendas_nuevas, personas_nuevas, alertas_abiertas, incidentes_abiertos, sos_sin_atender, tareas_vencidas,
       colaboradores_activos, necesidades_por_tema: [...m.entries()].map(([tema, n]) => ({ tema, n })).sort((a, b) => b.n - a.n).slice(0, 6) };
   }
+
+  eventosEquipo() {
+    return this.leer<EventoPanel[]>(this.sb.from("eventos").select("id, titulo, tipo, descripcion, lugar, inicio, fin").is("eliminado_en", null)
+      .gte("inicio", new Date(Date.now() - 86400_000).toISOString()).order("inicio").limit(200));
+  }
+  async guardarEvento(e: NuevoEvento) { await this.rpc("rpc_evento_guardar", { p: e }); }
+  async cancelarEvento(id: string) { await this.rpc("rpc_evento_cancelar", { p_id: id }); }
 }

@@ -636,6 +636,21 @@ El sistema de diseño está publicado y las 53 pantallas están diseñadas con t
 
 **Objetivo:** el equipo completo, organizado por zonas y protegido en terreno, escuchando a la comunidad y convirtiendo lo escuchado en programa de gobierno.
 
+**Avance al 10 de noviembre de 2026** (rama `fase-2/diseno`; solo para el equipo, sin la parte pública ni la división del mapa por zonas, por decisión del dueño; las pruebas serán con el equipo más cercano, no con 300 colaboradores):
+
+| Bloque | Estado | Detalle |
+|---|---|---|
+| 3.2 Jornada y seguridad | 🟡 App y panel | Iniciar y terminar la jornada (también sin señal), ubicación cada minuto solo durante la jornada y con la app abierta, «¿Todo bien?» cada 2 horas y aviso a la hora prevista de terminar (notificaciones locales). **SOS** manteniendo 3 segundos: con señal llega al instante; sin señal queda en cola y ofrece llamar al 123 o mandar un mensaje de texto con la ubicación. Panel «Seguridad en terreno» con jornadas activas, última ubicación y alertas SOS con celular y contacto de emergencia. **Falta:** ubicación con la app cerrada (servicio en primer plano), alerta automática de no regreso al Director y jornada nocturna |
+| 3.3 Equipo | 🟡 | Panel: crear y asignar tareas; **eventos** (0019) que el equipo ve en la app sin señal. **Falta:** turnos, mensajes internos, directorio, cursos adicionales, gastos, insignias, salida del equipo y «Ver como» |
+| 3.4 Calidad | 🟡 | Panel «Calidad» con las alertas automáticas del servidor y su revisión. **Falta:** sorteo semanal del 5 % y fusión de duplicados |
+| 3.5 Informes | 🟡 | Panel «Informe» del día, la semana o el mes, imprimible en una página para el candidato. **Falta:** envío automático, estadísticas avanzadas, metas, historia electoral e importar y exportar |
+| 3.6 Escucha | 🟡 | Panel «Necesidades» por eje con su recorrido (C-19). **Falta:** banco de propuestas, programa versionado, historias y encuestas (lo público queda para la página de la campaña) |
+| 3.9 Incidentes | ✅ App y panel | Reporte confidencial desde la app (sin señal también) y revisión en el panel |
+| 3.10 Ayuda | ✅ App | P-45 con preguntas frecuentes, reportar un error y novedades |
+| 3.11 Persona | 🟡 | **Cumpleañeros de hoy** en la app y el panel, con fecha de cumpleaños aparte (0018). **Falta:** línea de tiempo completa de la persona |
+| Visitas (pedidos del dueño) | ✅ | Más necesidades, una sola pregunta, finca solo en rural, sostén sin «Relación» y sin repetir, fechas con listas y edad, varios canales, contratista del Estado, sin «Dirección errónea», retomar la visita sin terminar |
+| Servidor | ⏳ Espera autorización | Migraciones **0018** (cumpleaños, canales, sostén, panel de seguridad, incidentes y necesidades) y **0019** (eventos), probadas en GitHub y en seco contra producción. Aplicarlas pide la autorización expresa del dueño |
+
 ### 3.1 Territorio y zonas
 
 - [ ] **P-38 Editor de zonas (O-14):** dibujar, editar, unir y dividir polígonos, asignar a colaboradores o grupos y fijar metas (5.9).

@@ -93,6 +93,15 @@ Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es 
 - [ ] **Decidir si se publica la versión a main.** Todo el diseño está en la rama `fase-2/diseno`; pasar a `main` necesita su aprobación.
 - [ ] **Más adelante:** la página de la campaña y el kit para redes y piezas públicas (13.2), cuando haya mensaje definitivo. Las páginas públicas actuales (verificar carnet, Mis datos, política) siguen funcionando como están.
 
+### 8. Fase 3 (solo para el equipo)
+
+- [ ] ⏰ **Autorizar que Claude aplique en el servidor las migraciones 0018 y 0019.** El sistema de permisos le pide a Claude la autorización expresa de usted para cambiar la base de datos de producción. Basta con escribirle «sí, aplica las migraciones». Sin ellas: el servidor no guarda el cumpleaños ni los canales extra, «Seguridad en terreno» no carga en el panel y los eventos no existen (la app sigue funcionando y guardando visitas).
+- [ ] **Instalar la app 0.18.0 encima de la anterior** (nunca desinstalar) y probar: una visita completa con persona, el SOS (manteniendo 3 segundos, en modo práctica para no alarmar a nadie), iniciar y terminar una jornada.
+- [ ] **Mapa de Pijao por zonas:** cuando lo consiga, enviárselo a Claude. Por ahora el mapa queda sin zonas, como usted pidió.
+- [ ] **Definir quién atiende los SOS** y a qué teléfono llamar primero (Director, Administrador, contacto de emergencia).
+- [ ] **Abogado:** revisar el uso de las ubicaciones durante la jornada (se borran a los 7 días) y el saludo de cumpleaños (solo a quien autorizó el contacto).
+- [ ] **Pasar a `main`** cuando apruebe el diseño y la Fase 3: así el panel publicado muestra las secciones nuevas.
+
 ---
 
 ### Lo que Claude ya dejó hecho o hace sin usted
@@ -101,3 +110,5 @@ Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es 
 - Aplicar las migraciones en producción (la 0016 y la 0017 quedaron aplicadas el 7 de noviembre de 2026) y publicar cada versión de la app en GitHub Releases.
 - Mantener al día `docs/Plan-de-Construccion.md`, `docs/Entrega-y-Firma.md` y la bitácora `docs/Bitacora-del-Proyecto.md`.
 - **Fase 2 (9 de noviembre de 2026, app 0.17.0):** mapa con marcadores de color y forma, grupos, «por enviar» punteado y ficha rápida; ícono de la app, ícono adaptable, notificaciones y arranque; modos claro, oscuro, sol y letra grande; todas las pantallas de la app con el diseño del lienzo y sus estados (cargando, vacío, sin señal, error, sin permiso); íconos de los 14 ejes; formatos de fecha, hora y pesos; auditoría de accesibilidad (`docs/Accesibilidad-Fase2.md`); panel web interno con el diseño; volante, certificado y carnet para imprimir (`diseno/materiales/`).
+- **Fase 3 (10 de noviembre de 2026, app 0.18.0):** arreglos del registro de visitas pedidos por el dueño, retomar la visita sin terminar, cumpleañeros de hoy, jornada y SOS, incidentes, ayuda y eventos en la app; en el panel, seguridad en terreno, tareas, eventos, informe imprimible, necesidades, calidad, incidentes y cumpleañeros. Migraciones 0018 y 0019 listas y probadas, esperando su autorización.
+
