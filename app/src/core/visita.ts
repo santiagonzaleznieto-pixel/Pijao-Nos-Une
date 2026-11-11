@@ -33,7 +33,7 @@ export const CAMPOS_HOGAR = ["id", "total_personas", "edades", "mujeres", "hombr
 export const CAMPOS_PERSONA = ["id", "primer_nombre", "segundo_nombre", "primer_apellido", "segundo_apellido", "apodo",
   "tipo_documento", "fecha_nacimiento", "mayor_edad_confirmada", "sexo", "ocupacion", "telefono_es_whatsapp",
   "canal_preferido", "mejor_horario", "anios_en_pijao", "vive_en_otra_ciudad", "vota_en_pijao", "puesto_votacion",
-  "mesa_votacion", "interes_info", "voluntario", "anfitrion", "temas_interes",
+  "mesa_votacion", "interes_info", "voluntario", "anfitrion", "temas_interes", "cumple_mes", "cumple_dia", "canales_preferidos",
   // sensibles: viajan en claro solo hasta el servidor, que los cifra (8.8); en el teléfono van en la base cifrada
   "cedula", "telefono", "telefono2", "correo", "simpatia"] as const;
 export const CAMPOS_NECESIDAD = ["id", "tema", "prioridad", "texto", "alcance", "origen", "desea_respuesta"] as const;
@@ -93,7 +93,7 @@ export function construirPayload(b: Borrador): { payload: Fila; subidas: Subida[
     dispositivo: b.dispositivo,
     vivienda: b.vivienda_existente ? { id: vid, solo_visita: true } : filtrar(b.vivienda, CAMPOS_VIVIENDA),
     visita, hogar, personas,
-    necesidades: b.necesidades.map((n) => filtrar(n, CAMPOS_NECESIDAD)),
+    necesidades: b.necesidades.filter((n) => n.tema).map((n, i) => ({ ...filtrar(n, CAMPOS_NECESIDAD), prioridad: Math.min(3, Number(n.prioridad ?? i + 1)) })),
     consentimientos: b.consentimientos.map((c) => filtrar(c as unknown as Fila, CAMPOS_CONSENTIMIENTO)),
     fotos,
   };

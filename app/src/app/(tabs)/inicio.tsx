@@ -7,7 +7,9 @@ import { Animated, Pressable, ScrollView, StyleSheet, Text, View } from "react-n
 import Svg, { Path } from "react-native-svg";
 import { panelCampana, panelPersonal } from "@/core/estadisticas";
 import { param } from "@/core/reglas";
-import { listarBorradores } from "@/servicios/campo";
+import { borrarBorrador, listarBorradores } from "@/servicios/campo";
+import type { Borrador } from "@/core/visita";
+import { cumpleanerosDeHoy } from "@/core/cumpleanos";
 import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Etiqueta, Fila, Tarjeta } from "@/ui/componentes";
 import { Icono, type NombreIcono } from "@/ui/Icono";
@@ -85,13 +87,19 @@ export default function Inicio() {
   const [p, setP] = useState<ReturnType<typeof panelPersonal> | null>(null);
   const [c, setC] = useState<ReturnType<typeof panelCampana> | null>(null);
   const [errorAviso, setErrorAviso] = useState<string | null>(null);
+  const [sinTerminar, setSinTerminar] = useState<Borrador | null>(null);
+  const [cumplen, setCumplen] = useState(0);
 
   useEffect(() => {
     (async () => {
       const a = app.almacen;
       const [viviendas, visitas, hogares, personas, necesidades, tareas] = await Promise.all(
         ["viviendas", "visitas", "hogares", "personas", "necesidades", "tareas"].map((t) => a.listar(t)));
-      const borradores = app.usuarioId ? (await listarBorradores(a, app.usuarioId)).length : 0;
+      const lista = app.usuarioId ? await listarBorradores(a, app.usuarioId) : [];
+      const borradores = lista.length;
+      // La visita que quedó a medias (la app se cerró o salió por error): la más reciente.
+      setSinTerminar([...lista].sort((x, y) => String(y.creado_en).localeCompare(String(x.creado_en)))[0] ?? null);
+      setCumplen(cumpleanerosDeHoy(personas).length);
       setP(panelPersonal({ usuarioId: app.usuarioId ?? "", visitas, tareas, borradores, porEnviar: app.cola.pendientes }));
       setC(panelCampana({ viviendas, visitas, hogares, personas, necesidades, minimo: param(app.params, "grupo_minimo") }));
     })();
@@ -135,6 +143,28 @@ export default function Inicio() {
             )}
           </Tarjeta>
         ))}
+        {sinTerminar ? (
+          <Aparece>
+            <View style={e.sinTerminar} accessible accessibilityLabel="Tiene una visita sin terminar">
+              <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+                <View style={e.sinTerminarIcono}><Icono nombre="editar" tam={22} color={color.textoNaranja} /></View>
+                <View style={{ flex: 1 }}>
+                  <Text style={e.sinTerminarTitulo}>Tiene una visita sin terminar</Text>
+                  <Text style={e.sinTerminarTexto}>{String(sinTerminar.vivienda.direccion ?? "") || "Sin dirección todavía"} · va en el paso {sinTerminar.paso + 1}. Todo lo que llenó está guardado.</Text>
+                </View>
+              </View>
+              <Fila>
+                <Boton texto="Continuar la visita" icono="play" onPress={() => router.push({ pathname: "/visita", params: { borrador: sinTerminar.id } })} estilo={{ flex: 2 }} />
+                <Boton texto="Descartar" variante="peligro" onPress={async () => { await borrarBorrador(app.almacen, sinTerminar.id); app.avisarCambio(); }} estilo={{ flex: 1 }} />
+              </Fila>
+            </View>
+          </Aparece>
+        ) : null}
+        {cumplen ? (
+          <Pressable accessibilityRole="button" onPress={() => router.push("/cumpleanos")}>
+            <Aviso tipo="info" icono="estrella" texto={`Hoy ${cumplen === 1 ? "cumple años 1 persona" : `cumplen años ${cumplen} personas`}. Toque para verlas.`} />
+          </Pressable>
+        ) : null}
         {errorAviso ? <Aviso tipo="error" texto={errorAviso} /> : null}
         {app.telefonoModificado ? <Aviso tipo="error" texto="Este teléfono parece modificado (rooteado). Por seguridad, avise al Administrador." /> : null}
         {necesita2fa ? <Aviso tipo="alerta" texto="Active la verificación en dos pasos para usar sus permisos de riesgo alto." /> : null}
@@ -228,4 +258,8 @@ const e = StyleSheet.create({
   textoFuerte: { fontFamily: fuente.textoFuerte, fontSize: tl(14), color: color.texto },
   apoyo: { fontFamily: fuente.texto, fontSize: tl(13), lineHeight: tl(18), color: color.textoSuave },
   filaEnlace: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 56, paddingHorizontal: 16, borderRadius: 18, backgroundColor: color.superficie },
+  sinTerminar: { gap: 14, padding: 16, borderRadius: radio.seccion, borderWidth: 2, borderColor: color.textoNaranja, backgroundColor: color.tinteNaranja },
+  sinTerminarIcono: { width: 44, height: 44, borderRadius: 14, backgroundColor: color.fondo, alignItems: "center", justifyContent: "center" },
+  sinTerminarTitulo: { fontFamily: fuente.titulo, fontSize: tl(17), color: color.texto },
+  sinTerminarTexto: { fontFamily: fuente.textoMedio, fontSize: tl(14), lineHeight: tl(20), color: color.textoSuave },
 });

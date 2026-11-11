@@ -18,6 +18,7 @@ import { useApp } from "@/servicios/contexto";
 import { CamaraFoto } from "@/ui/CamaraFoto";
 import { Aviso, Avatar, Boton, Campo, Cargando, Casilla, Contador, Dato, Enlace, Etiqueta, Fila, ItemLista, Opciones, Pantalla, Pasos, Seccion, Semaforo, Texto, Vacio } from "@/ui/componentes";
 import { Firma } from "@/ui/Firma";
+import { SelectorCumpleanos, SelectorFechaNacimiento } from "@/ui/SelectorFecha";
 import { color, fuente, radio, tl } from "@/ui/tema";
 
 const PASOS = ["Antes de empezar", "Ubicación", "Foto de fachada", "Vivienda", "Resultado", "Hogar", "Personas", "Necesidades",
@@ -26,7 +27,6 @@ const SI_NO: [string, string][] = [["si", "Sí"], ["no", "No"], ["no_sabe", "No 
 const OCUPACION_VIV: [string, string][] = [["habitada", "Habitada"], ["deshabitada", "Deshabitada"], ["construccion", "En construcción"], ["temporal", "Uso temporal o turístico"]];
 const RIESGOS: [string, string][] = [["derrumbe", "Derrumbe"], ["inundacion", "Inundación"], ["quebrada", "Cerca de quebrada"]];
 const ACTIVIDAD: [string, string][] = [["negocio", "Negocio"], ["finca_cafetera", "Finca cafetera"], ["alojamiento", "Alojamiento turístico"], ["otra", "Otra"], ["ninguna", "Ninguna"]];
-const RELACION: [string, string][] = [["jefe", "Jefe o jefa"], ["conyuge", "Cónyuge"], ["hijo", "Hijo o hija"], ["otro", "Otro"]];
 const LABORAL: [string, string][] = [["formal", "Empleo formal"], ["informal", "Informal"], ["independiente", "Independiente"], ["sin_empleo", "Sin empleo"], ["pensionado", "Pensionado"]];
 const SEXO: [string, string][] = [["mujer", "Mujer"], ["hombre", "Hombre"], ["prefiere_no_decir", "Prefiere no decir"]];
 
@@ -41,6 +41,7 @@ export default function Visita() {
   const [aut, setAut] = useState({ metodo: null as Metodo | null, registro: false, datos: false, contacto: false, simpatia: false, historia: false, firma: null as unknown, noVolver: false });
   const [guardado, setGuardado] = useState<{ color: string; motivos: string[] } | null>(null);
   const [vistas, setVistas] = useState(0);
+  const [necesidadInicial] = useState(() => nuevoId());
   // A1: versión y texto de autorización vigentes en el servidor (P-42); sin copia local, los que trae la app.
   const [textoAut, setTextoAut] = useState<TextoVigente>({ version: VERSION_TEXTO_LOCAL, contenido: null });
   const [canales, setCanales] = useState({ correo: "", whatsapp: "" });
@@ -174,13 +175,14 @@ export default function Visita() {
   }
 
   if (persona) {
-    return <FormularioPersona inicial={persona} alCancelar={() => setPersona(null)} alGuardar={async (p) => {
+    return <FormularioPersona inicial={persona} sostenEnHogar={bb.hogar?.sosten_en_personas === false} alCancelar={() => setPersona(null)} alGuardar={async (p) => {
       const otras = bb.personas.filter((x) => x.id !== p.id).map((x) => (p.es_sosten ? { ...x, es_sosten: false } : x));
       await cambiar({ ...bb, personas: [...otras, p] });
       setPersona(null);
     }} />;
   }
 
+  const sostenPersona = bb.personas.find((x) => x.es_sosten);
   const fachada = bb.fotos.find((f) => f.tipo === "fachada");
   const calidad = evaluarRegistro(bb, app.params);
   const paso = bb.paso;
@@ -243,7 +245,7 @@ export default function Visita() {
           <Boton texto="Proponer según el mapa" variante="suave" onPress={proponerZona} />
           <Campo etiqueta="Dirección o descripción del lugar" value={String(bb.vivienda.direccion ?? "")} onChangeText={(v) => viv("direccion", v)} />
           <Campo etiqueta="Complemento (casa, apartamento, piso)" value={String(bb.vivienda.complemento ?? "")} onChangeText={(v) => viv("complemento", v)} />
-          <Campo etiqueta="Nombre de la finca o predio" value={String(bb.vivienda.nombre_finca ?? "")} onChangeText={(v) => viv("nombre_finca", v)} />
+          {bb.vivienda.zona_urbana_rural === "rural" ? <Campo etiqueta="Nombre de la finca o predio" value={String(bb.vivienda.nombre_finca ?? "")} onChangeText={(v) => viv("nombre_finca", v)} /> : null}
           <Campo etiqueta="Indicaciones para llegar" value={String(bb.vivienda.indicaciones ?? "")} onChangeText={(v) => viv("indicaciones", v)} />
           <Campo etiqueta="Punto de referencia" value={String(bb.vivienda.referencia ?? "")} onChangeText={(v) => viv("referencia", v)} />
           <Opciones etiqueta="Estado de ocupación" opciones={OCUPACION_VIV} valor={bb.vivienda.estado_ocupacion as string} onCambio={(v) => viv("estado_ocupacion", v)} />
@@ -257,7 +259,7 @@ export default function Visita() {
 
       {paso === 4 ? (
         <>
-          <Opciones etiqueta="Resultado del contacto" opciones={opciones("C-02")} valor={bb.visita.resultado} onCambio={(v) => vis("resultado", v)} />
+          <Opciones etiqueta="Resultado del contacto" opciones={opciones("C-02").filter(([k]) => k !== "direccion_erronea")} valor={bb.visita.resultado} onCambio={(v) => vis("resultado", v)} />
           {conContacto ? <Casilla texto="La persona autorizó verbalmente registrar la visita" valor={bb.visita.autorizacion_verbal} onCambio={(v) => vis("autorizacion_verbal", v)} /> : null}
           {soloPunto ? <Aviso texto="Solo se guardan el punto, el estado y la foto de fachada, sin personas." /> : null}
         </>
@@ -278,10 +280,22 @@ export default function Visita() {
           <Contador etiqueta="Adultos que no saben dónde votan" valor={Number(bb.hogar?.votantes_no_sabe_est ?? 0)} onCambio={(n) => hog("votantes_no_sabe_est", n)} />
           <Contador etiqueta="Jóvenes que cumplen 18 antes de la elección" valor={Number(bb.hogar?.futuros_primeros_votantes ?? 0)} onCambio={(n) => hog("futuros_primeros_votantes", n)} />
           <Etiqueta>Principal sostén del hogar</Etiqueta>
-          <Opciones etiqueta="Relación" opciones={RELACION} valor={bb.hogar?.sosten_relacion as string} onCambio={(v) => hog("sosten_relacion", v)} />
-          <Opciones etiqueta="Sexo" opciones={SEXO} valor={bb.hogar?.sosten_sexo as string} onCambio={(v) => hog("sosten_sexo", v)} />
-          <Opciones etiqueta="Ocupación" opciones={opciones("C-07")} valor={bb.hogar?.sosten_ocupacion as string} onCambio={(v) => hog("sosten_ocupacion", v)} />
-          <Opciones etiqueta="Situación laboral" opciones={LABORAL} valor={bb.hogar?.sosten_situacion_laboral as string} onCambio={(v) => hog("sosten_situacion_laboral", v)} />
+          {sostenPersona ? (
+            <Aviso tipo="ok" texto={`Ya quedó registrado: ${String(sostenPersona.primer_nombre ?? "")} ${String(sostenPersona.primer_apellido ?? "")} (paso Personas).`} />
+          ) : (
+            <>
+              <Opciones etiqueta="¿El principal sostén es una de las personas que va a registrar?" opciones={[["si", "Sí, lo marco en Personas"], ["no", "No"]]}
+                valor={bb.hogar?.sosten_en_personas === true ? "si" : bb.hogar?.sosten_en_personas === false ? "no" : null}
+                onCambio={(v) => hog("sosten_en_personas", v === "si")} />
+              {bb.hogar?.sosten_en_personas === false ? (
+                <>
+                  <Opciones etiqueta="Sexo" opciones={SEXO} valor={bb.hogar?.sosten_sexo as string} onCambio={(v) => hog("sosten_sexo", v)} />
+                  <Opciones etiqueta="Ocupación" opciones={opciones("C-07")} valor={bb.hogar?.sosten_ocupacion as string} onCambio={(v) => hog("sosten_ocupacion", v)} />
+                  <Opciones etiqueta="Situación laboral" opciones={LABORAL} valor={bb.hogar?.sosten_situacion_laboral as string} onCambio={(v) => hog("sosten_situacion_laboral", v)} />
+                </>
+              ) : null}
+            </>
+          )}
           <Casilla texto="Hay otro hogar en la misma vivienda" valor={Boolean(bb.hogar?.otros_hogares)} onCambio={(v) => hog("otros_hogares", v)} />
           <Campo etiqueta="Familiares fuera de Pijao que votan aquí (cuántos y ciudad)" value={String((bb.hogar?.familiares_fuera as { texto?: string } | undefined)?.texto ?? "")} onChangeText={(v) => hog("familiares_fuera", { texto: v })} />
           <Campo etiqueta="Mascotas (y si necesitan vacuna o esterilización)" value={String((bb.hogar?.mascotas as { texto?: string } | undefined)?.texto ?? "")} onChangeText={(v) => hog("mascotas", { texto: v })} />
@@ -313,16 +327,16 @@ export default function Visita() {
 
       {paso === 7 ? (
         <>
-          <Texto suave>«¿Cuál es el mayor problema de su hogar o su vereda?» · «¿Qué le gustaría que cambiara en Pijao?»</Texto>
-          {[0, 1, 2].map((i) => {
-            const n = bb.necesidades[i] ?? { id: nuevoId(), prioridad: i + 1, alcance: "hogar" };
+          <Text style={{ fontFamily: fuente.titulo, fontSize: tl(19), lineHeight: tl(25), color: color.texto }}>«¿Qué le gustaría que mejorara o cambiara en Pijao?»</Text>
+          {(bb.necesidades.length ? bb.necesidades : [{ id: necesidadInicial, prioridad: 1, alcance: "hogar" }]).map((n, i, todas) => {
             const poner = (k: string, v: unknown) => {
-              const lista = [...bb.necesidades];
+              const lista = bb.necesidades.length ? [...bb.necesidades] : [n];
               lista[i] = { ...n, [k]: v };
-              cambiar({ ...bb, necesidades: lista.filter(Boolean) });
+              cambiar({ ...bb, necesidades: lista });
             };
             return (
-              <Seccion key={i} titulo={`Necesidad ${i + 1}`}>
+              <Seccion key={n.id} titulo={`Necesidad ${i + 1}`}
+                accion={todas.length > 1 ? <Boton texto="Quitar" variante="suave" onPress={() => cambiar({ ...bb, necesidades: bb.necesidades.filter((x) => x.id !== n.id) })} /> : undefined}>
                 <Opciones opciones={opciones("C-08")} valor={n.tema as string} onCambio={(v) => poner("tema", v)} />
                 {n.tema ? (
                   <>
@@ -334,6 +348,9 @@ export default function Visita() {
               </Seccion>
             );
           })}
+          <Boton texto="Añadir otra necesidad" variante="contorno" icono="mas"
+            onPress={() => cambiar({ ...bb, necesidades: [...(bb.necesidades.length ? bb.necesidades : [{ id: necesidadInicial, prioridad: 1, alcance: "hogar" }]),
+              { id: nuevoId(), prioridad: Math.min(3, bb.necesidades.length + 1), alcance: "hogar" }] })} />
         </>
       ) : null}
 
@@ -407,7 +424,7 @@ export default function Visita() {
   );
 }
 
-function FormularioPersona({ inicial, alGuardar, alCancelar }: { inicial: PersonaBorrador; alGuardar: (p: PersonaBorrador) => void; alCancelar: () => void }) {
+function FormularioPersona({ inicial, alGuardar, alCancelar, sostenEnHogar }: { inicial: PersonaBorrador; alGuardar: (p: PersonaBorrador) => void; alCancelar: () => void; sostenEnHogar: boolean }) {
   const [p, setP] = useState<PersonaBorrador>({ tipo_documento: "CC", ...inicial });
   const [error, setError] = useState<string | null>(null);
   const poner = (k: string) => (v: unknown) => setP({ ...p, [k]: v });
@@ -421,6 +438,8 @@ function FormularioPersona({ inicial, alGuardar, alCancelar }: { inicial: Person
     else if (!p.mayor_edad_confirmada) return setError("Confirme que la persona es mayor de 18 años (R-16).");
     if (p.telefono && !normalizarTelefono(p.telefono)) return setError("El teléfono no parece válido.");
     if (p.correo) { const c = validarCorreo(p.correo); if (!c.ok) return setError(c.mensaje); }
+    const canales = ((p.canales_preferidos as string[] | undefined) ?? []).filter((c) => c !== "ninguno");
+    if (p.interes_info && !canales.length) return setError("Elija al menos un canal para recibir información.");
     alGuardar({ ...p, telefono: p.telefono ? normalizarTelefono(p.telefono) : null });
   }
 
@@ -435,7 +454,12 @@ function FormularioPersona({ inicial, alGuardar, alCancelar }: { inicial: Person
       <Etiqueta>Documento y edad</Etiqueta>
       <Opciones etiqueta="Tipo de documento" opciones={[["CC", "Cédula de ciudadanía"], ["CE", "Cédula de extranjería de residente"]]} valor={txt("tipo_documento")} onCambio={poner("tipo_documento")} />
       <Campo etiqueta="Número de documento (solo con su autorización)" value={txt("cedula")} onChangeText={poner("cedula")} keyboardType="number-pad" />
-      <Campo etiqueta="Fecha de nacimiento (día/mes/año)" value={txt("fecha_nacimiento")} onChangeText={poner("fecha_nacimiento")} />
+      <SelectorFechaNacimiento etiqueta="Fecha de nacimiento" valor={p.fecha_nacimiento as string | undefined}
+        onCambio={(iso, partes) => setP((x) => ({ ...x, fecha_nacimiento: iso,
+          // El cumpleaños sale de la fecha de nacimiento si todavía no se ha escogido.
+          cumple_mes: x.cumple_mes ?? (iso ? partes.mes : null), cumple_dia: x.cumple_dia ?? (iso ? partes.dia : null) }))} />
+      <SelectorCumpleanos etiqueta="Fecha de cumpleaños" mes={p.cumple_mes as number | null | undefined} dia={p.cumple_dia as number | null | undefined}
+        onCambio={(m, d) => setP((x) => ({ ...x, cumple_mes: m, cumple_dia: d }))} />
       {!p.fecha_nacimiento ? <Casilla texto="Confirmo que es mayor de 18 años" valor={Boolean(p.mayor_edad_confirmada)} onCambio={poner("mayor_edad_confirmada")} /> : null}
       <Opciones etiqueta="Sexo" opciones={SEXO} valor={txt("sexo")} onCambio={poner("sexo")} />
       <Opciones etiqueta="Ocupación" opciones={opciones("C-07")} valor={txt("ocupacion")} onCambio={poner("ocupacion")} />
@@ -448,12 +472,14 @@ function FormularioPersona({ inicial, alGuardar, alCancelar }: { inicial: Person
       <Opciones etiqueta="Años viviendo en Pijao" opciones={[["menos_1", "Menos de 1"], ["1_5", "1 a 5"], ["5_mas", "Más de 5"]]} valor={txt("anios_en_pijao")} onCambio={poner("anios_en_pijao")} />
       {p.vota_en_pijao === "si" && p.anios_en_pijao === "menos_1" ? <Aviso tipo="alerta" texto="La inscripción de cédula solo corresponde donde la persona vive realmente (14.8). La app nunca promueve inscripciones." /> : null}
       <Casilla texto="Quiere recibir información" valor={Boolean(p.interes_info)} onCambio={poner("interes_info")} />
-      {p.interes_info ? <Opciones etiqueta="Canal preferido" opciones={opciones("C-10")} valor={txt("canal_preferido")} onCambio={poner("canal_preferido")} /> : null}
+      {p.interes_info ? <Opciones etiqueta="¿Por dónde quiere recibirla? (puede elegir varios)" multiple opciones={opciones("C-10").filter(([k]) => k !== "ninguno")}
+        valor={(p.canales_preferidos as string[] | undefined) ?? (p.canal_preferido ? [String(p.canal_preferido)] : [])}
+        onCambio={(v) => setP((x) => ({ ...x, canales_preferidos: v as string[], canal_preferido: (v as string[])[0] ?? null }))} /> : null}
       <Campo etiqueta="Mejor horario para contactarle" value={txt("mejor_horario")} onChangeText={poner("mejor_horario")} />
       <Opciones etiqueta="¿Quiere ser voluntario o voluntaria?" opciones={[["si", "Sí"], ["no", "No"], ["tal_vez", "Tal vez"]]} valor={txt("voluntario")} onCambio={poner("voluntario")} />
       <Casilla texto="Podría ser anfitrión de una reunión en su casa" valor={Boolean(p.anfitrion)} onCambio={poner("anfitrion")} />
       <Opciones etiqueta="Temas de interés" multiple opciones={opciones("C-08")} valor={(p.temas_interes as string[]) ?? []} onCambio={poner("temas_interes")} />
-      <Casilla texto="Es el principal sostén del hogar" valor={Boolean(p.es_sosten)} onCambio={poner("es_sosten")} />
+      {!sostenEnHogar || p.es_sosten ? <Casilla texto="Es el principal sostén del hogar" valor={Boolean(p.es_sosten)} onCambio={poner("es_sosten")} /> : null}
     </Pantalla>
   );
 }

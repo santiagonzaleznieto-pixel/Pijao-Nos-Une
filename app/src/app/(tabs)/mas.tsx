@@ -15,6 +15,7 @@ export default function Mas() {
         <FilaEnlace texto="Buscar" detalle="Dirección, vereda, finca o nombre" icono="buscar" onPress={() => router.push("/buscar")} />
         <FilaEnlace texto="Mis visitas y pendientes" detalle={app.cola.pendientes ? `${app.cola.pendientes} por enviar` : "Todo enviado"} icono="nube" onPress={() => router.push("/pendientes")} />
         <FilaEnlace texto="Guion de visita y preguntas" icono="libro" onPress={() => router.push("/guion")} />
+        <FilaEnlace texto="Cumpleañeros de hoy" icono="estrella" onPress={() => router.push("/cumpleanos")} />
       </View>
       <View style={{ gap: 10 }}>
         <Etiqueta>Equipo</Etiqueta>

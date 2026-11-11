@@ -43,7 +43,7 @@ export function evaluarRegistro(b: Borrador, params?: Params): { color: Color; m
       motivos.push(`Falta la autorización de datos de ${p.primer_nombre || "una persona"}.`);
     }
   }
-  if (b.hogar && RESULTADOS_CON_CONTACTO.has(resultado) && !(b.hogar.sosten_relacion || b.personas.some((p) => p.es_sosten))) {
+  if (b.hogar && RESULTADOS_CON_CONTACTO.has(resultado) && !(b.hogar.sosten_relacion || b.hogar.sosten_sexo || b.hogar.sosten_ocupacion || b.hogar.sosten_situacion_laboral || b.personas.some((p) => p.es_sosten))) {
     color = peor(color, "amarillo");
     motivos.push("Falta el principal sostén del hogar.");
   }

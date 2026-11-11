@@ -20,8 +20,12 @@ export function aplicarAutorizacion(b: Borrador, aut: Autorizacion, versionTexto
   const cons = [nuevoConsentimiento("registro_vivienda", aut.metodo, base)];
   for (const p of b.personas) {
     if (aut.datos) cons.push(nuevoConsentimiento("datos_personales", aut.metodo, { ...base, personaId: p.id }));
-    const canal = CANAL_A_PROPOSITO[p.canal_preferido as string];
-    if (aut.contacto && p.interes_info && canal) cons.push(nuevoConsentimiento(canal, aut.metodo, { ...base, personaId: p.id }));
+    // Varios canales posibles (WhatsApp, llamada, SMS, correo): una autorización por cada uno.
+    const canales = (p.canales_preferidos as string[] | undefined) ?? (p.canal_preferido ? [String(p.canal_preferido)] : []);
+    for (const c of new Set(canales)) {
+      const proposito = CANAL_A_PROPOSITO[c];
+      if (aut.contacto && p.interes_info && proposito) cons.push(nuevoConsentimiento(proposito, aut.metodo, { ...base, personaId: p.id }));
+    }
     if (aut.simpatia && p.simpatia && p.simpatia !== "no_registrado") cons.push(nuevoConsentimiento("dato_sensible_simpatia", aut.metodo, { ...base, personaId: p.id }));
     if (aut.historia) cons.push(nuevoConsentimiento("uso_historia", aut.metodo, { ...base, personaId: p.id }));
   }

@@ -50,6 +50,9 @@ export async function guardarVisita(almacen: Almacen, b: Borrador): Promise<{ co
       edad_anios: edad(p.fecha_nacimiento), cedula_ult3: String(p.cedula ?? "").replace(/\D/g, "").slice(-3) || null,
       telefono_ult4: String(p.telefono ?? "").replace(/\D/g, "").slice(-4) || null, correo_parcial: mascaraCorreo(p.correo) || null,
       estado: b.visita.resultado === "pidio_no_ser_visitado" ? "no_contactar" : "activa", creado_por: b.usuario_id, actualizado_en: ahora,
+      // Para «Cumpleañeros de hoy» sin señal: solo el día y el mes, y si autorizó que lo contacten.
+      cumple_mes: p.cumple_mes ?? null, cumple_dia: p.cumple_dia ?? null,
+      tiene_contacto_autorizado: b.consentimientos.some((c) => c.persona_id === p.id && c.proposito.startsWith("contacto_")),
     }, true);
   }
   for (const n of b.necesidades) await almacen.guardar("necesidades", { ...n, vivienda_id: b.vivienda.id }, true);

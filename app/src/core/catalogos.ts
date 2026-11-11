@@ -41,7 +41,7 @@ export const CATALOGOS = {
     ["empleado_privado", "Empleado privado"], ["servidor_publico", "Servidor público"], ["docente", "Docente"],
     ["transportador", "Transportador"], ["turismo", "Turismo y hospitalidad"], ["construccion", "Construcción"],
     ["independiente", "Independiente u oficios varios"], ["pensionado", "Pensionado"], ["ama_de_casa", "Ama de casa"],
-    ["estudiante", "Estudiante"], ["sin_empleo", "Sin empleo"], ["otro", "Otro"],
+    ["estudiante", "Estudiante"], ["sin_empleo", "Sin empleo"], ["contratista_estado", "Contratista del Estado"], ["otro", "Otro"],
   ] },
   "C-08": { nombre: "Temas de necesidades (ejes del programa)", opciones: [
     ["educacion", "Educación y conocimiento"], ["deporte_juventud", "Deporte y juventud"], ["campo_cafe", "Campo y café"],

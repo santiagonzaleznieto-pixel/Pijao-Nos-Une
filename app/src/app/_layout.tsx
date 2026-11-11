@@ -100,6 +100,7 @@ function Guardian() {
         <Stack.Screen name="carnet" options={{ title: "Carnet digital" }} />
         <Stack.Screen name="anuncios" options={{ title: "Anuncios" }} />
         <Stack.Screen name="guion" options={{ title: "Guion y preguntas" }} />
+        <Stack.Screen name="cumpleanos" options={{ title: "Cumpleañeros" }} />
       </Stack>
       {mostrarEntrada ? <Entrada alTerminar={() => { entradaVista = true; setMostrarEntrada(false); }} /> : null}
     </View>
