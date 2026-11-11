@@ -95,7 +95,7 @@ Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es 
 
 ### 8. Fase 3 (solo para el equipo)
 
-- [ ] ⏰ **Autorizar que Claude aplique en el servidor las migraciones 0018 y 0019.** El sistema de permisos le pide a Claude la autorización expresa de usted para cambiar la base de datos de producción. Basta con escribirle «sí, aplica las migraciones». Sin ellas: el servidor no guarda el cumpleaños ni los canales extra, «Seguridad en terreno» no carga en el panel y los eventos no existen (la app sigue funcionando y guardando visitas).
+- [x] **Autorizar que Claude aplique en el servidor las migraciones 0018 y 0019.** Hecho el 10 de noviembre de 2026: aplicadas y verificadas. El sistema de permisos le pide a Claude la autorización expresa de usted para cambiar la base de datos de producción. Basta con escribirle «sí, aplica las migraciones». Sin ellas: el servidor no guarda el cumpleaños ni los canales extra, «Seguridad en terreno» no carga en el panel y los eventos no existen (la app sigue funcionando y guardando visitas).
 - [ ] **Instalar la app 0.18.0 encima de la anterior** (nunca desinstalar) y probar: una visita completa con persona, el SOS (manteniendo 3 segundos, en modo práctica para no alarmar a nadie), iniciar y terminar una jornada.
 - [ ] **Mapa de Pijao por zonas:** cuando lo consiga, enviárselo a Claude. Por ahora el mapa queda sin zonas, como usted pidió.
 - [ ] **Definir quién atiende los SOS** y a qué teléfono llamar primero (Director, Administrador, contacto de emergencia).

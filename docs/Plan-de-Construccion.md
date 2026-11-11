@@ -649,7 +649,7 @@ El sistema de diseño está publicado y las 53 pantallas están diseñadas con t
 | 3.10 Ayuda | ✅ App | P-45 con preguntas frecuentes, reportar un error y novedades |
 | 3.11 Persona | 🟡 | **Cumpleañeros de hoy** en la app y el panel, con fecha de cumpleaños aparte (0018). **Falta:** línea de tiempo completa de la persona |
 | Visitas (pedidos del dueño) | ✅ | Más necesidades, una sola pregunta, finca solo en rural, sostén sin «Relación» y sin repetir, fechas con listas y edad, varios canales, contratista del Estado, sin «Dirección errónea», retomar la visita sin terminar |
-| Servidor | ⏳ Espera autorización | Migraciones **0018** (cumpleaños, canales, sostén, panel de seguridad, incidentes y necesidades) y **0019** (eventos), probadas en GitHub y en seco contra producción. Aplicarlas pide la autorización expresa del dueño |
+| Servidor | ✅ Aplicado el 10 nov | Migraciones **0018** (cumpleaños, canales, sostén, panel de seguridad, incidentes y necesidades) y **0019** (eventos), probadas en GitHub y en seco contra producción. El dueño las autorizó y quedaron aplicadas y verificadas en producción |
 
 ### 3.1 Territorio y zonas
 
