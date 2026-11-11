@@ -64,13 +64,14 @@ begin
   if not public.es_staff() then raise exception 'Solo el Director o el Administrador' using errcode = '42501'; end if;
   return jsonb_build_object(
     'jornadas', coalesce((
-      select jsonb_agg(jsonb_build_object('id', j.id, 'usuario_id', j.usuario_id, 'nombre', p.nombre, 'inicio', j.inicio,
+      select jsonb_agg(jsonb_build_object('id', j.id, 'usuario_id', j.usuario_id, 'nombre', p.nombre_completo, 'celular', p.celular, 'inicio', j.inicio,
         'lat', u.lat, 'lng', u.lng, 'visto_en', u.tomada_en) order by j.inicio)
         from public.jornadas j join public.perfiles p on p.id = j.usuario_id
         left join lateral (select lat, lng, tomada_en from public.ubicaciones_jornada x where x.jornada_id = j.id order by tomada_en desc limit 1) u on true
        where j.fin is null and j.inicio > now() - interval '16 hours'), '[]'::jsonb),
     'sos', coalesce((
-      select jsonb_agg(jsonb_build_object('id', s.id, 'nombre', p.nombre, 'lat', s.lat, 'lng', s.lng, 'nota', s.nota, 'creada_en', s.creada_en,
+      select jsonb_agg(jsonb_build_object('id', s.id, 'nombre', p.nombre_completo, 'celular', p.celular,
+        'emergencia', p.contacto_emergencia_nombre, 'emergencia_celular', p.contacto_emergencia_celular, 'lat', s.lat, 'lng', s.lng, 'nota', s.nota, 'creada_en', s.creada_en,
         'atendida_en', s.atendida_en) order by s.creada_en desc)
         from public.sos_alertas s join public.perfiles p on p.id = s.usuario_id
        where s.atendida_en is null or s.creada_en > now() - interval '7 days'), '[]'::jsonb));

@@ -55,6 +55,11 @@ export const ENVIOS: Record<string, Envio> = {
   eliminar: (i, rpc) => rpc("rpc_eliminar_registro", { p_tabla: i.payload?.tabla, p_id: i.payload?.id, p_motivo: i.payload?.motivo ?? "" }),
   anuncio_leido: (i, rpc) => rpc("rpc_anuncio_leido", { p_id: i.payload?.id }),
   completar_ingreso: (i, rpc) => rpc("rpc_completar_ingreso", { p_puntaje: i.payload?.puntaje, p_acuerdos_version: i.payload?.acuerdos_version }),
+  // Fase 3 · jornada y seguridad (R-31, R-32): se guardan sin señal y salen apenas haya.
+  jornada_iniciar: (_i, rpc) => rpc("rpc_jornada_iniciar", {}),
+  jornada_terminar: (_i, rpc) => rpc("rpc_jornada_terminar", {}),
+  ubicaciones: (i, rpc) => rpc("rpc_ubicaciones", { p: i.payload?.puntos ?? [] }),
+  sos: (i, rpc) => rpc("rpc_sos", { p_lat: i.payload?.lat ?? null, p_lng: i.payload?.lng ?? null, p_nota: i.payload?.nota ?? null }),
 };
 
 export class MotorSync {

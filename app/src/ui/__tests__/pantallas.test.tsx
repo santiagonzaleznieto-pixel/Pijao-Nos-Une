@@ -15,7 +15,8 @@ jest.mock("@maplibre/maplibre-react-native", () => {
   const Caja = ({ children }: { children?: unknown }) => <V>{children as never}</V>;
   return { Map: Caja, Camera: Caja, GeoJSONSource: Caja, Layer: Caja, Images: Caja, UserLocation: Caja };
 });
-jest.mock("expo-location", () => ({ requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: true })), getLastKnownPositionAsync: jest.fn(async () => null), getCurrentPositionAsync: jest.fn(async () => null), Accuracy: { Balanced: 3 } }));
+jest.mock("expo-location", () => ({ requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: true })), getForegroundPermissionsAsync: jest.fn(async () => ({ granted: true })), getLastKnownPositionAsync: jest.fn(async () => null), getCurrentPositionAsync: jest.fn(async () => null), Accuracy: { Balanced: 3 } }));
+jest.mock("expo-notifications", () => ({ requestPermissionsAsync: jest.fn(async () => ({ granted: false })), scheduleNotificationAsync: jest.fn(), cancelScheduledNotificationAsync: jest.fn(), SchedulableTriggerInputTypes: { TIME_INTERVAL: "timeInterval", DATE: "date" } }));
 jest.mock("expo-camera", () => ({ CameraView: () => null, useCameraPermissions: () => [{ granted: true }, jest.fn()] }));
 jest.mock("react-native-view-shot", () => ({ captureRef: jest.fn() }));
 jest.mock("react-native-qrcode-svg", () => () => null);
@@ -78,6 +79,10 @@ const RUTAS: Record<string, unknown> = {
   carnet: require("../../app/carnet").default,
   anuncios: require("../../app/anuncios").default,
   guion: require("../../app/guion").default,
+  cumpleanos: require("../../app/cumpleanos").default,
+  jornada: require("../../app/jornada").default,
+  incidente: require("../../app/incidente").default,
+  ayuda: require("../../app/ayuda").default,
 };
 /* eslint-enable @typescript-eslint/no-require-imports */
 
@@ -96,6 +101,7 @@ const casos: [string, string][] = [
   ["/visita?vivienda=practica-v-1", "Nueva visita"], ["/vivienda/practica-v-1", "Vivienda"], ["/persona/practica-p-1-0", "Persona"],
   ["/buscar", "Buscar"], ["/pendientes", "Pendientes"], ["/perfil", "Perfil"], ["/titulares", "Titulares"],
   ["/carnet", "Carnet"], ["/anuncios", "Anuncios"], ["/guion", "Guion"],
+  ["/cumpleanos", "Cumpleañeros"], ["/jornada", "Jornada"], ["/incidente", "Incidente"], ["/ayuda", "Ayuda"],
 ];
 
 describe("todas las pantallas se abren con datos de ejemplo", () => {
