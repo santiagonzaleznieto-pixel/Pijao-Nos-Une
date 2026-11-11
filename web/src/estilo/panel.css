@@ -221,3 +221,12 @@ code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; f
 @media (max-width: 760px) { .casa-cabecera { grid-template-columns: minmax(0, 1fr); } }
 .secciones-casa { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 0 14px; margin-top: 12px; }
 .secciones-casa .dato { grid-template-columns: 170px 1fr; }
+
+/* Informe para imprimir (una página para el candidato, N-15): sin menú ni botones. */
+@media print {
+  .lateral, .franja-demo, .no-imprimir, .toast { display: none !important; }
+  .marco { display: block; }
+  .contenido { padding: 0; max-width: none; animation: none; }
+  body { background: #fff; color: #122b52; }
+  .tarjeta { box-shadow: none; break-inside: avoid; }
+}

@@ -8,6 +8,7 @@ import { Auditoria } from "./paginas/Auditoria";
 import { Colaboradores } from "./paginas/Colaboradores";
 import { Configuracion } from "./paginas/Configuracion";
 import { Calidad, Cumpleaneros, Incidentes, Necesidades, Seguridad } from "./paginas/Fase3";
+import { Informe, Tareas } from "./paginas/TareasInforme";
 import { FichaColaborador } from "./paginas/FichaColaborador";
 import { Inicio } from "./paginas/Inicio";
 import { Piloto } from "./paginas/Piloto";
@@ -27,6 +28,8 @@ const ICONOS: Record<string, string> = {
   configuracion: "M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z",
   salud: "M12 21s-8-5.2-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 10c0 5.8-8 11-8 11z",
   seguridad: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z M9 12l2 2 4-4",
+  tareas: "M9 11l3 3 8-8 M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11",
+  informe: "M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z M14 3v6h6 M8 13h8 M8 17h5",
   incidentes: "M12 3l9.5 17h-19z M12 10v4 M12 17h.01",
   necesidades: "M4 5h16v11H9l-5 4z",
   calidad: "M5 12l4 4 10-10",
@@ -116,6 +119,8 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
   const menu: [string, string, number?][] = [
     ["inicio", "Inicio"],
     ["seguridad", "Seguridad en terreno"],
+    ["informe", "Informe"],
+    ["tareas", "Tareas"],
     ["colaboradores", "Colaboradores", r?.pendientes],
     ["titulares", "Derechos de titulares", r?.titularesPendientes],
     ["auditoria", "Auditoría"],
@@ -141,6 +146,8 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
     case "salud": vista = <Salud />; break;
     case "piloto": vista = <Piloto />; break;
     case "seguridad": vista = <Seguridad />; break;
+    case "tareas": vista = <Tareas />; break;
+    case "informe": vista = <Informe />; break;
     case "necesidades": vista = <Necesidades />; break;
     case "calidad": vista = <Calidad />; break;
     case "incidentes": vista = <Incidentes />; break;

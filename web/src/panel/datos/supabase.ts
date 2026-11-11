@@ -4,7 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../../config";
 import { mensajeDeError } from "../../logica/utiles";
 import { diaMas } from "../../logica/utiles";
-import type { AlertaCalidadPanel, CumpleaneroPanel, IncidentePanel, NecesidadPanel, Seguridad } from "./tipos";
+import type { AlertaCalidadPanel, CumpleaneroPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, Seguridad, TareaPanel } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto, CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
   PermisoOtorgado, Plantilla, PuntoMapa, Resumen, Salud, Sesion, Solicitud, TextoLegal, ValorConfig, Zona,
@@ -302,5 +302,35 @@ export class FuenteSupabase implements Fuente {
     const filas = await this.leer<Record<string, unknown>[]>(this.sb.from("personas_v").select("id, nombre_visible, edad_anios, tiene_contacto_autorizado, cumple_mes, cumple_dia, estado")
       .eq("estado", "activa").eq("cumple_mes", m).in("cumple_dia", m === 2 && d === 28 ? [28, 29] : [d]).limit(500));
     return filas.map((p) => ({ id: String(p.id), nombre: String(p.nombre_visible ?? "Persona"), edad: (p.edad_anios as number) ?? null, contactable: p.tiene_contacto_autorizado === true }));
+  }
+
+  tareasEquipo() {
+    return this.leer<TareaPanel[]>(this.sb.from("tareas").select("id, titulo, descripcion, tipo, estado, prioridad, fecha_limite, asignado_a, creado_en")
+      .order("creado_en", { ascending: false }).limit(500));
+  }
+  async crearTarea(t: NuevaTarea) {
+    await this.rpc("rpc_crear_tarea", { p: { ...t, fecha_limite: t.fecha_limite ? `${t.fecha_limite}T23:59:00-05:00` : null } });
+  }
+  async informe(desde: string): Promise<InformePanel> {
+    const d = `${desde}T00:00:00-05:00`;
+    const hoy = new Date().toISOString();
+    const [visitas, verdes, amarillas, rojas, viviendas_nuevas, personas_nuevas, alertas_abiertas, incidentes_abiertos, sos_sin_atender, tareas_vencidas, colaboradores_activos, nec] = await Promise.all([
+      this.contar("visitas", (q) => q.is("eliminado_en", null).gte("fecha", d)),
+      this.contar("visitas", (q) => q.is("eliminado_en", null).gte("fecha", d).eq("calidad", "verde")),
+      this.contar("visitas", (q) => q.is("eliminado_en", null).gte("fecha", d).eq("calidad", "amarillo")),
+      this.contar("visitas", (q) => q.is("eliminado_en", null).gte("fecha", d).eq("calidad", "rojo")),
+      this.contar("viviendas", (q) => q.is("eliminado_en", null).gte("creado_en", d)),
+      this.contar("personas", (q) => q.is("eliminado_en", null).gte("creado_en", d)),
+      this.contar("alertas_calidad", (q) => q.is("resuelta_en", null)),
+      this.contar("incidentes", (q) => q.neq("estado", "resuelto")),
+      this.contar("sos_alertas", (q) => q.is("atendida_en", null)),
+      this.contar("tareas", (q) => q.in("estado", ["pendiente", "en_curso", "bloqueada"]).lt("fecha_limite", hoy)),
+      this.contar("perfiles", (q) => q.eq("estado", "activo")),
+      this.leer<{ tema: string | null }[]>(this.sb.from("necesidades").select("tema").is("eliminado_en", null).gte("creado_en", d).limit(5000)),
+    ]);
+    const m = new Map<string, number>();
+    for (const n of nec) m.set(n.tema ?? "otro", (m.get(n.tema ?? "otro") ?? 0) + 1);
+    return { desde, visitas, verdes, amarillas, rojas, viviendas_nuevas, personas_nuevas, alertas_abiertas, incidentes_abiertos, sos_sin_atender, tareas_vencidas,
+      colaboradores_activos, necesidades_por_tema: [...m.entries()].map(([tema, n]) => ({ tema, n })).sort((a, b) => b.n - a.n).slice(0, 6) };
   }
 }

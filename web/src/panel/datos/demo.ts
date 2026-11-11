@@ -6,7 +6,7 @@ import { PERMISOS, PLANTILLAS } from "@nucleo/permisos";
 import { PARAMS_POR_DEFECTO } from "@nucleo/reglas";
 import { diaMas } from "../../logica/utiles";
 import { ErrorPanel } from "./supabase";
-import type { AlertaCalidadPanel, AlertaSos, CumpleaneroPanel, IncidentePanel, NecesidadPanel, Seguridad } from "./tipos";
+import type { AlertaCalidadPanel, AlertaSos, CumpleaneroPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, Seguridad, TareaPanel } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto,
   CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
@@ -520,4 +520,20 @@ export class FuenteDemo implements Fuente {
   async alertasCalidad() { await espera(); return this.alertasL.map((x) => ({ ...x })); }
   async resolverAlerta(id: string, resolucion: string) { await espera(); const x = this.alertasL.find((a) => a.id === id); if (x) Object.assign(x, { resuelta_en: ahora(), resolucion }); }
   async cumpleanerosHoy(): Promise<CumpleaneroPanel[]> { await espera(); return [{ id: "p-1", nombre: "Persona de ejemplo", edad: 52, contactable: true }]; }
+
+  private tareasL: TareaPanel[] = [
+    { id: "t-1", titulo: "Volver a la casa del km 5", descripcion: "Pidió que volvieran el sábado.", tipo: "seguimiento", estado: "pendiente", prioridad: "alta",
+      fecha_limite: new Date(Date.now() - 86400_000).toISOString(), asignado_a: null, creado_en: new Date(Date.now() - 3 * 86400_000).toISOString() },
+  ];
+  async tareasEquipo() { await espera(); return this.tareasL.map((x) => ({ ...x })); }
+  async crearTarea(t: NuevaTarea) {
+    await espera();
+    if (t.titulo.trim().length < 3) throw new ErrorPanel("Escriba un título.");
+    this.tareasL.unshift({ id: `t-${this.tareasL.length + 1}`, ...t, estado: "pendiente", creado_en: ahora() });
+  }
+  async informe(desde: string): Promise<InformePanel> {
+    await espera();
+    return { desde, visitas: 18, verdes: 14, amarillas: 3, rojas: 1, viviendas_nuevas: 12, personas_nuevas: 21, alertas_abiertas: 2, incidentes_abiertos: 1, sos_sin_atender: 1,
+      tareas_vencidas: 1, colaboradores_activos: 4, necesidades_por_tema: [{ tema: "vias_movilidad", n: 7 }, { tema: "agua_ambiente", n: 4 }, { tema: "empleo_emprendimiento", n: 3 }] };
+  }
 }

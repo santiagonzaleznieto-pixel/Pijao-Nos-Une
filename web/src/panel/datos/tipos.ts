@@ -130,6 +130,14 @@ export interface NecesidadPanel { id: string; tema: string | null; texto: string
 export interface AlertaCalidadPanel { id: string; tipo: string; severidad: "baja" | "media" | "alta"; detalle: Record<string, unknown>; creada_en: string; resuelta_en: string | null; resolucion: string | null }
 export interface CumpleaneroPanel { id: string; nombre: string; edad: number | null; contactable: boolean }
 
+export interface TareaPanel { id: string; titulo: string; descripcion: string | null; tipo: string; estado: string; prioridad: string; fecha_limite: string | null; asignado_a: string | null; creado_en: string }
+export interface NuevaTarea { titulo: string; descripcion: string; tipo: string; prioridad: string; fecha_limite: string | null; asignado_a: string | null }
+export interface InformePanel {
+  desde: string; visitas: number; verdes: number; amarillas: number; rojas: number; viviendas_nuevas: number; personas_nuevas: number;
+  necesidades_por_tema: { tema: string; n: number }[]; alertas_abiertas: number; incidentes_abiertos: number; sos_sin_atender: number;
+  tareas_vencidas: number; colaboradores_activos: number;
+}
+
 export interface Fuente {
   readonly modo: "real" | "demo";
   // sesión (17.5: la misma cuenta del teléfono y siempre con verificación en dos pasos)
@@ -194,4 +202,7 @@ export interface Fuente {
   alertasCalidad(): Promise<AlertaCalidadPanel[]>;
   resolverAlerta(id: string, resolucion: string): Promise<void>;
   cumpleanerosHoy(): Promise<CumpleaneroPanel[]>;
+  tareasEquipo(): Promise<TareaPanel[]>;
+  crearTarea(t: NuevaTarea): Promise<void>;
+  informe(desde: string): Promise<InformePanel>;
 }
