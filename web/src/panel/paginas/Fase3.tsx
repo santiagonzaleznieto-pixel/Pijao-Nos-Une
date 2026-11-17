@@ -1,8 +1,9 @@
 // Panel · Fase 3 (solo para el Director y el Administrador): seguridad en terreno (jornadas y SOS), incidentes,
 // necesidades de la comunidad, alertas de calidad y cumpleañeros de hoy.
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { fecha, fechaHora } from "../../logica/utiles";
 import type { AlertaCalidadPanel, IncidentePanel, NecesidadPanel } from "../datos/tipos";
+import { EVENTO_SOS } from "../FranjaSos";
 import { Aviso, Chip, Encabezado, Estado, Pestanas, useAccion, useCarga, usePanel } from "../ui";
 
 const TEMA: Record<string, string> = {
@@ -30,10 +31,13 @@ export function Seguridad() {
   const { fuente } = usePanel();
   const datos = useCarga(() => fuente.seguridad(), [fuente]);
   const accion = useAccion();
+  const { recargar } = datos;
+  // Se actualiza sola cada 30 segundos (sin parpadear: mientras recarga sigue mostrando lo anterior).
+  useEffect(() => { const t = window.setInterval(recargar, 30_000); return () => window.clearInterval(t); }, [recargar]);
   return (
     <>
       <Encabezado titulo="Seguridad en terreno"><button type="button" className="boton secundario chico" onClick={datos.recargar}>Actualizar</button></Encabezado>
-      <p className="suave">Quién está en jornada y dónde se vio por última vez (la ubicación solo se comparte durante la jornada) y las alertas SOS. Si llega un SOS, llame de inmediato a la persona y, si no contesta, a su contacto de emergencia o al 123.</p>
+      <p className="suave">Se actualiza sola cada 30 segundos. Quién está en jornada y dónde se vio por última vez (la ubicación solo se comparte durante la jornada) y las alertas SOS. Si llega un SOS, llame de inmediato a la persona y, si no contesta, a su contacto de emergencia o al 123.</p>
       <Estado carga={datos}>
         {(s) => (
           <>
@@ -53,7 +57,7 @@ export function Seguridad() {
                 </dl>
                 {!a.atendida_en && (
                   <button type="button" className="boton" style={{ marginTop: 10 }} disabled={accion.ocupado}
-                    onClick={() => void accion.ejecutar(() => fuente.atenderSos(a.id), "Alerta marcada como atendida.").then((ok) => ok && datos.recargar())}>
+                    onClick={() => void accion.ejecutar(() => fuente.atenderSos(a.id), "Alerta marcada como atendida.").then((ok) => { if (ok) { datos.recargar(); dispatchEvent(new Event(EVENTO_SOS)); } })}>
                     Ya la atendí
                   </button>
                 )}

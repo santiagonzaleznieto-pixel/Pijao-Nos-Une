@@ -320,7 +320,8 @@ export class FuenteSupabase implements Fuente {
       this.contar("visitas", (q) => q.is("eliminado_en", null).gte("fecha", d).eq("calidad", "amarillo")),
       this.contar("visitas", (q) => q.is("eliminado_en", null).gte("fecha", d).eq("calidad", "rojo")),
       this.contar("viviendas", (q) => q.is("eliminado_en", null).gte("creado_en", d)),
-      this.contar("personas", (q) => q.is("eliminado_en", null).gte("creado_en", d)),
+      // `personas` no se puede leer directo (RLS sin lectura): se cuenta en la vista protegida, igual que en el resto del panel.
+      this.contar("personas_v", (q) => q.is("eliminado_en", null).gte("creado_en", d)),
       this.contar("alertas_calidad", (q) => q.is("resuelta_en", null)),
       this.contar("incidentes", (q) => q.neq("estado", "resuelto")),
       this.contar("sos_alertas", (q) => q.is("atendida_en", null)),

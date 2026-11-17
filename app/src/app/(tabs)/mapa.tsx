@@ -113,7 +113,12 @@ export default function Mapa() {
       {ruta ? (
         <Map style={{ flex: 1 }} mapStyle={estiloPijao(ruta)} logo={false} compass={false} scaleBar={false} attribution={false}
           accessibilityLabel={`Mapa de Pijao con ${visibles.length} viviendas`}
-          onPress={() => setSel(null)}
+          onPress={(e) => {
+            // El toque en una casa también llega aquí (MapLibre lo emite en el mapa y en la fuente): solo se cierra la
+            // ficha cuando se toca el mapa vacío. Antes la ficha se abría y se cerraba en el mismo toque.
+            const ev = e.nativeEvent as { features?: unknown[] };
+            if (!ev.features?.length) setSel(null);
+          }}
           onLongPress={(e) => {
             const [lng, lat] = e.nativeEvent.lngLat ?? [];
             if (lat !== undefined) router.push({ pathname: "/registrar", params: { manualLat: String(lat), manualLng: String(lng) } });
@@ -129,6 +134,7 @@ export default function Mapa() {
           </GeoJSONSource>
           <GeoJSONSource id="viviendas" data={puntos} cluster clusterRadius={42} clusterMaxZoom={16} clusterProperties={PROPIEDADES_GRUPO as never}
             onPress={(e) => {
+              e.stopPropagation();   // que el mapa no reciba este toque y cierre la ficha
               const f = e.nativeEvent.features?.[0];
               const id = f?.properties?.id as string | undefined;
               if (f?.properties?.cluster) {

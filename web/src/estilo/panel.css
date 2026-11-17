@@ -202,6 +202,14 @@ dialog::backdrop { background: rgba(14, 23, 38, 0.45); backdrop-filter: blur(4px
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--azul); color: var(--invertida); padding: 12px 20px; border-radius: 16px; z-index: 50;
   max-width: calc(100vw - 32px); box-shadow: var(--sombra-flotante); font-weight: 600; animation: aparece 0.35s var(--curva-suave) both; }
 .franja-demo { background: var(--naranja); color: #2a1a05; text-align: center; padding: 6px 12px; font: 700 0.8rem/1.4 var(--font-titulos); letter-spacing: 0.08em; text-transform: uppercase; }
+.franja-sos { position: sticky; top: 0; z-index: 40; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 10px 16px;
+  background: var(--rojo); color: #fff; font-weight: 600; box-shadow: var(--sombra-flotante); }
+.franja-sos > span:nth-child(2) { flex: 1; min-width: 200px; }
+.franja-sos .boton { background: #fff; color: #8a1a12; border: 0; }
+.franja-sos-punto { width: 12px; height: 12px; border-radius: 50%; background: #fff; animation: latido-sos 1s ease-in-out infinite; }
+@keyframes latido-sos { 50% { opacity: 0.25; transform: scale(0.8); } }
+@media (prefers-reduced-motion: reduce) { .franja-sos-punto { animation: none; } }
+@media (prefers-color-scheme: dark) { .franja-sos { background: #8a1a12; } }
 .entrar { max-width: 440px; margin: 8vh auto; padding: 16px; }
 .entrar .tarjeta { padding: 28px; }
 .qr { background: #fff; padding: 12px; border-radius: 16px; display: inline-block; }

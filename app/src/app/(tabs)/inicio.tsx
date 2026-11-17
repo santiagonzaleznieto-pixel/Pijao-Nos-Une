@@ -10,6 +10,7 @@ import { param } from "@/core/reglas";
 import { borrarBorrador, listarBorradores } from "@/servicios/campo";
 import type { Borrador } from "@/core/visita";
 import { cumpleanerosDeHoy } from "@/core/cumpleanos";
+import { TarjetasSos } from "@/ui/AlertasSos";
 import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Etiqueta, Fila, Tarjeta } from "@/ui/componentes";
 import { Icono, type NombreIcono } from "@/ui/Icono";
@@ -128,6 +129,7 @@ export default function Inicio() {
       </View>
 
       <View style={e.cuerpo}>
+        <TarjetasSos />
         {app.avisos.map((a) => (
           <Tarjeta key={a.id}>
             <Aviso tipo={a.tipo === "dispositivo_nuevo" ? "alerta" : "info"} texto={a.mensaje} />

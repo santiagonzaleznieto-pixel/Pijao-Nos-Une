@@ -284,3 +284,12 @@ Claude Code comprime la conversación cuando se alarga. Estos son esos resúmene
 - Nota: la columna del nombre en `perfiles` es `nombre_completo` (la primera versión de 0018 usaba `nombre` y GitHub la rechazó). Una falla con código 125 en «base-de-datos» es de Docker en GitHub, no del código.
 - El dueño escribió «si, aplica las migraciones»: **0018 y 0019 aplicadas en producción** y verificadas (estructura y una prueba funcional que se deshizo). En ese momento el servidor ya tenía **las primeras 2 visitas reales** del dueño, enviadas con la 0.17.1 (una con persona, en verde): el arreglo del guardado funcionó en su teléfono.
 
+
+### Resumen 9 (17 de noviembre de 2026): ficha de la casa en el mapa y SOS que avisa de verdad
+
+- El dueño: «no me esta mostrando en el mapa de la app la vista previa y la vista de los detalles de la casa. corrige eso», y aprobó empezar por el SOS.
+- **Mapa (app 0.18.1):** MapLibre manda el toque a la casa y también al mapa; el mapa cerraba la ficha en el mismo toque. Ahora la fuente detiene el toque (`stopPropagation`) y el mapa solo cierra la ficha si el toque no cayó sobre una casa.
+- **SOS en la app:** `servicios/vigiaSos.ts` y `ui/AlertasSos.tsx`. Con la app abierta, el Director y el Administrador revisan cada minuto las alertas sin atender; una alerta nueva genera una notificación local (sin nombre ni ubicación) y una tarjeta roja en Inicio con «Llamar», «Ver dónde», contacto de emergencia y «Ya la atendí». Quien pide ayuda ve un mensaje honesto: la alerta quedó registrada y aparece si alguien tiene la app o el panel abiertos; que no espere y llame al 123. Límite: con la app cerrada no llega nada (eso requiere notificaciones push).
+- **SOS en el panel:** `panel/FranjaSos.tsx`, una franja roja arriba de cualquier página, que revisa cada 30 s y al volver a la pestaña; pita con WebAudio cuando llega una alerta nueva y el título de la pestaña parpadea. La página Seguridad se actualiza sola, y «Ya la atendí» quita la franja al instante.
+- **Panel con permisos reales:** cada lectura se probó en producción como el administrador (`role authenticated`, en un bloque que se deshace). Todas responden, salvo el Informe, que contaba en `personas` (sin permiso de lectura) y fallaba entero. Ahora cuenta en `personas_v`.
+- En producción había un SOS sin atender del 10 de noviembre (10:33 p. m., probablemente una prueba). Se dejó para que el dueño lo marque desde el panel o la app.

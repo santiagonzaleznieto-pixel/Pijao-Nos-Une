@@ -12,10 +12,12 @@ import { debeAceptarAcuerdos } from "@/core/acceso";
 import { ProveedorApp, useApp } from "@/servicios/contexto";
 import { BotonOcultar } from "@/ui/BotonOcultar";
 import { Entrada } from "@/ui/Entrada";
+import { mostrarNotificacionesEnPrimerPlano } from "@/servicios/vigiaSos";
 import { Boton, Cargando, Pantalla, Texto } from "@/ui/componentes";
 import { color, espacio, fuente, modoOscuro, tl } from "@/ui/tema";
 
 SplashScreen.preventAutoHideAsync().catch(() => undefined);
+mostrarNotificacionesEnPrimerPlano();
 
 const PUBLICAS = new Set(["entrar", "registro", "recuperar"]);
 

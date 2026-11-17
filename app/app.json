@@ -2,14 +2,14 @@
   "expo": {
     "name": "Pijao Nos Une",
     "slug": "pijao-nos-une",
-    "version": "0.18.0",
+    "version": "0.18.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "pijao",
     "userInterfaceStyle": "light",
     "android": {
       "package": "co.pijao.nosune",
-      "versionCode": 18,
+      "versionCode": 19,
       "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#122B52",

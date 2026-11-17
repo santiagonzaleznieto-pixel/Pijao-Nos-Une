@@ -16,7 +16,7 @@ jest.mock("@maplibre/maplibre-react-native", () => {
   return { Map: Caja, Camera: Caja, GeoJSONSource: Caja, Layer: Caja, Images: Caja, UserLocation: Caja };
 });
 jest.mock("expo-location", () => ({ requestForegroundPermissionsAsync: jest.fn(async () => ({ granted: true })), getForegroundPermissionsAsync: jest.fn(async () => ({ granted: true })), getLastKnownPositionAsync: jest.fn(async () => null), getCurrentPositionAsync: jest.fn(async () => null), Accuracy: { Balanced: 3 } }));
-jest.mock("expo-notifications", () => ({ requestPermissionsAsync: jest.fn(async () => ({ granted: false })), scheduleNotificationAsync: jest.fn(), cancelScheduledNotificationAsync: jest.fn(), SchedulableTriggerInputTypes: { TIME_INTERVAL: "timeInterval", DATE: "date" } }));
+jest.mock("expo-notifications", () => ({ requestPermissionsAsync: jest.fn(async () => ({ granted: false })), scheduleNotificationAsync: jest.fn(), cancelScheduledNotificationAsync: jest.fn(), setNotificationHandler: jest.fn(), AndroidNotificationPriority: { MAX: "max" }, SchedulableTriggerInputTypes: { TIME_INTERVAL: "timeInterval", DATE: "date" } }));
 jest.mock("expo-camera", () => ({ CameraView: () => null, useCameraPermissions: () => [{ granted: true }, jest.fn()] }));
 jest.mock("react-native-view-shot", () => ({ captureRef: jest.fn() }));
 jest.mock("react-native-qrcode-svg", () => () => null);

@@ -4,6 +4,7 @@ import { FuenteDemo } from "./datos/demo";
 import { FuenteSupabase } from "./datos/supabase";
 import type { Fuente, PerfilPanel, Rol, Sesion } from "./datos/tipos";
 import { Entrar } from "./Entrar";
+import { FranjaSos } from "./FranjaSos";
 import { Auditoria } from "./paginas/Auditoria";
 import { Colaboradores } from "./paginas/Colaboradores";
 import { Configuracion } from "./paginas/Configuracion";
@@ -162,6 +163,7 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
   return (
     <ContextoPanel.Provider value={contexto}>
       {fuente.modo === "demo" && <div className="franja-demo">Demostración con datos de ejemplo: nada se guarda en el servidor.</div>}
+      <FranjaSos fuente={fuente} />
       <div className="marco">
         <nav className="lateral" aria-label="Secciones">
           <a className="marca" href="#/inicio" aria-label="Pijao Nos Une, inicio del panel">

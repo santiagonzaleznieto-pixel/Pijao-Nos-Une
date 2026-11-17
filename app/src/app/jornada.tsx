@@ -77,8 +77,10 @@ export default function Jornada() {
     <Pantalla titulo="Jornada y seguridad">
       <BotonSos alActivar={pedirAyuda} />
       {sos ? (
-        <Seccion titulo={sos.enviado ? "Alerta enviada" : "Sin señal: la alerta saldrá apenas haya"}>
-          <Aviso tipo={sos.enviado ? "ok" : "alerta"} texto={sos.enviado ? "El Director y el Administrador recibieron su alerta con su ubicación." : "Mientras tanto, llame o mande un mensaje de texto (no necesita datos)."} />
+        <Seccion titulo={sos.enviado ? "Alerta registrada" : "Sin señal: la alerta saldrá apenas haya"}>
+          <Aviso tipo="alerta" texto={sos.enviado
+            ? "Su alerta y su ubicación quedaron registradas y le aparecen al Director y al Administrador si tienen la app o el panel abiertos. No espere: llame al 123 o a su Director."
+            : "Mientras tanto, llame al 123 o mande un mensaje de texto con su ubicación (no necesita datos)."} />
           <Fila>
             <Boton texto="Llamar al 123" variante="peligro" icono="llamar" onPress={() => Linking.openURL("tel:123")} estilo={{ flex: 1 }} />
             <Boton texto="Mensaje de texto" variante="contorno" icono="mensaje" onPress={() => Linking.openURL(`sms:?body=${encodeURIComponent(sos.texto)}`)} estilo={{ flex: 1 }} />

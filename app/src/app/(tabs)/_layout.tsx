@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useApp } from "@/servicios/contexto";
 import { BotonOcultar } from "@/ui/BotonOcultar";
 import { SeguimientoJornada } from "@/ui/SeguimientoJornada";
+import { VigiaSos } from "@/ui/AlertasSos";
 import { Icono, type NombreIcono } from "@/ui/Icono";
 import { color, fuente, modoSol, radio, sombra, tl } from "@/ui/tema";
 
@@ -110,6 +111,7 @@ export default function Pestanas() {
     <View style={{ flex: 1, backgroundColor: color.fondo }}>
       <Franja />
       <SeguimientoJornada />
+      <VigiaSos />
       <Tabs tabBar={(props) => <BarraInferior {...props} />} screenOptions={{ headerShown: false }}>
         <Tabs.Screen name="inicio" options={{ title: "Inicio" }} />
         <Tabs.Screen name="mapa" options={{ title: "Mapa" }} />
