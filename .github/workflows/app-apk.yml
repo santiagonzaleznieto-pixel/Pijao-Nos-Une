@@ -53,7 +53,10 @@ jobs:
         run: |
           npx jest --ci
           npx tsc --noEmit -p tsconfig.nucleo.json
-          npx expo-doctor
+          # Las 19 revisiones de salud bloquean la construcción. Que Expo publique arreglos menores de sus paquetes no la
+          # bloquea (cambiaría la app sin probarla): se avisa en el registro y la actualización se hace aparte, con pruebas.
+          EXPO_DOCTOR_SKIP_DEPENDENCY_VERSION_CHECK=1 npx expo-doctor
+          npx expo install --check || echo "::warning::Hay versiones nuevas de paquetes de Expo. Actualizar aparte y probar."
 
       - name: Generar el proyecto Android (expo prebuild)
         run: npx expo prebuild --platform android --no-install
