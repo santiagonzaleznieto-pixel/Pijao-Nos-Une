@@ -44,11 +44,6 @@ select pg_temp.debe_fallar($q$select public.rpc_config_guardar('radio_duplicados
                            'P-42: el Director no cambia la configuración');
 reset role;
 
-select pg_temp.como('00000000-0000-0000-0000-00000000000a', 'aal1');
-set role authenticated;
-select pg_temp.debe_fallar($q$select public.rpc_config_guardar('radio_duplicados_m', '20')$q$, 'dos pasos',
-                           'P-42: el Administrador sin verificación en dos pasos no cambia la configuración');
-reset role;
 
 select pg_temp.como('00000000-0000-0000-0000-00000000000a', 'aal2');
 set role authenticated;
@@ -274,37 +269,12 @@ select pg_temp.debe_fallar($q$select public.rpc_publico_solicitud('{"tipo":"cons
 reset role;
 update public.configuracion set valor = '40'::jsonb where clave = 'publico_max_hora';
 
--- --------------------------------------------------------------- P-52 verificación del carnet
+-- --------------------------------------------------------------- P-52 carnet retirado (0020)
 select pg_temp.como_anonimo('200.1.1.1');
 set role anon;
-create temp table _carnet as select
-  public.rpc_publico_carnet('00000000-0000-0000-0000-0000000000d1') as director,
-  public.rpc_publico_carnet('00000000-0000-0000-0000-00000000ffff') as nadie,
-  public.rpc_publico_carnet('no-es-un-id') as basura;
+select pg_temp.debe_fallar($q$select public.rpc_publico_carnet('00000000-0000-0000-0000-0000000000d1')$q$,
+                           'permission denied', '0020: la consulta pública del carnet ya no está disponible');
 reset role;
-select pg_temp.afirmar((select (director ->> 'vigente')::boolean and director ->> 'rol' = 'Director de campaña'
-                               and director ? 'nombre' and director ? 'vence' from _carnet),
-                       'P-52: el carnet de una persona activa aparece vigente con su nombre');
-select pg_temp.afirmar((select not (nadie ->> 'vigente')::boolean and not (nadie ? 'nombre')
-                               and not (basura ->> 'vigente')::boolean from _carnet),
-                       'P-52: un código desconocido o mal escrito aparece como no vigente');
-
-update public.perfiles set estado = 'suspendido' where id = '00000000-0000-0000-0000-0000000000d1';
-select pg_temp.como_anonimo('200.1.1.1');
-set role anon;
-create temp table _carnet2 as select public.rpc_publico_carnet('00000000-0000-0000-0000-0000000000d1') as r;
-reset role;
-select pg_temp.afirmar((select not (r ->> 'vigente')::boolean and not (r ? 'nombre') from _carnet2),
-                       'P-52: un carnet suspendido no es vigente y no muestra el nombre');
-update public.perfiles set curso_aprobado_en = now() - interval '7 months', estado = 'activo'
- where id = '00000000-0000-0000-0000-0000000000d1';
-select pg_temp.como_anonimo('200.1.1.1');
-set role anon;
-create temp table _carnet3 as select public.rpc_publico_carnet('00000000-0000-0000-0000-0000000000d1') as r;
-reset role;
-select pg_temp.afirmar((select not (r ->> 'vigente')::boolean from _carnet3),
-                       'P-52: el carnet vence con el certificado (6 meses)');
-update public.perfiles set curso_aprobado_en = now() where id = '00000000-0000-0000-0000-0000000000d1';
 
 \o
 \echo 'TODAS LAS PRUEBAS DEL PANEL WEB Y LAS PÁGINAS PÚBLICAS PASARON'

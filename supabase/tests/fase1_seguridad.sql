@@ -82,8 +82,7 @@ set role authenticated;
 select public.rpc_aprobar_usuario('00000000-0000-0000-0000-0000000000c1');
 select public.rpc_aprobar_usuario('00000000-0000-0000-0000-0000000000c2');
 select public.rpc_aprobar_usuario('00000000-0000-0000-0000-0000000000d1');
-select pg_temp.debe_fallar($q$select public.rpc_designar_director('00000000-0000-0000-0000-0000000000d1')$q$,
-  'dos pasos', 'A4: designar al Director exige verificación en dos pasos');
+-- 0020: ya no se exige la verificación en dos pasos (decisión del dueño); antes aquí se probaba que fallara.
 reset role;
 select pg_temp.como('00000000-0000-0000-0000-00000000000a', 'aal2');
 set role authenticated;
@@ -168,17 +167,12 @@ select pg_temp.afirmar((select (r ->> 'en_revision')::boolean and r ->> 'calidad
                        'R-09: lo capturado lejos se acepta y se marca para revisión');
 select pg_temp.afirmar((select n = 0 from _vista_beto), 'M2: un colaborador no ve personas fuera de lo suyo');
 
--- A4: el Director sin verificación en dos pasos no ve datos completos; con ella, sí.
-select pg_temp.como('00000000-0000-0000-0000-0000000000d1');
-set role authenticated;
-select pg_temp.debe_fallar($q$select public.rpc_persona_completa('30000000-0000-0000-0000-000000000001')$q$,
-  'permiso', 'A4: el Director necesita verificación en dos pasos para ver datos completos');
-reset role;
+-- El Director ve los datos completos (desde 0020 sin verificación en dos pasos).
 select pg_temp.como('00000000-0000-0000-0000-0000000000d1', 'aal2');
 set role authenticated;
 create temp table _completa as select public.rpc_persona_completa('30000000-0000-0000-0000-000000000001') as r;
 reset role;
-select pg_temp.afirmar((select r ->> 'cedula' = '12345678' from _completa), 'A4: con verificación en dos pasos sí ve la cédula');
+select pg_temp.afirmar((select r ->> 'cedula' = '12345678' from _completa), 'El Director ve la cédula completa');
 
 -- M3: un permiso de riesgo alto necesita vencimiento.
 select pg_temp.como('00000000-0000-0000-0000-0000000000d1');
@@ -222,10 +216,7 @@ select pg_temp.afirmar((select estado = 'solicito_eliminacion' from public.perso
 -- A6: el borrado definitivo exige Administrador con verificación en dos pasos.
 select pg_temp.como('00000000-0000-0000-0000-00000000000a');
 set role authenticated;
-select pg_temp.debe_fallar($q$select public.rpc_borrar_persona('30000000-0000-0000-0000-000000000001', 'Acta 1')$q$,
-  'dos pasos', 'A6: borrar exige verificación en dos pasos');
-select pg_temp.debe_fallar($q$select public.rpc_plan_cierre('ELIMINAR DATOS PERSONALES')$q$,
-  'dos pasos', 'A4: el plan de cierre exige verificación en dos pasos');
+-- 0020: borrar y el plan de cierre ya no piden verificación en dos pasos (siguen siendo solo del Administrador).
 reset role;
 select pg_temp.como('00000000-0000-0000-0000-00000000000a', 'aal2');
 set role authenticated;
