@@ -1,0 +1,18 @@
+# Prueba rápida de los predios del IGAC (sin construir la app): corre cuando cambian los scripts de predios.
+name: Predios IGAC
+on:
+  workflow_dispatch:
+  push:
+    branches: ["fase-*/**"]
+    paths: ["tools/predios_igac.*", ".github/workflows/predios.yml"]
+jobs:
+  predios:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Predios de Pijao (IGAC · CC BY-SA 4.0)
+        run: |
+          bash tools/predios_igac.sh /tmp/predios.pmtiles /tmp/predios.json
+          cat /tmp/predios.json 2>/dev/null || true
+          if [ -f /tmp/predios.json ]; then echo "::notice::$(cat /tmp/predios.json) · $(du -k /tmp/predios.pmtiles | cut -f1) KB"; fi

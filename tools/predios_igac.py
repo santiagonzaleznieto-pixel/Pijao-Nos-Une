@@ -45,7 +45,7 @@ def main(gdb, salida):
     for i in range(ds.GetLayerCount()):
         capa = ds.GetLayerByIndex(i)
         nombre = capa.GetName()
-        if "TERRENO" not in nombre.upper():
+        if not any(p in nombre.upper() for p in ("TERRENO", "PREDIO", "LOTE")):
             continue
         campo, nombres = campo_codigo(capa)
         print(f"Capa {nombre}: campo de código = {campo}; campos = {nombres}")
@@ -56,9 +56,10 @@ def main(gdb, salida):
         if origen is not None:
             origen.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
         transformar = osr.CoordinateTransformation(origen, destino) if origen is not None else None
-        capa.SetAttributeFilter(f"{campo} LIKE '{MUNICIPIO}%'")
         n = 0
         for f in capa:
+            if not str(f.GetField(campo) or "").strip().startswith(MUNICIPIO):
+                continue
             g = f.GetGeometryRef()
             if g is None:
                 continue
@@ -77,6 +78,14 @@ def main(gdb, salida):
         print(f"  {n} predios de Pijao en {nombre}")
 
     if not rasgos:
+        # Diagnóstico visible en GitHub (anotaciones): capas, campos y un ejemplo de valores de cada capa.
+        for i in range(ds.GetLayerCount()):
+            c = ds.GetLayerByIndex(i)
+            c.SetAttributeFilter(None)
+            c.ResetReading()
+            f = c.GetNextFeature()
+            ejemplo = {} if f is None else {k: str(v)[:40] for k, v in list(f.items().items())[:8]}
+            print(f"::warning::Capa {c.GetName()} ({c.GetFeatureCount()}): {ejemplo}")
         sys.exit("No se encontraron predios de Pijao: revise los nombres de capas y campos en el registro de arriba.")
     with open(salida, "w", encoding="utf-8") as s:
         json.dump({"type": "FeatureCollection", "features": rasgos}, s, ensure_ascii=False, separators=(",", ":"))
