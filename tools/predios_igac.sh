@@ -10,13 +10,21 @@ URL="https://www.arcgis.com/sharing/rest/content/items/cd3d983dfda94302807af70f8
 
 fallar() { echo "::warning::Predios del IGAC no disponibles ($1): el mapa sale sin la capa de predios."; exit 0; }
 
-command -v ogr2ogr >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq gdal-bin python3-gdal >/dev/null; } || fallar "no se pudo instalar GDAL"
+python3 -c "from osgeo import ogr" 2>/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq gdal-bin python3-gdal >/dev/null; } || fallar "no se pudo instalar GDAL"
+python3 -c "from osgeo import ogr; print('GDAL', ogr.GetDriverByName('OpenFileGDB') is not None)" || fallar "GDAL de Python no carga"
 TMP="$(mktemp -d)"
 curl -sSL --retry 3 --max-time 600 -o "$TMP/quindio.zip" "$URL" || fallar "descarga"
 unzip -q "$TMP/quindio.zip" -d "$TMP/quindio" || fallar "archivo dañado"
 GDB="$(find "$TMP/quindio" -type d -name '*.gdb' | head -1)"
 [ -n "$GDB" ] || fallar "no viene la base .gdb"
-python3 "$DIR/predios_igac.py" "$GDB" "$TMP/predios.geojson" || fallar "no se encontraron los predios de Pijao"
+echo "Base: $GDB"; ls "$TMP/quindio" | head
+if ! python3 "$DIR/predios_igac.py" "$GDB" "$TMP/predios.geojson" > "$TMP/registro.txt" 2>&1; then
+  cat "$TMP/registro.txt"
+  echo "::warning::Predios, registro: $(tail -c 3500 "$TMP/registro.txt" | tr '
+' ' | ')"
+  fallar "no se encontraron los predios de Pijao"
+fi
+cat "$TMP/registro.txt"
 rm -f "$SALIDA"
 ogr2ogr -f PMTiles "$SALIDA" "$TMP/predios.geojson" -nln predios -dsco MINZOOM=12 -dsco MAXZOOM=16 \
   -dsco NAME="Predios de Pijao" -dsco DESCRIPTION="IGAC, Base Catastral Pública del Quindío (CC BY-SA 4.0)" || fallar "conversión"
