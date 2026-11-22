@@ -13,6 +13,8 @@ import sys
 
 from osgeo import ogr, osr
 
+ogr.UseExceptions()
+
 MUNICIPIO = "63548"   # Pijao (código DANE)
 
 
@@ -63,17 +65,23 @@ def main(gdb, salida):
             g = f.GetGeometryRef()
             if g is None:
                 continue
-            g = g.Clone()
+            # El IGAC guarda algunos bordes como curvas (CurvePolygon/MultiSurface): se pasan a líneas rectas.
+            g = ogr.ForceToMultiPolygon(g.GetLinearGeometry())
             area = round(g.GetArea()) if origen is not None and origen.IsProjected() else None
             if transformar is not None:
                 g.Transform(transformar)
             g = g.SimplifyPreserveTopology(0.000004)   # ~0,4 m: no cambia la forma y aligera el archivo
             if g is None or g.IsEmpty():
                 continue
+            geojson = g.ExportToJson(["COORDINATE_PRECISION=7"])
+            if not geojson:
+                continue
             props = {"codigo": str(f.GetField(campo) or ""), "zona": zona}
+            if "INFORMAL" in nombre.upper():
+                props["informal"] = True
             if area:
                 props["area_m2"] = area
-            rasgos.append({"type": "Feature", "properties": props, "geometry": json.loads(g.ExportToJson(["COORDINATE_PRECISION=7"]))})
+            rasgos.append({"type": "Feature", "properties": props, "geometry": json.loads(geojson)})
             n += 1
         print(f"  {n} predios de Pijao en {nombre}")
 
