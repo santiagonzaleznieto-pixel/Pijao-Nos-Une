@@ -62,7 +62,7 @@ function Precision({ metros }: { metros: number | null | undefined }) {
 export default function Registrar() {
   const app = useApp();
   const router = useRouter();
-  const q = useLocalSearchParams<{ manualLat?: string; manualLng?: string }>();
+  const q = useLocalSearchParams<{ manualLat?: string; manualLng?: string; predio?: string }>();
   const manual = q.manualLat ? { lat: Number(q.manualLat), lng: Number(q.manualLng) } : null;
   const [lectura, setLectura] = useState<Lectura | null>(null);
   const [midiendo, setMidiendo] = useState(true);
@@ -98,6 +98,8 @@ export default function Registrar() {
     if (!punto || !app.usuarioId) return;
     const b = borradorVacio(app.usuarioId, { lat: punto.lat, lng: punto.lng, precision_m: manual ? null : lectura?.precision_m, altitud_m: lectura?.altitud_m, manual: Boolean(manual) });
     if (manual) { b.visita.motivo_manual = motivo; b.visita.ubicacion_manual = true; }
+    // Predio del IGAC tocado en el mapa: su código queda como punto de referencia de la vivienda.
+    if (q.predio) b.vivienda.referencia = `Predio IGAC ${q.predio}`;
     b.dispositivo = { lat: lectura?.lat, lng: lectura?.lng, precision_m: lectura?.precision_m, ubicacion_simulada: lectura?.simulada };
     await guardarBorrador(app.almacen, b);
     router.replace({ pathname: "/visita", params: { borrador: b.id } });

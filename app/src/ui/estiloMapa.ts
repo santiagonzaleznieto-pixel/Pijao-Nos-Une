@@ -9,18 +9,25 @@ const PALETAS: Record<Modo, Record<string, string>> = {
   claro: {
     fondo: "#EEF2EC", tierra: "#E8EFE4", vegetacion: "#D5E6C9", uso: "#DDE8D6", agua: "#B9DCEF", edificio: "#DCE2D8", edificioBorde: "#C6CEC3",
     via: "#FFFFFF", viaBorde: "#CBD5E0", viaPrincipal: "#FFFFFF", viaPrincipalBorde: "#AFC0D3", limite: "#8796AB",
+    predio: "#7A8B6F", predioRelleno: "#FFFFFF",
   },
   oscuro: {
     fondo: "#121E19", tierra: "#16241C", vegetacion: "#1B2C22", uso: "#1A2A21", agua: "#1D3D55", edificio: "#22322A", edificioBorde: "#2C3E33",
     via: "#2D3C4F", viaBorde: "#1A2636", viaPrincipal: "#3C4F68", viaPrincipalBorde: "#1A2636", limite: "#7B8CA6",
+    predio: "#6F8579", predioRelleno: "#000000",
   },
   sol: {
     fondo: "#FFFFFF", tierra: "#FFFFFF", vegetacion: "#EDEDED", uso: "#F2F2F2", agua: "#6AA9CF", edificio: "#E0E0E0", edificioBorde: "#6B6B6B",
     via: "#FFFFFF", viaBorde: "#4D4D4D", viaPrincipal: "#FFFFFF", viaPrincipalBorde: "#000000", limite: "#000000",
+    predio: "#000000", predioRelleno: "#FFFFFF",
   },
 };
 
-export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo): StyleSpecification {
+/** Capas que se tocan para ver un predio (IGAC). */
+export const CAPA_PREDIOS = "predios-relleno";
+
+/** Con `rutaPredios`, encima de la base van los predios del IGAC (lotes y fincas, CC BY-SA 4.0) desde el zoom 14. */
+export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo, rutaPredios?: string | null): StyleSpecification {
   const c = PALETAS[modo];
   const ancho = (a: number, b: number) => ["interpolate", ["linear"], ["zoom"], 12, a, 18, b];
   const menores = ["in", ["get", "kind"], ["literal", ["minor_road", "path", "other"]]];
@@ -29,6 +36,7 @@ export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo): 
     version: 8,
     sources: {
       pijao: { type: "vector", url: `pmtiles://${rutaPmtiles}`, attribution: "© OpenStreetMap" },
+      ...(rutaPredios ? { predios: { type: "vector", url: `pmtiles://${rutaPredios}`, attribution: "IGAC (CC BY-SA 4.0)" } } : {}),
     },
     layers: [
       { id: "fondo", type: "background", paint: { "background-color": c.fondo } },
@@ -50,6 +58,12 @@ export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo): 
         layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": c.viaPrincipal, "line-width": ancho(1.4, 9) } },
       { id: "limites", type: "line", source: "pijao", "source-layer": "boundaries",
         paint: { "line-color": c.limite, "line-dasharray": [2, 2], "line-width": 1.2 } },
+      ...(rutaPredios ? [
+        // Relleno casi invisible: sirve para tocar el predio sin tapar el mapa.
+        { id: CAPA_PREDIOS, type: "fill", source: "predios", "source-layer": "predios", minzoom: 14, paint: { "fill-color": c.predioRelleno, "fill-opacity": 0.01 } },
+        { id: "predios-borde", type: "line", source: "predios", "source-layer": "predios", minzoom: 14,
+          paint: { "line-color": c.predio, "line-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0.35, 17, 0.8], "line-width": ["interpolate", ["linear"], ["zoom"], 14, 0.4, 18, 1.4] } },
+      ] : []),
     ],
   } as StyleSpecification;
 }

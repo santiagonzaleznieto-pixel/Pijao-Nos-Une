@@ -58,23 +58,7 @@ export class FuenteSupabase implements Fuente {
   async estado(): Promise<Sesion> {
     const { data: s } = await this.sb.auth.getSession();
     if (!s.session) return { fase: "fuera" };
-    const { data: nivel, error } = await this.sb.auth.mfa.getAuthenticatorAssuranceLevel();
-    if (error) throw new ErrorPanel(mensajeDeError(error));
-    if (nivel.currentLevel !== "aal2") {
-      const { data: f, error: e2 } = await this.sb.auth.mfa.listFactors();
-      if (e2) throw new ErrorPanel(mensajeDeError(e2));
-      if (f.totp.length > 0) return { fase: "codigo" };
-      if (!this.inscripcion) {
-        // Quedan factores a medio inscribir de un intento anterior: se quitan para poder empezar de nuevo.
-        for (const viejo of f.all.filter((x) => x.status === "unverified")) await this.sb.auth.mfa.unenroll({ factorId: viejo.id });
-        const { data: nuevo, error: e3 } = await this.sb.auth.mfa.enroll({
-          factorType: "totp", friendlyName: `Panel ${new Date().toISOString().slice(0, 16)}`,
-        });
-        if (e3) throw new ErrorPanel(mensajeDeError(e3));
-        this.inscripcion = { factorId: nuevo.id, qr: nuevo.totp.qr_code, secreto: nuevo.totp.secret };
-      }
-      return { fase: "inscribir", qr: this.inscripcion.qr, secreto: this.inscripcion.secreto };
-    }
+    // 0020: sin verificación en dos pasos (decisión del dueño): con la contraseña se entra directo.
     const p = await this.rpc<Record<string, unknown>>("rpc_mi_perfil");
     const perfil: PerfilPanel = { id: String(p.id), nombre: String(p.nombre ?? ""), rol: p.rol as PerfilPanel["rol"], estado: String(p.estado) };
     if (!p.existe || (perfil.rol !== "admin" && perfil.rol !== "director") || perfil.estado !== "activo") {

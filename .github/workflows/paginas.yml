@@ -46,6 +46,8 @@ jobs:
           if [ -z "$FUENTE" ]; then echo "::warning::Sin mapa base: el panel mostrará solo los puntos"; exit 0; fi
           mkdir -p public/mapa
           /tmp/pmtiles extract "$FUENTE" public/mapa/pijao.pmtiles --bbox=-75.82,4.18,-75.55,4.45 --maxzoom=15
+      - name: Predios de Pijao (IGAC · CC BY-SA 4.0)
+        run: mkdir -p public/mapa && bash ../tools/predios_igac.sh public/mapa/predios.pmtiles public/mapa/predios.json
       - run: npm ci
       - name: Pruebas, tipos y construcción
         run: |

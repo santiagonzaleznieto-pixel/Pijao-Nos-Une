@@ -24,7 +24,7 @@ const COLOR: Record<string, string> = {
 const CENTRO: [number, number] = [-75.7045, 4.3335];
 const ETIQUETA = Object.fromEntries(CATALOGOS["C-01"].opciones) as Record<string, string>;
 
-function estilo(conMapaBase: boolean): StyleSpecification {
+function estilo(conMapaBase: boolean, conPredios = false): StyleSpecification {
   const base: StyleSpecification = { version: 8, sources: {}, layers: [{ id: "fondo", type: "background", paint: { "background-color": "#F5F3EF" } }] };
   if (!conMapaBase) return base;
   const url = new URL("./mapa/pijao.pmtiles", location.href).href;
@@ -39,6 +39,15 @@ function estilo(conMapaBase: boolean): StyleSpecification {
     capa("vias", "roads", "line", { "line-color": "#FFFFFF", "line-width": ["interpolate", ["linear"], ["zoom"], 12, 0.5, 17, 5] }),
     capa("limites", "boundaries", "line", { "line-color": "#8A7FA8", "line-dasharray": [2, 2], "line-width": 1 }),
   );
+  if (conPredios) {
+    // Predios del IGAC (Base Catastral Pública del Quindío, CC BY-SA 4.0): lotes urbanos y fincas desde el zoom 14.
+    base.sources.predios = { type: "vector", url: `pmtiles://${new URL("./mapa/predios.pmtiles", location.href).href}`, attribution: "Predios: IGAC (CC BY-SA 4.0)" };
+    base.layers.push(
+      { id: "predios-relleno", type: "fill", source: "predios", "source-layer": "predios", minzoom: 14, paint: { "fill-color": "#FFFFFF", "fill-opacity": 0.01 } },
+      { id: "predios-borde", type: "line", source: "predios", "source-layer": "predios", minzoom: 14,
+        paint: { "line-color": "#6E7F64", "line-opacity": 0.7, "line-width": ["interpolate", ["linear"], ["zoom"], 14, 0.4, 18, 1.4] } },
+    );
+  }
   return base;
 }
 
@@ -47,17 +56,18 @@ export default function Mapa() {
   const datos = useCarga(async () => {
     // El archivo del mapa base lo genera GitHub Actions al publicar; en desarrollo puede no estar.
     const hayBase = await fetch("./mapa/pijao.pmtiles", { method: "HEAD" }).then((r) => r.ok && Number(r.headers.get("content-length") ?? 1) > 1000, () => false);
-    return { puntos: await fuente.puntosMapa(), hayBase };
+    const hayPredios = hayBase && await fetch("./mapa/predios.json").then((r) => (r.ok ? r.json() : null), () => null).then((j) => j?.disponible === true, () => false);
+    return { puntos: await fuente.puntosMapa(), hayBase, hayPredios };
   }, [fuente]);
   return (
     <>
       <Encabezado titulo="Mapa del avance" />
-      <Estado carga={datos}>{(d) => <VistaMapa puntos={d.puntos} hayBase={d.hayBase} />}</Estado>
+      <Estado carga={datos}>{(d) => <VistaMapa puntos={d.puntos} hayBase={d.hayBase} hayPredios={d.hayPredios} />}</Estado>
     </>
   );
 }
 
-function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean }) {
+function VistaMapa({ puntos, hayBase, hayPredios }: { puntos: PuntoMapa[]; hayBase: boolean; hayPredios: boolean }) {
   const caja = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [sel, setSel] = useState<string | null>(null);
@@ -76,7 +86,7 @@ function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean 
     }
     let mapa: maplibregl.Map;
     try {
-      mapa = new maplibregl.Map({ container: caja.current, style: estilo(hayBase), center: CENTRO, zoom: 14, maxZoom: 18, attributionControl: { compact: true } });
+      mapa = new maplibregl.Map({ container: caja.current, style: estilo(hayBase, hayPredios), center: CENTRO, zoom: 14, maxZoom: 18, attributionControl: { compact: true } });
     } catch {
       setError("Este navegador no puede dibujar el mapa (necesita WebGL). Pruebe con Chrome, Edge o Firefox actualizados.");
       return;
@@ -100,6 +110,17 @@ function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean 
         const id = e.features?.[0]?.properties?.id;
         if (id) setSel(String(id));
       });
+      if (hayPredios) {
+        // Clic en un predio vacío (sin casa encima): muestra su código catastral, urbano o rural y su área.
+        mapa.on("click", "predios-relleno", (e) => {
+          if (mapa.queryRenderedFeatures(e.point, { layers: ["viviendas"] }).length) return;
+          const p = e.features?.[0]?.properties as Record<string, unknown> | undefined;
+          if (!p?.codigo) return;
+          const area = typeof p.area_m2 === "number" ? (p.area_m2 >= 10000 ? `${(p.area_m2 / 10000).toFixed(1)} ha` : `${p.area_m2} m²`) : "";
+          new maplibregl.Popup({ closeButton: true }).setLngLat(e.lngLat)
+            .setText(`${p.zona === "urbano" ? "Lote urbano" : "Predio rural"} · código ${String(p.codigo)}${area ? ` · ${area}` : ""}`).addTo(mapa);
+        });
+      }
       mapa.on("mouseenter", "viviendas", () => { mapa.getCanvas().style.cursor = "pointer"; });
       mapa.on("mouseleave", "viviendas", () => { mapa.getCanvas().style.cursor = ""; });
       if (puntos.length) {
@@ -109,7 +130,7 @@ function VistaMapa({ puntos, hayBase }: { puntos: PuntoMapa[]; hayBase: boolean 
       }
     });
     return () => mapa.remove();
-  }, [puntos, hayBase]);
+  }, [puntos, hayBase, hayPredios]);
 
   return (
     <>

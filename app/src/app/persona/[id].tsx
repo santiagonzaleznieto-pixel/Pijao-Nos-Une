@@ -1,14 +1,13 @@
-// P-14 Detalle de persona: protección estándar (7.4). Los datos completos solo con O-01 y verificación en dos pasos,
-// pedidos al servidor (que audita). Desde aquí se registran «No contactar» y las solicitudes de derechos (7.8, 16.5).
+// P-14 Detalle de persona: protección estándar (7.4). Los datos completos solo con O-01, pedidos al servidor (que audita).
+// Desde aquí se marca «No contactar» (7.8). Las solicitudes de derechos salieron de la app (decisión del dueño, 0020).
 // Diseño de la Fase 2.
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Linking, Text, View } from "react-native";
-import { opciones } from "@/core/catalogos";
 import { vistaParaPantalla, type PersonaCompleta, type PersonaV } from "@/core/enmascarado";
 import { encolarAccion } from "@/servicios/campo";
 import { cliente, useApp } from "@/servicios/contexto";
-import { Aviso, Avatar, Boton, Campo, Cargando, Dato, Fila, Opciones, Pantalla, Seccion, TituloMedio, Vacio } from "@/ui/componentes";
+import { Aviso, Avatar, Boton, Cargando, Dato, Fila, Pantalla, Seccion, TituloMedio, Vacio } from "@/ui/componentes";
 import { color, fuente, tl } from "@/ui/tema";
 
 export default function Persona() {
@@ -18,10 +17,6 @@ export default function Persona() {
   const [completa, setCompleta] = useState<PersonaCompleta | null>(null);
   const [zona, setZona] = useState<string | null>(null);
   const [lugar, setLugar] = useState<string | null>(null);
-  const [abrirSolicitud, setAbrirSolicitud] = useState(false);
-  const [solicitud, setSolicitud] = useState<string | null>(null);
-  const [detalle, setDetalle] = useState("");
-  const [canal, setCanal] = useState("presencial");
   const [mensaje, setMensaje] = useState<{ tipo: "ok" | "error" | "alerta"; texto: string } | null>(null);
 
   useEffect(() => {
@@ -44,7 +39,7 @@ export default function Persona() {
 
   async function verCompletos() {
     const { data, error } = await cliente.rpc("rpc_persona_completa", { p_id: id });
-    if (error) setMensaje({ tipo: "error", texto: app.conectado ? "No tiene permiso o falta la verificación en dos pasos." : "Necesita conexión para ver los datos completos." });
+    if (error) setMensaje({ tipo: "error", texto: app.conectado ? "No tiene permiso para ver los datos completos." : "Necesita conexión para ver los datos completos." });
     else setCompleta(data as PersonaCompleta);
   }
   async function marcarNoContactar() {
@@ -55,24 +50,10 @@ export default function Persona() {
     app.avisarCambio();
     app.sincronizar();
   }
-  async function registrarSolicitud() {
-    if (!app.usuarioId || !solicitud) return;
-    await encolarAccion(app.almacen, app.usuarioId, "solicitud_titular", { tipo: solicitud, persona_id: id, detalle, canal });
-    if (solicitud === "supresion" || solicitud === "revocatoria") await app.almacen.guardar("personas", { ...(p as PersonaV), estado: "no_contactar" } as never, true);
-    setMensaje({ tipo: "ok", texto: "Solicitud registrada. El Director la atiende dentro del plazo y la persona queda en «No contactar» de inmediato." });
-    setSolicitud(null);
-    setAbrirSolicitud(false);
-    app.avisarCambio();
-    app.sincronizar();
-  }
-
   const telefono = completa?.telefono;
   return (
     <Pantalla
-      pie={<Fila>
-        <Boton texto="Solicitud de la persona" variante="contorno" onPress={() => setAbrirSolicitud(!abrirSolicitud)} estilo={{ flex: 1 }} />
-        {!noContactar ? <Boton texto="No contactar" variante="peligro" icono="candado" onPress={marcarNoContactar} estilo={{ flex: 1 }} /> : null}
-      </Fila>}>
+      pie={!noContactar ? <Boton texto="No contactar" variante="peligro" icono="candado" onPress={marcarNoContactar} /> : undefined}>
       <View style={{ alignItems: "center", gap: 6 }}>
         <Avatar nombre={v.nombre_visible} tam={72} tono={noContactar ? "rojo" : "azul"} />
         <TituloMedio>{v.nombre_visible || "Persona"}</TituloMedio>
@@ -93,18 +74,6 @@ export default function Persona() {
           <Boton texto="Llamar" icono="llamar" onPress={() => Linking.openURL(`tel:${telefono}`)} estilo={{ flex: 1 }} />
           <Boton texto="WhatsApp" variante="contorno" icono="mensaje" onPress={() => Linking.openURL(`https://wa.me/57${telefono}`)} estilo={{ flex: 1 }} />
         </Fila>
-      ) : null}
-      {abrirSolicitud ? (
-        <Seccion titulo="Solicitud sobre sus datos">
-          <Opciones opciones={opciones("C-18")} valor={solicitud} onCambio={(x) => setSolicitud(x as string)} />
-          {solicitud ? (
-            <>
-              <Opciones etiqueta="¿Por dónde llegó?" opciones={[["presencial", "En persona"], ["whatsapp", "WhatsApp"], ["correo", "Correo"], ["telefono", "Teléfono"]]} valor={canal} onCambio={(x) => setCanal(x as string)} />
-              <Campo etiqueta="Detalle" value={detalle} onChangeText={setDetalle} multiline />
-              <Boton texto="Registrar solicitud" onPress={registrarSolicitud} />
-            </>
-          ) : null}
-        </Seccion>
       ) : null}
       {mensaje ? <Aviso tipo={mensaje.tipo} texto={mensaje.texto} /> : null}
     </Pantalla>

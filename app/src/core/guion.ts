@@ -13,12 +13,11 @@ export interface Pregunta { pregunta: string; respuesta: string }
 export const VERSION_CAMPO_LOCAL = "v1-local";
 
 export const GUION_LOCAL = `## Antes de tocar la puerta
-- Lleve el carnet digital a la vista (Más → Carnet digital).
 - Revise en el mapa si la casa pidió no ser contactada. Si es así, no toque.
 - Trabaje en pareja en las veredas y avise a qué hora regresa.
 
 ## 1. Saludo y presentación
-«Buenos días, mi nombre es (su nombre). Hago parte del equipo de Pijao Nos Une. Este es mi carnet: puede verificarlo con el código QR.»
+«Buenos días, mi nombre es (su nombre). Hago parte del equipo de Pijao Nos Une.»
 
 ## 2. Para qué venimos
 «Estamos recorriendo Pijao casa por casa para conocer las necesidades de cada barrio y vereda. Con lo que nos cuenten se construyen las propuestas para el municipio. ¿Tiene unos minutos para conversar?»

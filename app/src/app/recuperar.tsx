@@ -1,4 +1,4 @@
-// P-07 Recuperar el acceso: código de un solo uso por correo y contraseña nueva. Al terminar se cierran las sesiones de los
+// P-07 Recuperar el acceso: código de un solo uso que da el Director o el Administrador (0020, sin correo) y contraseña nueva. Al terminar se cierran las sesiones de los
 // demás teléfonos y la persona recibe un aviso de «contraseña cambiada» en sus teléfonos habituales (migración 0016).
 // Con la sesión abierta sirve también para cambiar la contraseña (desde el perfil o después de tocar «No fui yo»).
 import { useRouter } from "expo-router";
@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Text, View } from "react-native";
 import { problemaClave } from "@/core/acceso";
 import { useApp } from "@/servicios/contexto";
-import { Aviso, Boton, Campo, Enlace, Pantalla, Vacio } from "@/ui/componentes";
+import { Aviso, Boton, Campo, Pantalla, Vacio } from "@/ui/componentes";
 import { color, fuente, tl } from "@/ui/tema";
 
 /** Medidor de 8 segmentos: largo de la contraseña y si no es de las comunes. */
@@ -30,7 +30,7 @@ export default function Recuperar() {
   const { sesion, conectado, usuarioId } = useApp();
   const router = useRouter();
   const conSesion = Boolean(usuarioId);
-  const [paso, setPaso] = useState<"correo" | "codigo" | "listo">(conSesion ? "codigo" : "correo");
+  const [listo, setListo] = useState<string | null>(null);
   const [correo, setCorreo] = useState("");
   const [codigo, setCodigo] = useState("");
   const [clave, setClave] = useState("");
@@ -44,50 +44,39 @@ export default function Recuperar() {
     try { await accion(); } catch (e) { setError((e as Error).message); } finally { setCargando(false); }
   }
 
-  if (paso === "listo") {
+  if (listo) {
     return (
       <Pantalla>
-        <Vacio icono="check" tono="verde" titulo="Contraseña cambiada" accion="Continuar" onAccion={() => router.replace("/inicio")}
-          texto="Su contraseña nueva ya funciona y cerramos la sesión en sus otros teléfonos. Guárdela en un lugar seguro y no la comparta con nadie, ni siquiera con el equipo." />
-      </Pantalla>
-    );
-  }
-
-  if (paso === "correo") {
-    return (
-      <Pantalla titulo="Recuperar el acceso" subtitulo="Escriba el correo con el que creó su cuenta. Le enviaremos un código para poner una contraseña nueva."
-        pie={<>
-          {error ? <Aviso tipo="error" texto={error} /> : null}
-          <Boton texto="Enviarme el código" icono="enviar" cargando={cargando} deshabilitado={!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo.trim())}
-            onPress={() => ejecutar(async () => { await sesion.pedirCodigoRecuperacion(correo); setPaso("codigo"); })} />
-        </>}>
-        {!conectado ? <Aviso tipo="alerta" icono="sinsenal" texto="Sin señal. Para recuperar el acceso necesita internet." /> : null}
-        <Campo etiqueta="Correo" value={correo} onChangeText={setCorreo} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />
-        <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), lineHeight: tl(20), color: color.textoSuave }}>
-          Si no le llega el correo en unos minutos, revise la carpeta de correo no deseado o pida ayuda al Administrador.
-        </Text>
+        <Vacio icono="check" tono="verde" titulo="Contraseña cambiada" accion={conSesion ? "Continuar" : "Entrar"}
+          onAccion={() => router.replace(conSesion ? "/inicio" : "/entrar")} texto={listo} />
       </Pantalla>
     );
   }
 
   const problema = clave && repetida ? problemaClave(clave, repetida) : null;
+  const codigoOk = codigo.replace(/[\s-]/g, "").length >= 8 && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(correo.trim());
   return (
-    <Pantalla titulo={conSesion ? "Cambiar mi contraseña" : undefined}
+    <Pantalla titulo={conSesion ? "Cambiar mi contraseña" : "Recuperar el acceso"}
+      subtitulo={conSesion ? undefined : "Pídale al Director o al Administrador un código para recuperar el acceso. Sirve una sola vez y vence en 24 horas."}
       pie={<>
         {error ? <Aviso tipo="error" texto={error} /> : null}
         <Boton texto={conSesion ? "Guardar contraseña nueva" : "Cambiar contraseña"} cargando={cargando}
-          deshabilitado={(!conSesion && codigo.replace(/\D/g, "").length < 6) || !clave || !repetida || Boolean(problemaClave(clave, repetida))}
+          deshabilitado={(!conSesion && !codigoOk) || !clave || !repetida || Boolean(problemaClave(clave, repetida))}
           onPress={() => ejecutar(async () => {
-            if (conSesion) await sesion.cambiarClave(clave);
-            else await sesion.recuperarConCodigo(correo, codigo, clave);
-            setPaso("listo");
+            if (conSesion) {
+              await sesion.cambiarClave(clave);
+              setListo("Su contraseña nueva ya funciona y cerramos la sesión en sus otros teléfonos. Guárdela en un lugar seguro y no la comparta con nadie.");
+            } else {
+              setListo(await sesion.restablecerConCodigo(correo, codigo, clave));
+            }
           })} />
-        <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave, textAlign: "center" }}>Al cambiarla se cierra su cuenta en los otros teléfonos.</Text>
+        {conSesion ? <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave, textAlign: "center" }}>Al cambiarla se cierra su cuenta en los otros teléfonos.</Text> : null}
       </>}>
+      {!conectado ? <Aviso tipo="alerta" icono="sinsenal" texto="Sin señal. Para cambiar la contraseña necesita internet." /> : null}
       {conSesion ? null : (
         <>
-          <Aviso tipo="ok" icono="enviar" texto={`Si ${correo.trim()} tiene una cuenta, le enviamos un código. Revise también la carpeta de correo no deseado.`} />
-          <Campo etiqueta="Código del correo" value={codigo} onChangeText={setCodigo} keyboardType="number-pad" autoComplete="one-time-code" maxLength={8} />
+          <Campo etiqueta="Correo con el que creó su cuenta" value={correo} onChangeText={setCorreo} autoCapitalize="none" keyboardType="email-address" autoComplete="email" />
+          <Campo etiqueta="Código que le dio el Director" value={codigo} onChangeText={(t) => setCodigo(t.toUpperCase())} autoCapitalize="characters" autoCorrect={false} maxLength={14} />
         </>
       )}
       <View style={{ gap: 8 }}>
@@ -95,7 +84,6 @@ export default function Recuperar() {
         <FuerzaClave clave={clave} />
       </View>
       <Campo etiqueta="Repítala" value={repetida} onChangeText={setRepetida} secureTextEntry autoComplete="new-password" error={problema} />
-      {conSesion ? null : <Enlace texto="Pedir otro código" onPress={() => { setCodigo(""); setPaso("correo"); }} />}
     </Pantalla>
   );
 }

@@ -46,6 +46,9 @@ jobs:
           /tmp/pmtiles extract "$FUENTE" assets/pijao.pmtiles --bbox=-75.82,4.18,-75.55,4.45 --maxzoom=15
           echo "MAPA_MB=$(du -m assets/pijao.pmtiles | cut -f1)" >> "$GITHUB_ENV"
 
+      - name: Predios de Pijao (IGAC · CC BY-SA 4.0)
+        run: bash ../tools/predios_igac.sh assets/predios.pmtiles assets/predios.json
+
       - name: Instalar dependencias
         run: npm ci
 
@@ -98,3 +101,18 @@ jobs:
           gh release create "$ETIQUETA" "/tmp/pijao-nos-une-fase1-${GITHUB_RUN_NUMBER}.apk" --prerelease --target "$GITHUB_SHA" \
             --title "App Fase 1 (en construcción) #${GITHUB_RUN_NUMBER}" \
             --notes "APK de prueba de la app nueva. Úsela en MODO PRÁCTICA hasta que la migración 0013 esté aplicada en Supabase y el abogado apruebe los textos. Mapa de Pijao incluido: ${MAPA_MB} MB."
+
+      # Enlace fijo para las invitaciones por WhatsApp: siempre la última versión, con el mismo nombre de archivo.
+      # https://github.com/<repo>/releases/download/app-ultima/pijao-nos-une.apk
+      - name: Publicar en el enlace fijo de la última versión
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk /tmp/pijao-nos-une.apk
+          if gh release view app-ultima >/dev/null 2>&1; then
+            gh release upload app-ultima /tmp/pijao-nos-une.apk --clobber
+            gh release edit app-ultima --notes "Última versión de la app (#${GITHUB_RUN_NUMBER}). Instálela encima de la anterior: nunca la desinstale."
+          else
+            gh release create app-ultima /tmp/pijao-nos-une.apk --prerelease --target "$GITHUB_SHA" --title "App: última versión" \
+              --notes "Última versión de la app (#${GITHUB_RUN_NUMBER}). Instálela encima de la anterior: nunca la desinstale."
+          fi

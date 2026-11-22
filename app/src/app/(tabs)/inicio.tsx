@@ -106,8 +106,6 @@ export default function Inicio() {
     })();
   }, [app.almacen, app.usuarioId, app.version, app.cola.pendientes, app.params]);
 
-  const necesita2fa = app.perfil && (app.perfil.esStaff || Object.keys(app.perfil.d.permisos).some((k) => ["O-01", "O-02", "O-05", "O-12", "O-13", "O-16"].includes(k)))
-    && app.perfil.d.aal !== "aal2";
   const nombre = app.perfil?.d.nombre?.split(" ")[0] ?? "";
   const cobertura = useConteo(c?.cobertura_pct ?? 0, 900);
   const temas = c?.necesidades_por_tema.slice(0, 3) ?? [];
@@ -169,8 +167,6 @@ export default function Inicio() {
         ) : null}
         {errorAviso ? <Aviso tipo="error" texto={errorAviso} /> : null}
         {app.telefonoModificado ? <Aviso tipo="error" texto="Este teléfono parece modificado (rooteado). Por seguridad, avise al Administrador." /> : null}
-        {necesita2fa ? <Aviso tipo="alerta" texto="Active la verificación en dos pasos para usar sus permisos de riesgo alto." /> : null}
-        {necesita2fa ? <Boton texto="Activar verificación" variante="secundario" onPress={() => router.push("/verificacion")} /> : null}
         {app.cola.cuarentena ? <Pressable accessibilityRole="button" onPress={() => router.push("/pendientes")}><Aviso tipo="error" texto={`${app.cola.cuarentena} ${app.cola.cuarentena === 1 ? "visita no se pudo enviar" : "visitas no se pudieron enviar"}. Toque aquí para corregirlas y enviarlas de nuevo.`} /></Pressable> : null}
 
         <Aparece retraso={200} estilo={e.titulo}>

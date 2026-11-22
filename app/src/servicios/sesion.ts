@@ -138,28 +138,21 @@ export class ServicioSesion {
     return perfilDesdeRpc(data as Record<string, unknown>);
   }
 
-  // ------------------------------------------------------------ verificación en dos pasos (4.10, A4)
-  async nivelVerificacion(): Promise<{ actual: string; siguiente: string }> {
-    const { data } = await this.cliente.auth.mfa.getAuthenticatorAssuranceLevel();
-    return { actual: data?.currentLevel ?? "aal1", siguiente: data?.nextLevel ?? "aal1" };
-  }
+  // La verificación en dos pasos se quitó el 18 de noviembre de 2026 por decisión del dueño (migración 0020).
 
-  /** Inscribe la aplicación autenticadora. Devuelve el código QR (SVG) y la clave para escribirla a mano. */
-  async inscribirAutenticador(): Promise<{ factorId: string; qr: string; secreto: string }> {
-    const { data, error } = await this.cliente.auth.mfa.enroll({ factorType: "totp", friendlyName: "Pijao nos une" });
-    if (error || !data) throw new Error("No se pudo activar la verificación en dos pasos.");
-    return { factorId: data.id, qr: data.totp.qr_code, secreto: data.totp.secret };
-  }
-
-  async verificarCodigo(codigo: string, factorId?: string): Promise<void> {
-    let id = factorId;
-    if (!id) {
-      const { data } = await this.cliente.auth.mfa.listFactors();
-      id = data?.totp?.find((f) => f.status === "verified")?.id ?? data?.totp?.[0]?.id;
+  /** Recuperar el acceso con el código que le da el Director o el Administrador (sin correo; 0020). */
+  async restablecerConCodigo(correo: string, codigo: string, claveNueva: string): Promise<string> {
+    const problema = problemaClave(claveNueva);
+    if (problema) throw new Error(problema);
+    const { data, error } = await this.cliente.functions.invoke("restablecer-con-codigo", {
+      body: { correo: correo.trim().toLowerCase(), codigo: codigo.replace(/[\s-]/g, "").toUpperCase(), clave: claveNueva },
+    });
+    if (error) {
+      let mensaje = "No se pudo cambiar la contraseña. Revise el correo y el código, o pida un código nuevo.";
+      try { mensaje = (await (error as { context?: Response }).context?.json())?.mensaje ?? mensaje; } catch { /* mensaje genérico */ }
+      throw new Error(mensaje);
     }
-    if (!id) throw new Error("Primero active la aplicación autenticadora.");
-    const { error } = await this.cliente.auth.mfa.challengeAndVerify({ factorId: id, code: codigo.replace(/\D/g, "") });
-    if (error) throw new Error("El código no es válido o ya venció. Escriba el código que muestra ahora la aplicación.");
+    return (data as { mensaje?: string })?.mensaje ?? "Listo. Ya puede entrar con su nueva contraseña.";
   }
 
   // ------------------------------------------------------------ teléfono (4.10, 17.2, N-12, N-13)

@@ -7,7 +7,7 @@ import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Camera, GeoJSONSource, Images, Layer, Map, UserLocation, type CameraRef } from "@maplibre/maplibre-react-native";
+import { Camera, GeoJSONSource, Images, Layer, Map, UserLocation, type CameraRef, type MapRef } from "@maplibre/maplibre-react-native";
 import { resumenCasa, type DatosCasa } from "@/core/ficha";
 import { cargarCasa } from "@/servicios/casa";
 import { useApp } from "@/servicios/contexto";
@@ -15,7 +15,11 @@ import { pedirPermiso } from "@/servicios/gps";
 import { FotoCasa } from "@/ui/FotoCasa";
 import { Icono, iconoEje } from "@/ui/Icono";
 import { Aviso, Boton, BotonIcono, Chip, Enlace, ErrorReintentar, Insignia, Semaforo, TituloMedio } from "@/ui/componentes";
-import { CENTRO_PIJAO, estiloPijao } from "@/ui/estiloMapa";
+import { CAPA_PREDIOS, CENTRO_PIJAO, estiloPijao } from "@/ui/estiloMapa";
+
+// Predios del IGAC (CC BY-SA 4.0): GitHub los arma en cada versión; si el IGAC no respondió, `disponible` es false.
+const INFO_PREDIOS = require("../../../assets/predios.json") as { disponible: boolean; fecha?: string };
+interface Predio { codigo: string; zona: string; area_m2: number | null }
 import { ESCALA_IMAGEN, ICONO_ESTADO, IMAGENES_MAPA, LEYENDA, NUMERO_GRUPO, PROPIEDADES_GRUPO, colorDominante } from "@/ui/marcadoresMapa";
 import { curvaSuave, useMovimientoReducido } from "@/ui/movimiento";
 import { color, espacio, fuente, modoSol, radio, sombra, tl } from "@/ui/tema";
@@ -37,6 +41,9 @@ export default function Mapa() {
   const [filtro, setFiltro] = useState("todas");
   const [leyenda, setLeyenda] = useState(false);
   const [sel, setSel] = useState<V | null>(null);
+  const [predio, setPredio] = useState<Predio | null>(null);
+  const [rutaPredios, setRutaPredios] = useState<string | null>(null);
+  const mapa = useRef<MapRef>(null);
   const [casa, setCasa] = useState<DatosCasa | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [intento, setIntento] = useState(0);
@@ -47,6 +54,9 @@ export default function Mapa() {
     Asset.loadAsync(require("../../../assets/pijao.pmtiles"))
       .then(([a]) => setRuta(a.localUri ?? a.uri))
       .catch(() => setError("No se pudo abrir el mapa de Pijao guardado en el teléfono."));
+    if (INFO_PREDIOS.disponible) {
+      Asset.loadAsync(require("../../../assets/predios.pmtiles")).then(([a]) => setRutaPredios(a.localUri ?? a.uri)).catch(() => setRutaPredios(null));
+    }
   }, [intento]);
 
   useEffect(() => {
@@ -111,13 +121,20 @@ export default function Mapa() {
   return (
     <View style={{ flex: 1, backgroundColor: color.fondo }}>
       {ruta ? (
-        <Map style={{ flex: 1 }} mapStyle={estiloPijao(ruta)} logo={false} compass={false} scaleBar={false} attribution={false}
+        <Map ref={mapa} style={{ flex: 1 }} mapStyle={estiloPijao(ruta, undefined, rutaPredios)} logo={false} compass={false} scaleBar={false} attribution={false}
           accessibilityLabel={`Mapa de Pijao con ${visibles.length} viviendas`}
           onPress={(e) => {
             // El toque en una casa también llega aquí (MapLibre lo emite en el mapa y en la fuente): solo se cierra la
             // ficha cuando se toca el mapa vacío. Antes la ficha se abría y se cerraba en el mismo toque.
-            const ev = e.nativeEvent as { features?: unknown[] };
-            if (!ev.features?.length) setSel(null);
+            const ev = e.nativeEvent as { features?: unknown[]; point?: [number, number] };
+            if (ev.features?.length) return;
+            setSel(null);
+            // Predios del IGAC: tocar un lote o una finca muestra su código catastral y permite registrar ahí.
+            if (!rutaPredios || !ev.point) { setPredio(null); return; }
+            mapa.current?.queryRenderedFeatures(ev.point, { layers: [CAPA_PREDIOS] }).then((fs) => {
+              const pr = fs[0]?.properties as Record<string, unknown> | undefined;
+              setPredio(pr?.codigo ? { codigo: String(pr.codigo), zona: String(pr.zona ?? ""), area_m2: typeof pr.area_m2 === "number" ? pr.area_m2 : null } : null);
+            }).catch(() => setPredio(null));
           }}
           onLongPress={(e) => {
             const [lng, lat] = e.nativeEvent.lngLat ?? [];
@@ -143,7 +160,7 @@ export default function Mapa() {
                 return;
               }
               const v = viviendas.find((x) => x.id === id);
-              if (v) setSel(v);
+              if (v) { setPredio(null); setSel(v); }
             }}>
             <Layer id="grupos" type="circle" filter={["has", "point_count"]} style={{
               circleColor: colorDominante(COLOR_GRUPO, color.azulOceano) as never,
@@ -194,9 +211,29 @@ export default function Mapa() {
         </View>
       ) : null}
 
+      {predio && !sel ? <FichaPredio predio={predio} onCerrar={() => setPredio(null)}
+        onRegistrar={() => { const codigo = predio.codigo; setPredio(null); router.push({ pathname: "/registrar", params: { predio: codigo } }); }} /> : null}
       {sel ? <FichaRapida v={sel} casa={casa} resumen={resumen} pendiente={pendientes.has(sel.id)} onCerrar={() => setSel(null)}
         onDetalle={() => { const id = sel.id; setSel(null); router.push(`/vivienda/${id}`); }}
         onVisita={() => { const id = sel.id; setSel(null); router.push({ pathname: "/visita", params: { vivienda: id } }); }} /> : null}
+    </View>
+  );
+}
+
+/** Predio del IGAC tocado en el mapa: código catastral, urbano o rural y área. */
+function FichaPredio({ predio, onCerrar, onRegistrar }: { predio: Predio; onCerrar: () => void; onRegistrar: () => void }) {
+  const area = predio.area_m2 == null ? null : predio.area_m2 >= 10000 ? `${(predio.area_m2 / 10000).toFixed(1).replace(".", ",")} hectáreas` : `${predio.area_m2.toLocaleString("es-CO")} m²`;
+  return (
+    <View style={[e.hoja, { paddingBottom: 110 }]} accessibilityLabel={`Predio ${predio.zona}, código ${predio.codigo}`}>
+      <View style={e.asa} />
+      <View style={{ gap: 10 }}>
+        <Text style={{ fontFamily: fuente.titulo, fontSize: tl(18), color: color.texto }}>{predio.zona === "urbano" ? "Lote urbano" : "Predio rural"}</Text>
+        <Text selectable style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave }}>Código catastral: {predio.codigo}</Text>
+        {area ? <Text style={{ fontFamily: fuente.texto, fontSize: tl(14), color: color.textoSuave }}>Área: {area}</Text> : null}
+        <Boton texto="Registrar visita en este predio" icono="mas" onPress={onRegistrar} />
+        <Boton texto="Cerrar" variante="suave" onPress={onCerrar} />
+        <Text style={{ fontFamily: fuente.texto, fontSize: tl(12), color: color.textoSuave }}>Predios: IGAC, Base Catastral Pública (CC BY-SA 4.0){INFO_PREDIOS.fecha ? ` · ${INFO_PREDIOS.fecha}` : ""}. Puede no reflejar cambios recientes.</Text>
+      </View>
     </View>
   );
 }

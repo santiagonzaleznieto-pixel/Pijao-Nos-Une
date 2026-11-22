@@ -343,7 +343,7 @@ function Integraciones() {
     <>
       <div className="tarjeta">
         <h2>Canales de atención a los titulares (16.5)</h2>
-        <p className="suave">Aparecen en las páginas públicas «Mis datos», «Política de datos» y en la verificación del carnet.</p>
+        <p className="suave">Aparecen en las páginas públicas «Mis datos» y «Política de datos».</p>
         <Estado carga={cfg}>
           {(lista) => (
             <div className="tabla-envoltura">

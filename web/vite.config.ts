@@ -45,7 +45,6 @@ export default defineConfig({
         index: aqui("index.html"),
         panel: aqui("panel.html"),
         "mis-datos": aqui("mis-datos.html"),
-        carnet: aqui("carnet.html"),
         politica: aqui("politica.html"),
       },
     },

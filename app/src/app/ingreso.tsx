@@ -103,7 +103,7 @@ export default function Ingreso() {
         <Text style={{ fontFamily: fuente.marca, fontSize: tl(64), color: paso_ ? color.textoVerde : color.textoRojo }}>{resultado} %</Text>
         <TituloMedio>{paso_ ? "¡Aprobó el curso!" : "Todavía no alcanza"}</TituloMedio>
       </View>
-      {paso_ ? <Aviso tipo="ok" icono="estrella" texto="Su certificado y su carnet quedan en «Más». Bienvenido o bienvenida al equipo." />
+      {paso_ ? <Aviso tipo="ok" icono="estrella" texto="Bienvenido o bienvenida al equipo. Ya puede empezar a registrar visitas." />
         : <Aviso tipo="alerta" texto={`Necesita al menos ${minimo} %. Repase las lecciones e inténtelo de nuevo.`} />}
       {error ? <><Aviso tipo="error" texto={error} /><Boton texto="Enviar otra vez" onPress={terminar} cargando={enviando} /></> : null}
       {!paso_ ? <Boton texto="Repasar e intentar de nuevo" onPress={() => { setRespuestas({}); setLeccion(0); setPaso("lecciones"); }} /> : null}

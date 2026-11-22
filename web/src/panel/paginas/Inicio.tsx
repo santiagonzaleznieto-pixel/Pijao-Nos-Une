@@ -1,4 +1,4 @@
-// Inicio del panel: lo que necesita atención hoy (aprobaciones, solicitudes de titulares con plazo, alertas).
+// Inicio del panel: lo que necesita atención hoy (aprobaciones y alertas; solicitudes de datos solo si llega una).
 import type { Resumen } from "../datos/tipos";
 import { Aviso, Encabezado, esAdmin, Estado, useCarga, usePanel, type Carga } from "../ui";
 
@@ -29,17 +29,17 @@ export function Inicio({ resumen }: { resumen: Carga<Resumen> }) {
       <Estado carga={resumen}>
         {(r) => (
           <>
-            {r.titularesVencidos > 0 && (
-              <Aviso tipo="error">
-                Hay {r.titularesVencidos} solicitud{r.titularesVencidos === 1 ? "" : "es"} de titulares con el plazo interno vencido.{" "}
-                <a href="#/titulares">Atenderlas ahora</a>.
+            {/* Los derechos de los titulares salieron del menú (decisión del dueño, 0020). Si llega una solicitud desde la
+                página pública «Mis datos», la ley obliga a responderla: solo entonces aparece este aviso. */}
+            {r.titularesPendientes > 0 && (
+              <Aviso tipo={r.titularesVencidos ? "error" : "alerta"}>
+                Un ciudadano pidió algo sobre sus datos personales desde la página «Mis datos» ({r.titularesPendientes}{" "}
+                {r.titularesPendientes === 1 ? "solicitud" : "solicitudes"}). La ley da 10 a 15 días hábiles para responder.{" "}
+                <a href="#/titulares">Atender</a>.
               </Aviso>
             )}
             <div className="cuadricula">
               <Cifra href="#/colaboradores" titulo="Cuentas por aprobar" valor={r.pendientes} nivel={r.pendientes ? "alerta" : undefined} />
-              <Cifra href="#/titulares" titulo="Solicitudes de titulares abiertas" valor={r.titularesPendientes}
-                     nivel={r.titularesVencidos ? "critico" : r.titularesPendientes ? "alerta" : undefined}
-                     nota={r.titularesVencidos ? `${r.titularesVencidos} con el plazo interno vencido` : "Plazo interno: 5 días hábiles"} />
               <Cifra href="#/colaboradores" titulo="Colaboradores activos" valor={r.activos} />
               <Cifra href="#/colaboradores" titulo="Invitaciones sin usar" valor={r.invitacionesVigentes} nota="Vencen a las 72 horas" />
               <Cifra href={esAdmin(perfil) ? "#/salud" : "#/auditoria"} titulo="Alertas de calidad y seguridad abiertas" valor={r.alertasAbiertas}

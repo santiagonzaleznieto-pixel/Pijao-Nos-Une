@@ -33,7 +33,6 @@ export const PERMISOS: Record<string, PermisoDef> = Object.fromEntries([
   p("O-22", "Crear encuestas internas", "Armar sondeos de campo", "bajo"),
 ].map((d) => [d.codigo, d]));
 
-export const requiere2fa = (codigo: string) => PERMISOS[codigo]?.riesgo === "alto";
 
 export const PLANTILLAS: Record<string, { permisos: string[]; limitarAZona: boolean }> = {
   "Colaborador de campo (estándar)": { permisos: [], limitarAZona: false },
@@ -93,15 +92,14 @@ export class Perfil {
   get esDirector() { return this.d.rol === "director" && this.activo; }
   get esStaff() { return this.esAdmin || this.esDirector; }
 
-  /** Igual que tiene_permiso() del servidor (0013): los de riesgo alto exigen verificación en dos pasos, también al personal. */
+  /** Igual que tiene_permiso() del servidor. Desde 0020 no se exige verificación en dos pasos (decisión del dueño). */
   tiene(codigo: string, zonaId: string | null = null, ahora: Date = new Date()): boolean {
     if (!this.activo) return false;
-    if (this.esStaff) return !requiere2fa(codigo) || this.d.aal === "aal2";
+    if (this.esStaff) return true;
     const x = this.d.permisos[codigo];
     if (!x) return false;
     const vence = parseIso(x.vence_en);
     if (vence && vence <= ahora) return false;
-    if (requiere2fa(codigo) && this.d.aal !== "aal2") return false;
     if (x.zonas === null) return true;
     return zonaId !== null && x.zonas.includes(zonaId);
   }

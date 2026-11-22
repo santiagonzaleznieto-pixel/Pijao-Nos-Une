@@ -16,7 +16,6 @@ export interface Textos {
   whatsapp: string | null;
 }
 export interface TextoLegal { version: string; contenido: string; borrador: boolean; actualizado: string }
-export interface Carnet { vigente: boolean; nombre?: string; rol?: string; vence?: string; consultado_en: string }
 export interface CasoCreado { ok: boolean; numero_caso: string; plazo_legal?: string }
 export interface EstadoCaso { encontrado: boolean; tipo?: string; estado?: string; recibido_en?: string; plazo_legal?: string; resuelta_en?: string }
 
@@ -41,7 +40,6 @@ async function rpc<T>(funcion: string, args: Record<string, unknown>): Promise<T
 }
 
 export const textosPublicos = () => rpc<Textos>("rpc_publico_textos", {});
-export const verificarCarnet = (id: string) => rpc<Carnet>("rpc_publico_carnet", { p_id: id });
 export const enviarSolicitud = (datos: Record<string, unknown>) => rpc<CasoCreado>("rpc_publico_solicitud", { p: datos });
 export const estadoCaso = (numero: string, contacto: string) =>
   rpc<EstadoCaso>("rpc_publico_estado_caso", { p_numero: numero, p_contacto: contacto });
@@ -61,10 +59,6 @@ function demo(funcion: string, args: Record<string, unknown>): unknown {
         correo: "datos@ejemplo.co",
         whatsapp: "+57 300 000 0000",
       } satisfies Textos;
-    case "rpc_publico_carnet":
-      return String(args.p_id).endsWith("1")
-        ? { vigente: true, nombre: "Ana María Ejemplo", rol: "Colaborador del equipo", vence: "2027-05-05", consultado_en: new Date().toISOString() }
-        : { vigente: false, consultado_en: new Date().toISOString() };
     case "rpc_publico_solicitud":
       return { ok: true, numero_caso: "A1B2C3D4", plazo_legal: hoy };
     case "rpc_publico_estado_caso":

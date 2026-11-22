@@ -51,6 +51,5 @@ export function pie() {
   return h("footer", { class: "pie" },
     h("a", { href: "./mis-datos.html" }, "Mis datos"),
     h("a", { href: "./politica.html" }, "Política de datos"),
-    h("a", { href: "./carnet.html" }, "Verificar un carnet"),
     h("p", {}, "Campaña Pijao Nos Une · Alcaldía de Pijao 2028-2031"));
 }

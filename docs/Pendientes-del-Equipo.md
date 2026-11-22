@@ -20,7 +20,7 @@ Se hacen a su ritmo, pero las marcadas con ⏰ tienen fecha. Cuando termine una,
      - contraseña: la contraseña de aplicación;
      - remitente: «Pijao Nos Une».
   4. Avísele a Claude: él ajusta la plantilla del correo para que muestre el código.
-- [ ] **Verificación en dos pasos del Administrador y del Director.** La primera vez que entren al panel web, escaneen el código QR con una aplicación autenticadora gratuita, como Google Authenticator o Aegis. Sin esto no ven datos completos ni pueden hacer acciones delicadas.
+- [x] ~~Verificación en dos pasos~~: se quitó por decisión del dueño (18 de noviembre de 2026, migración 0020). Se entra al panel y a la app solo con correo y contraseña.
 - [ ] **Llaves de firma del APK** (`docs/Entrega-y-Firma.md` §1). Hay que crear las dos llaves en el computador del Administrador y cargarlas como secretos en GitHub (Settings → Secrets → Actions). Sin ellas, cada versión de la app sale firmada con una llave de prueba, y cambiar de llave después obliga a desinstalar la app. Desinstalar borra las visitas que no se han enviado.
 - [ ] **Segundo custodio de las llaves.** Una persona de confianza guarda una copia fuera de línea de las llaves y sus contraseñas: una USB cifrada y las contraseñas en papel.
 - [ ] **Respaldos nocturnos** (`docs/Entrega-y-Firma.md` §4). El plan gratuito de Supabase no los incluye.
@@ -91,7 +91,7 @@ Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es 
 - [ ] **Piloto (febrero de 2027):** la prueba de uso con 5 colaboradores, incluidos adultos mayores, y la **prueba bajo el sol real** en una vereda. Anotar dónde se confunden, qué tarda y qué no se lee bien; Claude ajusta el diseño con eso.
 - [ ] **Aprobación final del diseño** por el Director y el candidato (criterio de salida de la Fase 2).
 - [ ] **Decidir si se publica la versión a main.** Todo el diseño está en la rama `fase-2/diseno`; pasar a `main` necesita su aprobación.
-- [ ] **Más adelante:** la página de la campaña y el kit para redes y piezas públicas (13.2), cuando haya mensaje definitivo. Las páginas públicas actuales (verificar carnet, Mis datos, política) siguen funcionando como están.
+- [ ] **Más adelante:** la página de la campaña y el kit para redes y piezas públicas (13.2), cuando haya mensaje definitivo. Las páginas públicas actuales (Mis datos y política) siguen funcionando; el carnet se retiró (18 de noviembre de 2026).
 
 ### 8. Fase 3 (solo para el equipo)
 
@@ -103,6 +103,16 @@ Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es 
 - [ ] **Pasar a `main`** cuando apruebe el diseño y la Fase 3: así el panel publicado muestra las secciones nuevas.
 
 ---
+
+### 9. Invitar al equipo y empezar las pruebas (app 0.19.0)
+
+- [ ] **Autorizar a Claude a aplicar la migración 0020 y publicar la función «restablecer-con-codigo»** en Supabase. Sin eso el servidor sigue pidiendo la verificación en dos pasos para algunas acciones y el código para recuperar el acceso no funciona.
+- [ ] **Instalar la 0.19.0 encima de la anterior** desde el enlace fijo: https://github.com/santiagonzaleznieto-pixel/Pijao-Nos-Une/releases/download/app-ultima/pijao-nos-une.apk
+- [ ] **Invitar:** en la app, Más → «Invitar y aprobar» → nombre y celular → «Enviar por WhatsApp». La persona descarga la app desde el enlace del mensaje, toca «Tengo un código de invitación» y crea su cuenta. Usted la aprueba en la misma pantalla y ella hace el curso corto (3 lecciones y 5 preguntas).
+- [ ] **Si alguien olvida la contraseña:** en «Invitar y aprobar» → «Recuperar el acceso de alguien» → «Código» → «Enviar por WhatsApp». La persona toca «Olvidé mi contraseña» y escribe su correo, el código y su contraseña nueva.
+- [ ] **Antes de invitar a gente real, crear las llaves de firma definitivas** (`docs/Entrega-y-Firma.md` §1): cambiar de llave después obliga a desinstalar la app, y eso borra lo que no se haya enviado.
+- [ ] **Solo Android:** quienes tengan iPhone todavía no pueden usar la app.
+- [ ] **Abogado:** confirmar que, mientras no exista la página de la campaña, basta la página pública «Mis datos» como canal para los derechos de los titulares (Ley 1581). En el panel solo aparece un aviso cuando llega una solicitud.
 
 ### Lo que Claude ya dejó hecho o hace sin usted
 

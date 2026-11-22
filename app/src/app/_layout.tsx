@@ -90,7 +90,6 @@ function Guardian() {
         <Stack.Screen name="ingreso" options={{ title: "Ingreso al equipo" }} />
         <Stack.Screen name="acuerdos" options={{ title: "Acuerdos", headerBackVisible: false }} />
         <Stack.Screen name="recuperar" options={{ title: "Recuperar el acceso" }} />
-        <Stack.Screen name="verificacion" options={{ title: "Verificación en dos pasos" }} />
         <Stack.Screen name="registrar" options={{ title: "Registrar aquí" }} />
         <Stack.Screen name="visita" options={{ title: "Nueva visita" }} />
         <Stack.Screen name="vivienda/[id]" options={{ title: "Vivienda" }} />
@@ -98,8 +97,6 @@ function Guardian() {
         <Stack.Screen name="buscar" options={{ title: "Buscar" }} />
         <Stack.Screen name="pendientes" options={{ title: "Mis visitas y pendientes" }} />
         <Stack.Screen name="perfil" options={{ title: "Mi perfil" }} />
-        <Stack.Screen name="titulares" options={{ title: "Derechos de los titulares" }} />
-        <Stack.Screen name="carnet" options={{ title: "Carnet digital" }} />
         <Stack.Screen name="anuncios" options={{ title: "Anuncios" }} />
         <Stack.Screen name="guion" options={{ title: "Guion y preguntas" }} />
         <Stack.Screen name="cumpleanos" options={{ title: "Cumpleañeros" }} />
@@ -107,6 +104,7 @@ function Guardian() {
         <Stack.Screen name="incidente" options={{ title: "Incidente" }} />
         <Stack.Screen name="ayuda" options={{ title: "Ayuda" }} />
         <Stack.Screen name="eventos" options={{ title: "Eventos" }} />
+        <Stack.Screen name="invitar" options={{ title: "Invitar y aprobar" }} />
       </Stack>
       {mostrarEntrada ? <Entrada alTerminar={() => { entradaVista = true; setMostrarEntrada(false); }} /> : null}
     </View>

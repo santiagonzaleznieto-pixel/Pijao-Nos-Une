@@ -126,7 +126,6 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
     ["tareas", "Tareas"],
     ["eventos", "Eventos"],
     ["colaboradores", "Colaboradores", r?.pendientes],
-    ["titulares", "Derechos de titulares", r?.titularesPendientes],
     ["auditoria", "Auditoría"],
     ["mapa", "Mapa del avance"],
     ["necesidades", "Necesidades"],

@@ -2,14 +2,14 @@
   "expo": {
     "name": "Pijao Nos Une",
     "slug": "pijao-nos-une",
-    "version": "0.18.1",
+    "version": "0.19.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "pijao",
     "userInterfaceStyle": "light",
     "android": {
       "package": "co.pijao.nosune",
-      "versionCode": 19,
+      "versionCode": 20,
       "allowBackup": false,
       "adaptiveIcon": {
         "backgroundColor": "#122B52",
@@ -75,7 +75,6 @@
     "extra": {
       "supabaseUrl": "https://hxodqzorvvlkzensrsjr.supabase.co",
       "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4b2Rxem9ydnZsa3plbnNyc2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwOTYwMDEsImV4cCI6MjEwNzY3MjAwMX0.1OpCL88hLiIduD4ybUsO4QZ_erx26DOdKrpqNZ1iBi0",
-      "paginaCarnet": "https://santiagonzaleznieto-pixel.github.io/Pijao-Nos-Une/carnet.html",
       "paginaMisDatos": "https://santiagonzaleznieto-pixel.github.io/Pijao-Nos-Une/mis-datos.html"
     },
     "experiments": {

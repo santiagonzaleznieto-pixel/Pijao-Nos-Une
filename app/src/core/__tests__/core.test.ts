@@ -4,7 +4,7 @@ import { avisosVisibles, CLAVE_MINIMA, debeAceptarAcuerdos, limpiarCodigo, mensa
 import { claves, etiqueta } from "../catalogos";
 import { evaluarRegistro, ritmoSospechoso, saltoImposible } from "../calidad";
 import { autorizacionVigente, canalesAtencion, evidenciaPara, nuevoConsentimiento, textoPara, VERSION_TEXTO_LOCAL } from "../consentimiento";
-import { aprobado, PREGUNTAS, puntaje } from "../curso";
+import { aprobado, LECCIONES, PREGUNTAS, puntaje } from "../curso";
 import { fechaCorta, fichaCompleta, resumenCasa } from "../ficha";
 import { mascaraCedula, mascaraCorreo, mascaraTelefono, nombreCompleto, vistaParaPantalla } from "../enmascarado";
 import { panelCampana, panelPersonal, umbral } from "../estadisticas";
@@ -134,15 +134,15 @@ describe("geografía", () => {
 
 describe("permisos (sección 4 y 0013)", () => {
   const base = { id: "u1", nombre: "Ana", rol: "colaborador", estado: "activo", zonas: [], aal: "aal1", curso_aprobado: true, acuerdos_ok: true };
-  test("O-01 exige verificación en dos pasos", () => {
-    const sin2 = new Perfil(perfilDesdeRpc({ ...base, permisos: [{ codigo: "O-01", zonas: null, vence_en: null }] }));
-    const con2 = new Perfil(perfilDesdeRpc({ ...base, aal: "aal2", permisos: [{ codigo: "O-01", zonas: null, vence_en: null }] }));
-    expect(sin2.tiene("O-01")).toBe(false);
-    expect(con2.tiene("O-01")).toBe(true);
+  test("sin verificación en dos pasos (decisión del dueño, 0020): basta con tener el permiso", () => {
+    const con = new Perfil(perfilDesdeRpc({ ...base, permisos: [{ codigo: "O-01", zonas: null, vence_en: null }] }));
+    const sin = new Perfil(perfilDesdeRpc({ ...base, permisos: [] }));
+    expect(con.tiene("O-01")).toBe(true);
+    expect(sin.tiene("O-01")).toBe(false);
   });
-  test("A4: el Director también necesita dos pasos para O-01", () => {
+  test("el Director y el Administrador tienen todos los permisos", () => {
     const dir = new Perfil(perfilDesdeRpc({ ...base, rol: "director", permisos: [] }));
-    expect(dir.tiene("O-01")).toBe(false);
+    expect(dir.tiene("O-01")).toBe(true);
     expect(dir.tiene("O-09")).toBe(true);
   });
   test("vencimiento y alcance por zona", () => {
@@ -169,12 +169,13 @@ describe("permisos (sección 4 y 0013)", () => {
 });
 
 describe("curso de ingreso (10.6)", () => {
-  test("15 preguntas y mínimo 80 %", () => {
-    expect(PREGUNTAS).toHaveLength(15);
+  test("versión corta: 3 lecciones, 5 preguntas y mínimo 80 % (4 de 5)", () => {
+    expect(LECCIONES).toHaveLength(3);
+    expect(PREGUNTAS).toHaveLength(5);
     const todas = Object.fromEntries(PREGUNTAS.map((p, i) => [i, p.correcta]));
     expect(puntaje(todas)).toBe(100);
-    const doceBien = { ...todas, 0: 9, 1: 9, 2: 9 };
-    expect(puntaje(doceBien)).toBe(80);
+    expect(puntaje({ ...todas, 0: 9 })).toBe(80);
+    expect(puntaje({ ...todas, 0: 9, 1: 9 })).toBe(60);
     expect(aprobado(80)).toBe(true);
     expect(aprobado(79)).toBe(false);
   });

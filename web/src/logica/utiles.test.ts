@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { describirAccion, etiquetaMetrica, humanizar, TIPO_TEXTO_LEGAL, tituloSolicitud, TIPOS_SOLICITUD } from "./textos";
 import {
-  aCsv, aFecha, compararVersion, contactoValido, contarSeguro, diaMas, errorVencimiento, fecha, haceCuanto, idDeCarnet,
+  aCsv, aFecha, compararVersion, contactoValido, contarSeguro, diaMas, errorVencimiento, fecha, haceCuanto,
   interpretarValor, mensajeDeError, nivelMeta90, nivelRespaldo, nivelUso, normalizarCaso, NUMERO_CASO, valorParaEditar, venceSugerido,
 } from "./utiles";
 
@@ -37,11 +37,6 @@ describe("validaciones", () => {
     expect(contactoValido("rosa@correo.co")).toBe(true);
     expect(contactoValido("12345")).toBe(false);
     expect(contactoValido("llámeme")).toBe(false);
-  });
-  it("P-52: el id del carnet debe tener forma de identificador", () => {
-    expect(idDeCarnet("?id=00000000-0000-0000-0000-0000000000D1")).toBe("00000000-0000-0000-0000-0000000000d1");
-    expect(idDeCarnet("?id=<script>")).toBeNull();
-    expect(idDeCarnet("")).toBeNull();
   });
   it("P-50: el número de caso se limpia y se valida", () => {
     expect(normalizarCaso(" ab12-cd34 ")).toBe("AB12CD34");

@@ -65,8 +65,6 @@ export default function Perfil() {
 
       <Seccion titulo="Cuenta y seguridad">
         <ItemLista titulo="Cambiar contraseña" izquierda={<Ficha icono="llave" />} onPress={() => router.push("/recuperar")} />
-        <ItemLista titulo="Verificación en dos pasos" detalle={d?.aal === "aal2" ? "Activa en esta sesión" : "No verificada en esta sesión"}
-          izquierda={<Ficha icono="escudo" tono={d?.aal === "aal2" ? "verde" : "naranja"} />} onPress={() => router.push("/verificacion")} />
         <ItemLista titulo="Mis teléfonos" detalle={app.practica ? "No disponible en práctica" : `${activos} de 2 activos`} izquierda={<Ficha icono="telefono" tono="gris" />} ultimo />
       </Seccion>
 
@@ -83,7 +81,6 @@ export default function Perfil() {
       ) : null}
 
       <View style={{ gap: 10 }}>
-        <FilaEnlace texto="Carnet digital" icono="qr" onPress={() => router.push("/carnet")} />
         <FilaEnlace texto="Guion y preguntas frecuentes" icono="ayuda" onPress={() => router.push("/guion")} />
         <FilaEnlace texto={app.practica ? "Salir del modo práctica" : "Modo práctica"} icono="play" onPress={() => app.cambiarPractica(!app.practica)} />
       </View>

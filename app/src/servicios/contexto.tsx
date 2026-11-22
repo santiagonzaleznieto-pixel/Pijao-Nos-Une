@@ -25,9 +25,9 @@ import { VERSION_APP } from "./version";
 
 configurarGeneradorId(() => Crypto.randomUUID());
 
-const extra = (Constants.expoConfig?.extra ?? {}) as { supabaseUrl: string; supabaseAnonKey: string; paginaCarnet?: string; paginaMisDatos?: string };
+const extra = (Constants.expoConfig?.extra ?? {}) as { supabaseUrl: string; supabaseAnonKey: string; paginaMisDatos?: string };
 export const cliente = crearCliente(extra.supabaseUrl, extra.supabaseAnonKey);
-export const PAGINAS = { carnet: extra.paginaCarnet ?? "", misDatos: extra.paginaMisDatos ?? "" };
+export const PAGINAS = { misDatos: extra.paginaMisDatos ?? "" };
 
 const CLAVE_PRACTICA = "pijao_modo_practica";
 const CLAVE_DISPOSITIVO = "pijao_id_dispositivo";

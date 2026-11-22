@@ -66,12 +66,6 @@ export function contactoValido(texto: string): boolean {
 
 export const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-/** P-52: el QR del carnet lleva ?id=<identificador>. Devuelve el identificador si tiene la forma correcta. */
-export function idDeCarnet(busqueda: string): string | null {
-  const id = new URLSearchParams(busqueda).get("id")?.trim() ?? "";
-  return UUID.test(id) ? id.toLowerCase() : null;
-}
-
 export const NUMERO_CASO = /^[0-9A-F]{8}$/;
 export const normalizarCaso = (t: string) => t.trim().toUpperCase().replace(/[^0-9A-F]/g, "");
 

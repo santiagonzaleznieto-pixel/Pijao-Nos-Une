@@ -26,13 +26,11 @@ export default function Mas() {
         <Etiqueta>Equipo</Etiqueta>
         <FilaEnlace texto="Anuncios" icono="megafono" onPress={() => router.push("/anuncios")} />
         <FilaEnlace texto="Eventos" detalle="Próximos encuentros de la campaña" icono="calendario" onPress={() => router.push("/eventos")} />
-        {app.perfil?.puede("ver_titulares") ? <FilaEnlace texto="Derechos de los titulares" detalle="Solicitudes de las personas sobre sus datos" icono="escudo" onPress={() => router.push("/titulares")} /> : null}
+        {app.perfil?.puede("invitar") && !app.practica ? <FilaEnlace texto="Invitar y aprobar" detalle="Sumar colaboradores al equipo" icono="persona" onPress={() => router.push("/invitar")} /> : null}
       </View>
       <View style={{ gap: 10 }}>
         <Etiqueta>Mi cuenta</Etiqueta>
         <FilaEnlace texto="Perfil y ajustes" detalle="Modo claro, oscuro o sol y letra grande" icono="persona" onPress={() => router.push("/perfil")} />
-        <FilaEnlace texto="Carnet digital" icono="qr" onPress={() => router.push("/carnet")} />
-        <FilaEnlace texto="Verificación en dos pasos" icono="candado" onPress={() => router.push("/verificacion")} />
         <FilaEnlace texto={app.practica ? "Salir del modo práctica" : "Modo práctica"} detalle="Datos de ejemplo; nada se envía" icono="play" onPress={() => app.cambiarPractica(!app.practica)} />
         <FilaEnlace texto="Ayuda" detalle="Preguntas frecuentes y reportar un error" icono="ayuda" onPress={() => router.push("/ayuda")} />
         <FilaEnlace texto="Ocultar pantalla" detalle="Tapa todo si alguien se acerca a mirar" icono="ocultar" onPress={app.ocultarPantalla} />

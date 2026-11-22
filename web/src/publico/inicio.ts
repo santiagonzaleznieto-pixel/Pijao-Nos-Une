@@ -12,7 +12,6 @@ $("#app").append(
     h("h1", {}, "Pijao Nos Une"),
     h("p", {}, "Campaña de Jaime González a la Alcaldía de Pijao 2028-2031."),
     tarjeta("./mis-datos.html", "Mis datos", "Consulte, corrija o borre sus datos, o pida que no le contactemos más."),
-    tarjeta("./carnet.html", "Verificar un carnet", "Compruebe si quien le visita pertenece al equipo."),
     tarjeta("./politica.html", "Política de datos", "Cómo cuidamos y usamos la información de las familias."),
     h("p", { class: "suave pequeno", style: "margin-top:24px" }, "¿Es del equipo? ", h("a", { href: "./panel.html" }, "Entrar al panel del Director y el Administrador"))),
   pie(),

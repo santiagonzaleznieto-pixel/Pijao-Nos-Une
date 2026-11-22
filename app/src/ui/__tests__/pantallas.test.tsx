@@ -49,7 +49,7 @@ const mockApp = {
 };
 jest.mock("@/servicios/contexto", () => ({
   useApp: () => mockApp,
-  PAGINAS: { carnet: "https://ejemplo.org/carnet", misDatos: "https://ejemplo.org/mis-datos" },
+  PAGINAS: { misDatos: "https://ejemplo.org/mis-datos" },
   cliente: { from: () => mockConsulta, rpc: jest.fn(async () => ({ data: null, error: null })) },
 }));
 
@@ -64,7 +64,6 @@ const RUTAS: Record<string, unknown> = {
   entrar: require("../../app/entrar").default,
   registro: require("../../app/registro").default,
   recuperar: require("../../app/recuperar").default,
-  verificacion: require("../../app/verificacion").default,
   cuenta: require("../../app/cuenta").default,
   acuerdos: require("../../app/acuerdos").default,
   ingreso: require("../../app/ingreso").default,
@@ -75,8 +74,7 @@ const RUTAS: Record<string, unknown> = {
   buscar: require("../../app/buscar").default,
   pendientes: require("../../app/pendientes").default,
   perfil: require("../../app/perfil").default,
-  titulares: require("../../app/titulares").default,
-  carnet: require("../../app/carnet").default,
+  invitar: require("../../app/invitar").default,
   anuncios: require("../../app/anuncios").default,
   guion: require("../../app/guion").default,
   cumpleanos: require("../../app/cumpleanos").default,
@@ -97,11 +95,11 @@ beforeAll(async () => {
 
 const casos: [string, string][] = [
   ["/inicio", "Inicio"], ["/mapa", "Mapa"], ["/tareas", "Tareas"], ["/mas", "Más"],
-  ["/entrar", "Entrar"], ["/registro", "Crear cuenta"], ["/recuperar", "Recuperar"], ["/verificacion", "Verificación"],
+  ["/entrar", "Entrar"], ["/registro", "Crear cuenta"], ["/recuperar", "Recuperar"],
   ["/cuenta", "Cuenta"], ["/acuerdos", "Acuerdos"], ["/ingreso", "Ingreso"], ["/registrar", "Registrar aquí"],
   ["/visita?vivienda=practica-v-1", "Nueva visita"], ["/vivienda/practica-v-1", "Vivienda"], ["/persona/practica-p-1-0", "Persona"],
-  ["/buscar", "Buscar"], ["/pendientes", "Pendientes"], ["/perfil", "Perfil"], ["/titulares", "Titulares"],
-  ["/carnet", "Carnet"], ["/anuncios", "Anuncios"], ["/guion", "Guion"],
+  ["/buscar", "Buscar"], ["/pendientes", "Pendientes"], ["/perfil", "Perfil"],
+  ["/invitar", "Invitar"], ["/anuncios", "Anuncios"], ["/guion", "Guion"],
   ["/cumpleanos", "Cumpleañeros"], ["/jornada", "Jornada"], ["/incidente", "Incidente"], ["/ayuda", "Ayuda"], ["/eventos", "Eventos"],
 ];
 

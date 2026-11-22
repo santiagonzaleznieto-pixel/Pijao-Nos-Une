@@ -2,6 +2,7 @@
 // y entrar a la ficha de cada persona.
 import { useMemo, useState, type FormEvent } from "react";
 import { ESTADO_CUENTA, ESTADO_INVITACION, ROL } from "../../logica/textos";
+import { URL_APK } from "../../logica/enlaces";
 import { fecha, fechaHora, haceCuanto } from "../../logica/utiles";
 import type { Colaborador } from "../datos/tipos";
 import { Aviso, Chip, Confirmar, Encabezado, esAdmin, Estado, Pestanas, useAccion, useCarga, usePanel } from "../ui";
@@ -97,19 +98,23 @@ function Invitar() {
   const [celular, setCelular] = useState("");
   const [correo, setCorreo] = useState("");
   const [rol, setRol] = useState("colaborador");
-  const [hecho, setHecho] = useState<{ codigo: string; expira_en: string; nombre: string } | null>(null);
+  const [hecho, setHecho] = useState<{ codigo: string; expira_en: string; nombre: string; celular: string } | null>(null);
 
   const enviar = (ev: FormEvent) => {
     ev.preventDefault();
     void accion.ejecutar(async () => {
       const r = await fuente.invitar(nombre.trim(), celular.trim() || null, correo.trim() || null, rol);
-      setHecho({ ...r, nombre: nombre.trim() });
+      setHecho({ ...r, nombre: nombre.trim(), celular: celular.trim() });
       setNombre(""); setCelular(""); setCorreo("");
     });
   };
   const mensaje = hecho
-    ? `Hola, ${hecho.nombre.split(" ")[0]}. Su código para entrar a la app Pijao Nos Une es ${hecho.codigo}. Vence el ${fechaHora(hecho.expira_en)}. Solo sirve una vez.`
+    ? [`Hola ${hecho.nombre.split(" ")[0]}, le invitamos al equipo de Pijao Nos Une.`, "",
+       `1. Descargue la app (teléfonos Android): ${URL_APK}`, "2. Ábrala y toque «Tengo un código de invitación».", `3. Escriba este código: ${hecho.codigo}`, "",
+       `El código sirve una sola vez y vence el ${fechaHora(hecho.expira_en)}. Si el teléfono pregunta, permita instalar la app.`].join("\n")
     : "";
+  const numero = hecho ? hecho.celular.replace(/\D/g, "").replace(/^(3\d{9})$/, "57$1") : "";
+  const whatsapp = `https://wa.me/${/^573\d{9}$/.test(numero) ? numero : ""}?text=${encodeURIComponent(mensaje)}`;
 
   return (
     <div className="tarjeta">
@@ -120,8 +125,9 @@ function Invitar() {
           <p>Envíele este mensaje en privado (no lo publique en grupos):</p>
           <textarea readOnly value={mensaje} />
           <div className="acciones" style={{ marginTop: 8 }}>
+            <a className="boton chico" href={whatsapp} target="_blank" rel="noreferrer">Enviar por WhatsApp</a>
             <button type="button" className="boton secundario chico" onClick={() => void navigator.clipboard?.writeText(mensaje)}>Copiar mensaje</button>
-            <button type="button" className="boton chico" onClick={() => setHecho(null)}>Invitar a otra persona</button>
+            <button type="button" className="boton secundario chico" onClick={() => setHecho(null)}>Invitar a otra persona</button>
           </div>
         </>
       ) : (
