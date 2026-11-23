@@ -754,7 +754,7 @@ El sistema de diseño está publicado y las 53 pantallas están diseñadas con t
   - Se adelanta a esta fase porque sirve para **decidir dónde trabajar**.
   - **No predice resultados**.
 - [ ] **Segmentos (9.10)**, con sus criterios escritos y nunca por simpatía ni por datos sensibles.
-- [ ] **P-23 Informes (9.11):** _(avance 0021: informe semanal automático los lunes a las 6 a. m. como aviso al Director y al Administrador, y en el panel, Informe → Informe semanal; faltan el diario, el mensual y la hoja de cálculo)_
+- [ ] **P-23 Informes (9.11):** _(avance 0021: informe semanal automático los lunes a las 7 a. m. como aviso al Director y al Administrador, y en el panel, Informe → Informe semanal; faltan el diario, el mensual y la hoja de cálculo)_
   - Diario a las 7 p. m., semanal los lunes a las 7 a. m., mensual y bajo demanda.
   - En PDF y hoja de cálculo.
   - Con marca de agua y auditoría.

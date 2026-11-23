@@ -97,7 +97,7 @@ function InformeDeLaSemana() {
         const maxV = Math.max(1, ...r.por_vereda.map((v) => v.visitas));
         return (
           <div className="informe">
-            <p className="suave">Semana del {fecha(r.desde)} al {fecha(r.hasta)} · {r.colaboradores_activos} personas del equipo hicieron visitas. Llega también cada lunes a las 6 a. m. como aviso.</p>
+            <p className="suave">Semana del {fecha(r.desde)} al {fecha(r.hasta)} · {r.colaboradores_activos} personas del equipo hicieron visitas. Llega también cada lunes a las 7 a. m. como aviso.</p>
             <div className="cuadricula">
               <div className="tarjeta"><div className="suave">Visitas</div><div className="cifra">{r.visitas.total}</div>
                 <div className="suave pequeno">{r.visitas.con_conversacion} con conversación{cambio !== null ? ` · ${cambio >= 0 ? "+" : ""}${cambio} % frente a la semana anterior` : ""}</div></div>

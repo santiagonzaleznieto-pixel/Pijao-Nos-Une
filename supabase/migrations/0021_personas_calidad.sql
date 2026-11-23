@@ -798,7 +798,7 @@ language sql immutable set search_path = public, pg_temp as $$
          'septiembre','octubre','noviembre','diciembre'])[extract(month from d)::int]
 $$;
 
--- Cada lunes a las 6 a. m. (hora de Colombia): sortea la semana que terminó y deja el informe como aviso.
+-- Cada lunes a las 7 a. m. (hora de Colombia): sortea la semana que terminó y deja el informe como aviso.
 create or replace function public._tarea_semanal() returns jsonb
 language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_lunes date := public._lunes_anterior(); v_sorteo jsonb; i jsonb; v_msg text;
@@ -823,7 +823,7 @@ do $$
 begin
   create extension if not exists pg_cron;
   perform cron.unschedule(jobid) from cron.job where jobname = 'pijao_semanal';
-  perform cron.schedule('pijao_semanal', '0 11 * * 1', 'select public._tarea_semanal()');
+  perform cron.schedule('pijao_semanal', '0 12 * * 1', 'select public._tarea_semanal()');
 exception when others then
   raise notice 'pg_cron no está disponible: el sorteo y el informe se pueden pedir desde el panel (%).', sqlerrm;
 end $$;
