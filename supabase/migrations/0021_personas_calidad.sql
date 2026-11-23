@@ -33,40 +33,21 @@ $$;
 
 -- ======================================================================= vista enmascarada con dónde vota
 
--- Igual a la de 0013, con el puesto y la mesa al final (para que la app los tenga sin conexión).
-create or replace view public.personas_v as
-select
-  p.id, p.hogar_id, p.vivienda_id,
-  case when p.estado = 'solicito_eliminacion' then null
-       else trim(concat_ws(' ', p.primer_nombre, p.primer_apellido)) end as nombre_visible,
-  case when p.estado = 'solicito_eliminacion' then null else p.apodo end as apodo,
-  case when p.estado <> 'solicito_eliminacion' and p.fecha_nacimiento is not null
-       then date_part('year', age(current_date, p.fecha_nacimiento))::int end as edad_anios,
-  case when p.estado = 'solicito_eliminacion' then null else p.sexo end as sexo,
-  case when p.estado = 'solicito_eliminacion' then null else p.ocupacion end as ocupacion,
-  case when p.estado = 'solicito_eliminacion' then null else p.cedula_ult3 end as cedula_ult3,
-  case when p.estado = 'solicito_eliminacion' then null else p.telefono_ult4 end as telefono_ult4,
-  case when p.estado = 'solicito_eliminacion' then null else p.correo_parcial end as correo_parcial,
-  p.canal_preferido, p.mejor_horario, p.anios_en_pijao, p.vive_en_otra_ciudad,
-  p.vota_en_pijao, p.interes_info, p.voluntario, p.anfitrion, p.temas_interes, p.estado,
-  p.estado <> 'solicito_eliminacion' and exists (
-    select 1 from public.consentimientos c
-     where c.persona_id = p.id and c.estado = 'vigente' and c.proposito like 'contacto\_%') as tiene_contacto_autorizado,
-  p.creado_por, p.creado_en, p.actualizado_en, p.eliminado_en,
-  case when p.estado = 'solicito_eliminacion' then null else p.puesto_votacion end as puesto_votacion,
-  case when p.estado = 'solicito_eliminacion' then null else p.mesa_votacion end as mesa_votacion
-from public.personas p
-where (select public.mi_rol()) is not null
-  and ((select public.es_staff())
-       or p.creado_por = (select auth.uid())
-       or p.vivienda_id in (select v.id from public.viviendas v
-                             join public.asignaciones_zona a on a.zona_id = v.zona_id and a.activo
-                            where a.usuario_id = (select auth.uid()))
-       or (select public.tiene_permiso('O-01'))
-       or p.vivienda_id in (select v.id from public.viviendas v
-                             join public.permisos_opcionales po on v.zona_id = any (po.zonas)
-                            where po.usuario_id = (select auth.uid()) and po.codigo = 'O-01' and po.activo
-                              and (po.vence_en is null or po.vence_en > now()) and (select public._aal2())));
+-- Se agregan el puesto y la mesa al final de la vista (para que la app los tenga sin conexión), sin tocar lo demás:
+-- igual que 0018, sobre la definición vigente (que ya termina en los canales preferidos).
+do $$
+declare v text;
+begin
+  v := pg_get_viewdef('public.personas_v'::regclass);
+  if v ~ 'puesto_votacion' then return; end if;
+  if v !~ 'canales_preferidos\s+FROM personas p' then raise exception '0021: no se encontró el final de las columnas de personas_v'; end if;
+  v := regexp_replace(v, 'canales_preferidos\s+FROM personas p',
+    'canales_preferidos, '
+    || 'CASE WHEN p.estado = ''solicito_eliminacion''::text THEN NULL::text ELSE p.puesto_votacion END AS puesto_votacion, '
+    || 'CASE WHEN p.estado = ''solicito_eliminacion''::text THEN NULL::text ELSE p.mesa_votacion END AS mesa_votacion '
+    || 'FROM personas p');
+  execute 'create or replace view public.personas_v as ' || v;
+end $$;
 grant select on public.personas_v to authenticated;
 
 -- ======================================================================= lista de personas (pestaña «Personas»)
