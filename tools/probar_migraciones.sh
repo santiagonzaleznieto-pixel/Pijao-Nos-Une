@@ -16,7 +16,16 @@ limpiar() { docker rm -f "$NOMBRE" >/dev/null 2>&1 || true; }
 trap limpiar EXIT
 
 echo "› Iniciando $IMAGEN"
-docker run -d --name "$NOMBRE" -e POSTGRES_PASSWORD=postgres "$IMAGEN" >/dev/null
+# El registro de imágenes a veces falla por un momento: se reintenta antes de rendirse.
+for intento in 1 2 3 4; do
+  if docker pull -q "$IMAGEN" >/dev/null 2>&1; then break; fi
+  echo "::warning::No se pudo bajar la imagen de la base (intento $intento de 4)"
+  sleep $((intento * 15))
+done
+if ! docker run -d --name "$NOMBRE" -e POSTGRES_PASSWORD=postgres "$IMAGEN" >/dev/null 2>/tmp/docker_run.txt; then
+  echo "::error title=Docker::No arrancó la base de pruebas: $(tr '\n' ' ' < /tmp/docker_run.txt | tail -c 800)"
+  exit 125
+fi
 
 echo "› Esperando a que la base esté lista"
 for _ in $(seq 1 60); do
