@@ -13,6 +13,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Predios de Pijao (IGAC · CC BY-SA 4.0)
         run: |
-          bash tools/predios_igac.sh /tmp/predios.pmtiles /tmp/predios.json
+          bash tools/predios_igac.sh /tmp/predios.pmtiles /tmp/predios.json /tmp/letras.pbf
           cat /tmp/predios.json 2>/dev/null || true
           if [ -f /tmp/predios.json ]; then echo "::notice::$(cat /tmp/predios.json) · $(du -k /tmp/predios.pmtiles | cut -f1) KB"; fi

@@ -6,7 +6,8 @@ licencia Creative Commons Reconocimiento-CompartirIgual 4.0 (CC BY-SA 4.0). El m
 Solo se guardan la forma del predio, su código catastral, si es urbano o rural y el área. Nunca datos de propietarios.
 Corre en GitHub Actions (Ubuntu con gdal-bin y python3-gdal); no se ejecuta en el computador del equipo.
 
-Uso: python3 tools/predios_igac.py <carpeta.gdb> <salida.geojson>
+Uso: python3 tools/predios_igac.py <carpeta.gdb> <salida.geojson> [numeros.geojson]
+El tercer archivo (opcional) trae un punto dentro de cada predio con su número, para escribirlo en el mapa.
 """
 import json
 import sys
@@ -30,7 +31,19 @@ def campo_codigo(capa):
     return None, nombres
 
 
-def main(gdb, salida):
+def partes_codigo(codigo):
+    """Manzana o vereda y número de terreno del código catastral (30 dígitos, o el anterior de 20)."""
+    c = "".join(ch for ch in codigo if ch.isdigit())
+    if len(c) >= 21:
+        manzana, terreno = c[13:17], c[17:21]
+    elif len(c) >= 17:
+        manzana, terreno = c[9:13], c[13:17]
+    else:
+        return "", c[-4:].lstrip("0") or c[-4:]
+    return (manzana.lstrip("0") or "0"), (terreno.lstrip("0") or "0")
+
+
+def main(gdb, salida, salida_numeros=None):
     ds = ogr.Open(gdb)
     if ds is None:
         sys.exit(f"No se pudo abrir {gdb}")
@@ -44,6 +57,7 @@ def main(gdb, salida):
         print(f"  - {c.GetName()} ({c.GetFeatureCount()} elementos, geometría {ogr.GeometryTypeToName(c.GetGeomType())})")
 
     rasgos = []
+    numeros = []
     for i in range(ds.GetLayerCount()):
         capa = ds.GetLayerByIndex(i)
         nombre = capa.GetName()
@@ -76,12 +90,18 @@ def main(gdb, salida):
             geojson = g.ExportToJson(["COORDINATE_PRECISION=7"])
             if not geojson:
                 continue
-            props = {"codigo": str(f.GetField(campo) or ""), "zona": zona}
+            codigo = str(f.GetField(campo) or "")
+            manzana, numero = partes_codigo(codigo)
+            props = {"codigo": codigo, "zona": zona, "numero": numero, "manzana": manzana}
             if "INFORMAL" in nombre.upper():
                 props["informal"] = True
             if area:
                 props["area_m2"] = area
             rasgos.append({"type": "Feature", "properties": props, "geometry": json.loads(geojson)})
+            punto = g.PointOnSurface()
+            if punto is not None and not punto.IsEmpty():
+                numeros.append({"type": "Feature", "properties": {"numero": numero, "zona": zona},
+                                "geometry": json.loads(punto.ExportToJson(["COORDINATE_PRECISION=7"]))})
             n += 1
         print(f"  {n} predios de Pijao en {nombre}")
 
@@ -97,8 +117,11 @@ def main(gdb, salida):
         sys.exit("No se encontraron predios de Pijao: revise los nombres de capas y campos en el registro de arriba.")
     with open(salida, "w", encoding="utf-8") as s:
         json.dump({"type": "FeatureCollection", "features": rasgos}, s, ensure_ascii=False, separators=(",", ":"))
-    print(f"Listo: {len(rasgos)} predios en {salida}")
+    if salida_numeros:
+        with open(salida_numeros, "w", encoding="utf-8") as s:
+            json.dump({"type": "FeatureCollection", "features": numeros}, s, ensure_ascii=False, separators=(",", ":"))
+    print(f"Listo: {len(rasgos)} predios en {salida} y {len(numeros)} números")
 
 
 if __name__ == "__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1], sys.argv[2], sys.argv[3] if len(sys.argv) > 3 else None)
