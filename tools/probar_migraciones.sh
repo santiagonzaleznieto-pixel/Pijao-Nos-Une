@@ -16,12 +16,22 @@ limpiar() { docker rm -f "$NOMBRE" >/dev/null 2>&1 || true; }
 trap limpiar EXIT
 
 echo "› Iniciando $IMAGEN"
-# El registro de imágenes a veces falla por un momento: se reintenta antes de rendirse.
-for intento in 1 2 3 4; do
-  if docker pull -q "$IMAGEN" >/dev/null 2>&1; then break; fi
-  echo "::warning::No se pudo bajar la imagen de la base (intento $intento de 4)"
+# El registro de imágenes a veces falla por un momento o por límite de descargas: se reintenta y, si sigue sin
+# responder, se usa la misma imagen publicada en Docker Hub (gratis, sin cuenta).
+RESPALDO="docker.io/supabase/postgres:${IMAGEN##*:}"
+bajada=false
+for intento in 1 2 3; do
+  if docker pull -q "$IMAGEN" >/dev/null 2>&1; then bajada=true; break; fi
+  echo "::warning::No se pudo bajar la imagen de la base (intento $intento de 3)"
   sleep $((intento * 15))
 done
+if [ "$bajada" = false ] && [ -z "${PIJAO_IMAGEN_PG:-}" ]; then
+  for intento in 1 2; do
+    if docker pull -q "$RESPALDO" >/dev/null 2>&1; then IMAGEN="$RESPALDO"; echo "› Se usa la imagen de respaldo $IMAGEN"; break; fi
+    echo "::warning::Tampoco se pudo bajar la imagen de respaldo (intento $intento de 2)"
+    sleep 20
+  done
+fi
 if ! docker run -d --name "$NOMBRE" -e POSTGRES_PASSWORD=postgres "$IMAGEN" >/dev/null 2>/tmp/docker_run.txt; then
   echo "::error title=Docker::No arrancó la base de pruebas: $(tr '\n' ' ' < /tmp/docker_run.txt | tail -c 800)"
   exit 125
