@@ -77,8 +77,8 @@ export default function DondeVota() {
       app.avisarCambio();
       app.sincronizar();
       router.back();
-    } catch {
-      setError("No se pudo guardar. Inténtelo de nuevo.");
+    } catch (e) {
+      setError(e instanceof Error && e.message ? e.message : "No se pudo guardar. Inténtelo de nuevo.");
       setGuardando(false);
     }
   }

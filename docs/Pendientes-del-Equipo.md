@@ -114,6 +114,10 @@ Claude dejó hecho todo lo que podía hacer sin usted (lista al final). Esto es 
 - [ ] **Solo Android:** quienes tengan iPhone todavía no pueden usar la app.
 - [ ] **Abogado:** confirmar que, mientras no exista la página de la campaña, basta la página pública «Mis datos» como canal para los derechos de los titulares (Ley 1581). En el panel solo aparece un aviso cuando llega una solicitud.
 
+- [ ] **Autorizar la migración 0021** (Personas, dónde vota, repetidos, verificación por llamada e informe semanal). Ya está probada en GitHub; sin ella la pestaña Personas de la app 0.20.0 solo muestra lo guardado en el teléfono y «Dónde vota» no se puede guardar.
+- [ ] **Llenar los puestos de votación de Pijao** en el panel: Configuración → Catálogos → «C-21 · Puestos de votación de Pijao». Copiarlos de la Divipole de la Registraduría (nombre del puesto como aparece allí). Así el equipo los elige de una lista en vez de escribirlos.
+- [ ] **Instalar la 0.20.0** desde el mismo enlace fijo y probar: el número de cada predio en el mapa (acercando), la pestaña Personas, y «Dónde vota» con una persona de prueba.
+
 ### Lo que Claude ya dejó hecho o hace sin usted
 
 - Toda la construcción de la Fase 1: app, servidor, panel web y páginas públicas, con pruebas automáticas en cada cambio.

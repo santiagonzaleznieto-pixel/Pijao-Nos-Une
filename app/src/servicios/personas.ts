@@ -44,10 +44,11 @@ export async function resumenPersonas(app: Entorno): Promise<ResumenPersonas | n
   return error ? null : (data as ResumenPersonas);
 }
 
-export async function historiaPersona(app: Entorno, id: string): Promise<EventoHistoria[] | null> {
+/** null: sin señal (o en práctica); «error»: el servidor no la entregó. */
+export async function historiaPersona(app: Entorno, id: string): Promise<EventoHistoria[] | null | "error"> {
   if (app.practica || !app.conectado) return null;
   const { data, error } = await cliente.rpc("rpc_persona_historia", { p_id: id });
-  return error ? null : (data as EventoHistoria[]);
+  return error ? "error" : (data as EventoHistoria[]);
 }
 
 /** Guarda dónde vota: queda en el teléfono al instante y se envía al servidor (con o sin señal). */
@@ -56,7 +57,18 @@ export async function guardarDondeVota(app: Entorno, id: string, v: { vota: stri
   const puesto = v.vota === "no" ? null : v.puesto.trim() || null;
   const mesa = v.vota === "no" ? null : v.mesa.replace(/\D/g, "").replace(/^0+/, "") || null;
   const vota = v.vota ?? (puesto ? "si" : null);
-  await encolarAccion(app.almacen, app.usuarioId, "votacion", { persona_id: id, vota, puesto, mesa });
+  // Con señal se guarda de una vez (y así se ve enseguida si el servidor no lo acepta); sin señal va a la cola.
+  if (app.conectado && !app.practica) {
+    const { error } = await cliente.rpc("rpc_persona_votacion", { p_id: id, p_vota: vota, p_puesto: puesto, p_mesa: mesa });
+    if (error) {
+      const m = `${error.message ?? ""} ${(error as { code?: string }).code ?? ""}`;
+      if (/PGRST202|Could not find the function/i.test(m)) throw new Error("Guardar dónde vota se activa cuando se actualice el servidor (migración 0021).");
+      if (!/fetch|network|timeout/i.test(m)) throw new Error(error.message || "No se pudo guardar.");
+      await encolarAccion(app.almacen, app.usuarioId, "votacion", { persona_id: id, vota, puesto, mesa });
+    }
+  } else {
+    await encolarAccion(app.almacen, app.usuarioId, "votacion", { persona_id: id, vota, puesto, mesa });
+  }
   const local = await app.almacen.obtener("personas", id);
   if (local) await app.almacen.guardar("personas", { ...local, vota_en_pijao: vota, puesto_votacion: puesto, mesa_votacion: mesa } as never, true);
 }

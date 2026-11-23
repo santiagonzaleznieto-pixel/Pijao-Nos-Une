@@ -29,6 +29,7 @@ export default function Persona() {
   const [p, setP] = useState<PersonaLista | null | undefined>(undefined);
   const [zona, setZona] = useState<string | null>(null);
   const [historia, setHistoria] = useState<EventoHistoria[] | null>(null);
+  const [errorHistoria, setErrorHistoria] = useState(false);
   const [verToda, setVerToda] = useState(false);
   const [simpatia, setSimpatia] = useState<string | null>(null);
   const [mensaje, setMensaje] = useState<{ tipo: "ok" | "error" | "alerta"; texto: string } | null>(null);
@@ -46,7 +47,9 @@ export default function Persona() {
         if (vivo) setZona((v?.zona_id as string) ?? null);
       }
       const h = await historiaPersona(entorno, id);
-      if (vivo) setHistoria(h);
+      if (!vivo) return;
+      setErrorHistoria(h === "error");
+      setHistoria(h === "error" ? null : h);
     })();
     return () => { vivo = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,7 +154,7 @@ export default function Persona() {
 
       <Seccion titulo="Historia">
         {historia === null ? (
-          <Text style={e.suave}>{app.conectado && !app.practica ? "Cargando la historia…" : "La historia se ve con señal."}</Text>
+          <Text style={e.suave}>{errorHistoria ? "No se pudo cargar la historia. Inténtelo más tarde." : app.conectado && !app.practica ? "Cargando la historia…" : "La historia se ve con señal."}</Text>
         ) : !historia.length ? <Text style={e.suave}>Todavía no hay nada en su historia.</Text> : (
           eventos.map((h, i) => (
             <ItemLista key={`${h.fecha}-${i}`} titulo={h.titulo} ultimo={i === eventos.length - 1}
