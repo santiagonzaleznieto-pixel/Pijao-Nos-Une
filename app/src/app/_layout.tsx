@@ -105,6 +105,7 @@ function Guardian() {
         <Stack.Screen name="incidente" options={{ title: "Incidente" }} />
         <Stack.Screen name="ayuda" options={{ title: "Ayuda" }} />
         <Stack.Screen name="eventos" options={{ title: "Eventos" }} />
+        <Stack.Screen name="calendario" options={{ title: "Calendario electoral" }} />
         <Stack.Screen name="invitar" options={{ title: "Invitar y aprobar" }} />
       </Stack>
       {mostrarEntrada ? <Entrada alTerminar={() => { entradaVista = true; setMostrarEntrada(false); }} /> : null}

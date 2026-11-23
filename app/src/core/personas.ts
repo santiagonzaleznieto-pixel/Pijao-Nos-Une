@@ -38,6 +38,7 @@ export interface PersonaLista {
   vota_en_pijao?: string | null;
   puesto_votacion?: string | null;
   mesa_votacion?: string | null;
+  anios_en_pijao?: string | null;
   voluntario?: string | null;
   interes_info?: boolean | null;
   anfitrion?: boolean | null;
@@ -127,6 +128,11 @@ export function numeroPredio(codigo: string | null | undefined): string | null {
   return null;
 }
 
+/** 14.8: si dice que vota en Pijao pero lleva menos de un año viviendo aquí, se recuerda la regla (nunca se promueve inscribir). */
+export function recordarResidencia(vota: string | null | undefined, anios: string | null | undefined): boolean {
+  return vota === "si" && anios === "menos_1";
+}
+
 /** Mesa válida: número de 1 a 999 (o vacío). Devuelve el error o null. */
 export function errorMesa(mesa: string): string | null {
   const m = mesa.replace(/\D/g, "");
@@ -140,7 +146,7 @@ type PV = {
   id: string; nombre_visible?: string | null; apodo?: string | null; vivienda_id?: string | null; estado?: string | null;
   eliminado_en?: string | null; creado_por?: string | null; creado_en?: string | null; edad_anios?: number | null;
   cedula_ult3?: string | null; telefono_ult4?: string | null; vota_en_pijao?: string | null; tiene_contacto_autorizado?: boolean | null;
-  puesto_votacion?: string | null; mesa_votacion?: string | null;
+  puesto_votacion?: string | null; mesa_votacion?: string | null; anios_en_pijao?: string | null;
 };
 
 const norm = (t: unknown) => String(t ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -164,6 +170,7 @@ export function listaLocal(personas: PersonaV[], viviendas: Record<string, unkno
         barrio_vereda: (v?.barrio_vereda as string) ?? null, direccion: (v?.direccion as string) ?? null,
         predio: (v?.referencia as string) ?? null, zona_urbana_rural: (v?.zona_urbana_rural as string) ?? null,
         vota_en_pijao: p.vota_en_pijao ?? null, puesto_votacion: x.puesto_votacion ?? null, mesa_votacion: x.mesa_votacion ?? null,
+        anios_en_pijao: x.anios_en_pijao ?? null,
         estado: p.estado ?? null, edad: p.edad_anios ?? null, cedula_ult3: p.cedula_ult3 ?? null, telefono_ult4: p.telefono_ult4 ?? null,
         contacto_autorizado: p.tiene_contacto_autorizado ?? null, creado_en: p.creado_en ?? null,
       };

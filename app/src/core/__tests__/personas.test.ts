@@ -16,6 +16,13 @@ describe("dónde vota", () => {
     expect(sabeDondeVota({ vota_en_pijao: "si", puesto_votacion: " " })).toBe(false);
   });
 
+  it("recuerda la regla de residencia solo a quien vota en Pijao y lleva menos de un año (14.8)", () => {
+    const { recordarResidencia } = require("../personas") as typeof import("../personas");
+    expect(recordarResidencia("si", "menos_1")).toBe(true);
+    expect(recordarResidencia("si", "5_mas")).toBe(false);
+    expect(recordarResidencia("no", "menos_1")).toBe(false);
+  });
+
   it("valida la mesa (1 a 999)", () => {
     expect(errorMesa("")).toBeNull();
     expect(errorMesa("7")).toBeNull();

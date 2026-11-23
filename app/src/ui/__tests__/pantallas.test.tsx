@@ -84,6 +84,7 @@ const RUTAS: Record<string, unknown> = {
   incidente: require("../../app/incidente").default,
   ayuda: require("../../app/ayuda").default,
   eventos: require("../../app/eventos").default,
+  calendario: require("../../app/calendario").default,
 };
 /* eslint-enable @typescript-eslint/no-require-imports */
 
@@ -102,7 +103,7 @@ const casos: [string, string][] = [
   ["/visita?vivienda=practica-v-1", "Nueva visita"], ["/vivienda/practica-v-1", "Vivienda"], ["/persona/practica-p-1-0", "Persona"], ["/persona/votacion?id=practica-p-1-0", "Dónde vota"],
   ["/buscar", "Buscar"], ["/pendientes", "Pendientes"], ["/perfil", "Perfil"],
   ["/invitar", "Invitar"], ["/anuncios", "Anuncios"], ["/guion", "Guion"],
-  ["/cumpleanos", "Cumpleañeros"], ["/jornada", "Jornada"], ["/incidente", "Incidente"], ["/ayuda", "Ayuda"], ["/eventos", "Eventos"],
+  ["/cumpleanos", "Cumpleañeros"], ["/jornada", "Jornada"], ["/incidente", "Incidente"], ["/ayuda", "Ayuda"], ["/eventos", "Eventos"], ["/calendario", "Calendario"],
 ];
 
 describe("todas las pantallas se abren con datos de ejemplo", () => {

@@ -10,6 +10,8 @@ import { param } from "@/core/reglas";
 import { borrarBorrador, listarBorradores } from "@/servicios/campo";
 import type { Borrador } from "@/core/visita";
 import { cumpleanerosDeHoy } from "@/core/cumpleanos";
+import { proximoHito, textoDias, type HitoVista } from "@/core/calendario";
+import { leerCalendario } from "@/servicios/calendario";
 import { TarjetasSos } from "@/ui/AlertasSos";
 import { useApp } from "@/servicios/contexto";
 import { Aviso, Boton, Etiqueta, Fila, Tarjeta } from "@/ui/componentes";
@@ -90,6 +92,7 @@ export default function Inicio() {
   const [errorAviso, setErrorAviso] = useState<string | null>(null);
   const [sinTerminar, setSinTerminar] = useState<Borrador | null>(null);
   const [cumplen, setCumplen] = useState(0);
+  const [hito, setHito] = useState<HitoVista | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -101,6 +104,7 @@ export default function Inicio() {
       // La visita que quedó a medias (la app se cerró o salió por error): la más reciente.
       setSinTerminar([...lista].sort((x, y) => String(y.creado_en).localeCompare(String(x.creado_en)))[0] ?? null);
       setCumplen(cumpleanerosDeHoy(personas).length);
+      setHito(proximoHito(await leerCalendario(a)));
       setP(panelPersonal({ usuarioId: app.usuarioId ?? "", visitas, tareas, borradores, porEnviar: app.cola.pendientes }));
       setC(panelCampana({ viviendas, visitas, hogares, personas, necesidades, minimo: param(app.params, "grupo_minimo") }));
     })();
@@ -163,6 +167,11 @@ export default function Inicio() {
         {cumplen ? (
           <Pressable accessibilityRole="button" onPress={() => router.push("/cumpleanos")}>
             <Aviso tipo="info" icono="estrella" texto={`Hoy ${cumplen === 1 ? "cumple años 1 persona" : `cumplen años ${cumplen} personas`}. Toque para verlas.`} />
+          </Pressable>
+        ) : null}
+        {hito && hito.dias !== null && hito.dias <= 45 ? (
+          <Pressable accessibilityRole="button" onPress={() => router.push("/calendario")}>
+            <Aviso tipo="info" icono="calendario" texto={`${textoDias(hito.dias)}: ${hito.hito}. Toque para ver el calendario electoral.`} />
           </Pressable>
         ) : null}
         {errorAviso ? <Aviso tipo="error" texto={errorAviso} /> : null}

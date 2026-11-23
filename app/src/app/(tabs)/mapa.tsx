@@ -31,7 +31,8 @@ async function prepararLetras(): Promise<string> {
   const carpeta = new Directory(Paths.document, "letras", LETRA_MAPA);
   carpeta.create({ intermediates: true, idempotent: true });
   const destino = new File(carpeta, "0-255.pbf");
-  if (!destino.exists) new File(a.localUri ?? a.uri).copy(destino);
+  // await: así cualquier falla (también la del simulador de pruebas, que copia en segundo plano) queda dentro de la promesa.
+  if (!destino.exists) await Promise.resolve(new File(a.localUri ?? a.uri).copy(destino) as unknown);
   return `${new Directory(Paths.document, "letras").uri.replace(/\/?$/, "/")}{fontstack}/{range}.pbf`;
 }
 import { ESCALA_IMAGEN, ICONO_ESTADO, IMAGENES_MAPA, LEYENDA, NUMERO_GRUPO, PROPIEDADES_GRUPO, colorDominante } from "@/ui/marcadoresMapa";

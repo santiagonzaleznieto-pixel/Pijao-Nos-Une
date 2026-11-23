@@ -76,7 +76,7 @@ language sql security definer set search_path = public, pg_temp as $$
       'barrio_vereda', vi.barrio_vereda, 'zona_urbana_rural', vi.zona_urbana_rural, 'zona', z.nombre,
       'predio', vi.referencia, 'lat', vi.lat, 'lng', vi.lng,
       'vota_en_pijao', pe.vota_en_pijao, 'puesto_votacion', pe.puesto_votacion, 'mesa_votacion', pe.mesa_votacion,
-      'voluntario', pe.voluntario, 'interes_info', pe.interes_info, 'anfitrion', pe.anfitrion, 'temas_interes', pe.temas_interes,
+      'anios_en_pijao', pe.anios_en_pijao, 'voluntario', pe.voluntario, 'interes_info', pe.interes_info, 'anfitrion', pe.anfitrion, 'temas_interes', pe.temas_interes,
       'estado', pe.estado,
       'contacto_autorizado', exists (select 1 from public.consentimientos c
                                       where c.persona_id = pe.id and c.estado = 'vigente' and c.proposito like 'contacto\_%'),

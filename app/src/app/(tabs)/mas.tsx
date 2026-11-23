@@ -26,6 +26,7 @@ export default function Mas() {
         <Etiqueta>Equipo</Etiqueta>
         <FilaEnlace texto="Anuncios" icono="megafono" onPress={() => router.push("/anuncios")} />
         <FilaEnlace texto="Eventos" detalle="Próximos encuentros de la campaña" icono="calendario" onPress={() => router.push("/eventos")} />
+        <FilaEnlace texto="Calendario electoral" detalle="Fechas legales: cédulas, inscripción, propaganda y elecciones" icono="bandera" onPress={() => router.push("/calendario")} />
         {app.perfil?.puede("invitar") && !app.practica ? <FilaEnlace texto="Invitar y aprobar" detalle="Sumar colaboradores al equipo" icono="persona" onPress={() => router.push("/invitar")} /> : null}
       </View>
       <View style={{ gap: 10 }}>

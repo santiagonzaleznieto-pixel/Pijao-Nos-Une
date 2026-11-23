@@ -5,7 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import { OPCIONES_VOTA, URL_REGISTRADURIA, errorMesa, type PersonaLista } from "@/core/personas";
+import { OPCIONES_VOTA, URL_REGISTRADURIA, errorMesa, recordarResidencia, type PersonaLista } from "@/core/personas";
 import { useApp } from "@/servicios/contexto";
 import { guardarDondeVota, obtenerPersona, resumenPersonas } from "@/servicios/personas";
 import { Aviso, Boton, Campo, Cargando, Opciones, Pantalla, Seccion, SinPermiso, Vacio } from "@/ui/componentes";
@@ -106,6 +106,9 @@ export default function DondeVota() {
       <Seccion titulo="2. Guarde lo que encontró">
         <View style={{ gap: 14, paddingVertical: 6 }}>
           <Opciones etiqueta="¿Vota en Pijao?" opciones={OPCIONES_VOTA} valor={vota} onCambio={(v) => setVota(String(v))} />
+          {recordarResidencia(vota, p.anios_en_pijao) ? (
+            <Aviso tipo="alerta" texto="Lleva menos de un año en Pijao: la inscripción de cédula solo corresponde donde la persona vive realmente (14.8). La app nunca promueve inscripciones." />
+          ) : null}
           {vota !== "no" ? (
             <>
               {sugeridos.length ? (
