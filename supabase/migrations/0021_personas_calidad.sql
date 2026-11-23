@@ -114,7 +114,8 @@ $$;
 revoke all on function public._persona_fila(uuid, boolean) from public, anon, authenticated;
 
 -- Filtros (todos opcionales) en p: texto (nombre, apodo o cédula exacta), vereda, zona, puesto, mesa, sin_puesto,
--- vota ('si','no','no_sabe','sin_dato'), predio, estado, mias, registro_por (solo staff), limite (1-200) y desde.
+-- vota ('si','no','no_sabe','sin_dato'), predio, estado, mias, registro_por (solo staff), id (una sola persona),
+-- limite (1-200) y desde.
 -- Los filtros de datos completos (cédula, puesto, mesa, predio) solo encuentran personas que quien consulta ve completas:
 -- así nadie averigua a quién pertenece una cédula que no le corresponde ver.
 create or replace function public.rpc_personas_lista(p jsonb default '{}'::jsonb) returns jsonb
@@ -167,6 +168,7 @@ begin
        and (nullif(p ->> 'estado', '') is null or b.estado = p ->> 'estado')
        and (not coalesce((p ->> 'mias')::boolean, false) or b.creado_por = v_uid)
        and (nullif(p ->> 'registro_por', '') is null or (v_staff and b.creado_por = (p ->> 'registro_por')::uuid))
+       and (nullif(p ->> 'id', '') is null or b.id = (p ->> 'id')::uuid)
   )
   , pagina as (
     select f.id, f.completo, f.rn from filtrada f where f.rn > v_desde and f.rn <= v_desde + v_limite

@@ -33,13 +33,24 @@ echo "› Preparando lo que en Supabase crean los servicios de autenticación y 
 docker exec -i -e PGPASSWORD=postgres "$NOMBRE" psql -v ON_ERROR_STOP=1 -q -U supabase_admin -h localhost -d postgres \
   < "$RAIZ/supabase/tests/entorno/preparar.sql"
 
+# Si algo falla, el error queda también como anotación de GitHub (se ve sin iniciar sesión en la página del flujo).
+SALIDA="$(mktemp)"
+correr() {   # $1 = archivo SQL, $2 = qué es
+  if ! psql_en < "$1" > "$SALIDA" 2>&1; then
+    cat "$SALIDA"
+    echo "::error title=$2 $(basename "$1")::$(grep -v '^NOTICE:  ok' "$SALIDA" | tail -c 1800 | tr '\n' ' ')"
+    exit 3
+  fi
+  cat "$SALIDA"
+}
+
 for f in "$RAIZ"/supabase/migrations/*.sql; do
   echo "› Migración $(basename "$f")"
-  psql_en < "$f"
+  correr "$f" "Migración"
 done
 
 for t in "$RAIZ"/supabase/tests/*.sql; do
   echo "› Pruebas $(basename "$t")"
-  psql_en < "$t"
+  correr "$t" "Pruebas"
 done
 echo "✔ Migraciones y pruebas SQL correctas"
