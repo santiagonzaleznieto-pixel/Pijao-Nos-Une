@@ -3,6 +3,7 @@
 // (5.13); los grupos con el número y el color del estado dominante; su ubicación con el círculo de precisión. Nunca
 // nombres en el mapa. Mantener presionado ofrece la ubicación manual (5.5).
 import { Asset } from "expo-asset";
+import { Directory, File, Paths } from "expo-file-system";
 import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -15,11 +16,24 @@ import { pedirPermiso } from "@/servicios/gps";
 import { FotoCasa } from "@/ui/FotoCasa";
 import { Icono, iconoEje } from "@/ui/Icono";
 import { Aviso, Boton, BotonIcono, Chip, Enlace, ErrorReintentar, Insignia, Semaforo, TituloMedio } from "@/ui/componentes";
-import { CAPA_PREDIOS, CENTRO_PIJAO, estiloPijao } from "@/ui/estiloMapa";
+import { CAPA_PREDIOS, CENTRO_PIJAO, LETRA_MAPA, estiloPijao } from "@/ui/estiloMapa";
 
 // Predios del IGAC (CC BY-SA 4.0): GitHub los arma en cada versión; si el IGAC no respondió, `disponible` es false.
-const INFO_PREDIOS = require("../../../assets/predios.json") as { disponible: boolean; fecha?: string };
-interface Predio { codigo: string; zona: string; area_m2: number | null }
+const INFO_PREDIOS = require("../../../assets/predios.json") as { disponible: boolean; numeros?: boolean; fecha?: string };
+interface Predio { codigo: string; zona: string; area_m2: number | null; numero: string; manzana: string }
+
+/**
+ * MapLibre lee las letras de una carpeta con la forma `{fontstack}/{range}.pbf`: se copian una vez del paquete de la app
+ * a los documentos del teléfono. Solo trae cifras y letras latinas (0-255), que es lo que tiene un número de predio.
+ */
+async function prepararLetras(): Promise<string> {
+  const [a] = await Asset.loadAsync(require("../../../assets/letras.pbf"));
+  const carpeta = new Directory(Paths.document, "letras", LETRA_MAPA);
+  carpeta.create({ intermediates: true, idempotent: true });
+  const destino = new File(carpeta, "0-255.pbf");
+  if (!destino.exists) new File(a.localUri ?? a.uri).copy(destino);
+  return `${new Directory(Paths.document, "letras").uri.replace(/\/?$/, "/")}{fontstack}/{range}.pbf`;
+}
 import { ESCALA_IMAGEN, ICONO_ESTADO, IMAGENES_MAPA, LEYENDA, NUMERO_GRUPO, PROPIEDADES_GRUPO, colorDominante } from "@/ui/marcadoresMapa";
 import { curvaSuave, useMovimientoReducido } from "@/ui/movimiento";
 import { color, espacio, fuente, modoSol, radio, sombra, tl } from "@/ui/tema";
@@ -43,6 +57,7 @@ export default function Mapa() {
   const [sel, setSel] = useState<V | null>(null);
   const [predio, setPredio] = useState<Predio | null>(null);
   const [rutaPredios, setRutaPredios] = useState<string | null>(null);
+  const [rutaLetras, setRutaLetras] = useState<string | null>(null);
   const mapa = useRef<MapRef>(null);
   const [casa, setCasa] = useState<DatosCasa | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +71,8 @@ export default function Mapa() {
       .catch(() => setError("No se pudo abrir el mapa de Pijao guardado en el teléfono."));
     if (INFO_PREDIOS.disponible) {
       Asset.loadAsync(require("../../../assets/predios.pmtiles")).then(([a]) => setRutaPredios(a.localUri ?? a.uri)).catch(() => setRutaPredios(null));
+      // Si las letras no cargan, los predios se ven igual, solo que sin su número escrito.
+      if (INFO_PREDIOS.numeros) prepararLetras().then(setRutaLetras).catch(() => setRutaLetras(null));
     }
   }, [intento]);
 
@@ -121,7 +138,7 @@ export default function Mapa() {
   return (
     <View style={{ flex: 1, backgroundColor: color.fondo }}>
       {ruta ? (
-        <Map ref={mapa} style={{ flex: 1 }} mapStyle={estiloPijao(ruta, undefined, rutaPredios)} logo={false} compass={false} scaleBar={false} attribution={false}
+        <Map ref={mapa} style={{ flex: 1 }} mapStyle={estiloPijao(ruta, undefined, rutaPredios, rutaLetras)} logo={false} compass={false} scaleBar={false} attribution={false}
           accessibilityLabel={`Mapa de Pijao con ${visibles.length} viviendas`}
           onPress={(e) => {
             // El toque en una casa también llega aquí (MapLibre lo emite en el mapa y en la fuente): solo se cierra la
@@ -133,7 +150,10 @@ export default function Mapa() {
             if (!rutaPredios || !ev.point) { setPredio(null); return; }
             mapa.current?.queryRenderedFeatures(ev.point, { layers: [CAPA_PREDIOS] }).then((fs) => {
               const pr = fs[0]?.properties as Record<string, unknown> | undefined;
-              setPredio(pr?.codigo ? { codigo: String(pr.codigo), zona: String(pr.zona ?? ""), area_m2: typeof pr.area_m2 === "number" ? pr.area_m2 : null } : null);
+              setPredio(pr?.codigo ? {
+                codigo: String(pr.codigo), zona: String(pr.zona ?? ""), area_m2: typeof pr.area_m2 === "number" ? pr.area_m2 : null,
+                numero: String(pr.numero ?? ""), manzana: String(pr.manzana ?? ""),
+              } : null);
             }).catch(() => setPredio(null));
           }}
           onLongPress={(e) => {
@@ -224,10 +244,13 @@ export default function Mapa() {
 function FichaPredio({ predio, onCerrar, onRegistrar }: { predio: Predio; onCerrar: () => void; onRegistrar: () => void }) {
   const area = predio.area_m2 == null ? null : predio.area_m2 >= 10000 ? `${(predio.area_m2 / 10000).toFixed(1).replace(".", ",")} hectáreas` : `${predio.area_m2.toLocaleString("es-CO")} m²`;
   return (
-    <View style={[e.hoja, { paddingBottom: 110 }]} accessibilityLabel={`Predio ${predio.zona}, código ${predio.codigo}`}>
+    <View style={[e.hoja, { paddingBottom: 110 }]} accessibilityLabel={`Predio número ${predio.numero}, ${predio.zona}, código ${predio.codigo}`}>
       <View style={e.asa} />
       <View style={{ gap: 10 }}>
-        <Text style={{ fontFamily: fuente.titulo, fontSize: tl(18), color: color.texto }}>{predio.zona === "urbano" ? "Lote urbano" : "Predio rural"}</Text>
+        <Text style={{ fontFamily: fuente.titulo, fontSize: tl(20), color: color.texto }}>{predio.numero ? `Predio n.º ${predio.numero}` : "Predio"}</Text>
+        <Text style={{ fontFamily: fuente.textoMedio, fontSize: tl(15), color: color.texto }}>
+          {predio.zona === "urbano" ? `Lote urbano${predio.manzana ? ` · manzana ${predio.manzana}` : ""}` : "Predio rural"}
+        </Text>
         <Text selectable style={{ fontFamily: fuente.textoMedio, fontSize: tl(14), color: color.textoSuave }}>Código catastral: {predio.codigo}</Text>
         {area ? <Text style={{ fontFamily: fuente.texto, fontSize: tl(14), color: color.textoSuave }}>Área: {area}</Text> : null}
         <Boton texto="Registrar visita en este predio" icono="mas" onPress={onRegistrar} />

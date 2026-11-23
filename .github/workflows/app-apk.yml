@@ -47,7 +47,7 @@ jobs:
           echo "MAPA_MB=$(du -m assets/pijao.pmtiles | cut -f1)" >> "$GITHUB_ENV"
 
       - name: Predios de Pijao (IGAC · CC BY-SA 4.0)
-        run: bash ../tools/predios_igac.sh assets/predios.pmtiles assets/predios.json
+        run: bash ../tools/predios_igac.sh assets/predios.pmtiles assets/predios.json assets/letras.pbf
 
       - name: Instalar dependencias
         run: npm ci

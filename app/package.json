@@ -82,7 +82,7 @@
     ],
     "moduleNameMapper": {
       "^@/assets/(.*)$": "<rootDir>/assets/$1",
-      "\\.pmtiles$": "<rootDir>/jest/archivo.js"
+      "\\.(pmtiles|pbf)$": "<rootDir>/jest/archivo.js"
     }
   },
   "op-sqlite": {

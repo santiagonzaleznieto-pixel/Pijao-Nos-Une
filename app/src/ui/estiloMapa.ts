@@ -1,7 +1,8 @@
 // Estilo del mapa sin conexión (2.5) con la paleta de la marca: datos de OpenStreetMap (ODbL) recortados a Pijao en un
 // archivo PMTiles con el esquema de Protomaps. Tres versiones, como la app: clara, oscura y modo sol (alto contraste).
-// Sin textos en el mapa: no se descargan fuentes y así nunca aparecen nombres de personas (5.2); los lugares se buscan
-// con «Buscar». El relieve de ladera se insinúa con la vegetación y el uso del suelo.
+// Sin nombres en el mapa: nunca aparecen nombres de personas (5.2); los lugares se buscan con «Buscar». El único texto
+// es el número de cada predio del IGAC, con unas letras que viajan dentro de la app (solo cifras). El relieve de ladera
+// se insinúa con la vegetación y el uso del suelo.
 import type { StyleSpecification } from "@maplibre/maplibre-react-native";
 import { apariencia, type Modo } from "./tema";
 
@@ -9,31 +10,40 @@ const PALETAS: Record<Modo, Record<string, string>> = {
   claro: {
     fondo: "#EEF2EC", tierra: "#E8EFE4", vegetacion: "#D5E6C9", uso: "#DDE8D6", agua: "#B9DCEF", edificio: "#DCE2D8", edificioBorde: "#C6CEC3",
     via: "#FFFFFF", viaBorde: "#CBD5E0", viaPrincipal: "#FFFFFF", viaPrincipalBorde: "#AFC0D3", limite: "#8796AB",
-    predio: "#7A8B6F", predioRelleno: "#FFFFFF",
+    predio: "#7A8B6F", predioRelleno: "#FFFFFF", predioNumero: "#3F4D38",
   },
   oscuro: {
     fondo: "#121E19", tierra: "#16241C", vegetacion: "#1B2C22", uso: "#1A2A21", agua: "#1D3D55", edificio: "#22322A", edificioBorde: "#2C3E33",
     via: "#2D3C4F", viaBorde: "#1A2636", viaPrincipal: "#3C4F68", viaPrincipalBorde: "#1A2636", limite: "#7B8CA6",
-    predio: "#6F8579", predioRelleno: "#000000",
+    predio: "#6F8579", predioRelleno: "#000000", predioNumero: "#C9D6CD",
   },
   sol: {
     fondo: "#FFFFFF", tierra: "#FFFFFF", vegetacion: "#EDEDED", uso: "#F2F2F2", agua: "#6AA9CF", edificio: "#E0E0E0", edificioBorde: "#6B6B6B",
     via: "#FFFFFF", viaBorde: "#4D4D4D", viaPrincipal: "#FFFFFF", viaPrincipalBorde: "#000000", limite: "#000000",
-    predio: "#000000", predioRelleno: "#FFFFFF",
+    predio: "#000000", predioRelleno: "#FFFFFF", predioNumero: "#000000",
   },
 };
 
 /** Capas que se tocan para ver un predio (IGAC). */
 export const CAPA_PREDIOS = "predios-relleno";
 
-/** Con `rutaPredios`, encima de la base van los predios del IGAC (lotes y fincas, CC BY-SA 4.0) desde el zoom 14. */
-export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo, rutaPredios?: string | null): StyleSpecification {
+/** Nombre de las letras guardadas en el teléfono (carpeta `letras/Letra/0-255.pbf`). */
+export const LETRA_MAPA = "Letra";
+
+/**
+ * Con `rutaPredios`, encima de la base van los predios del IGAC (lotes y fincas, CC BY-SA 4.0) desde el zoom 14. Con
+ * `rutaLetras` (plantilla `.../{fontstack}/{range}.pbf`) además se escribe el número de cada predio: los rurales desde el
+ * zoom 14 y los urbanos desde el 16, cuando ya caben.
+ */
+export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo, rutaPredios?: string | null, rutaLetras?: string | null): StyleSpecification {
   const c = PALETAS[modo];
   const ancho = (a: number, b: number) => ["interpolate", ["linear"], ["zoom"], 12, a, 18, b];
   const menores = ["in", ["get", "kind"], ["literal", ["minor_road", "path", "other"]]];
   const mayores = ["in", ["get", "kind"], ["literal", ["major_road", "highway", "medium_road"]]];
+  const conNumeros = Boolean(rutaPredios && rutaLetras);
   return {
     version: 8,
+    ...(conNumeros ? { glyphs: rutaLetras as string } : {}),
     sources: {
       pijao: { type: "vector", url: `pmtiles://${rutaPmtiles}`, attribution: "© OpenStreetMap" },
       ...(rutaPredios ? { predios: { type: "vector", url: `pmtiles://${rutaPredios}`, attribution: "IGAC (CC BY-SA 4.0)" } } : {}),
@@ -63,6 +73,15 @@ export function estiloPijao(rutaPmtiles: string, modo: Modo = apariencia.modo, r
         { id: CAPA_PREDIOS, type: "fill", source: "predios", "source-layer": "predios", minzoom: 14, paint: { "fill-color": c.predioRelleno, "fill-opacity": 0.01 } },
         { id: "predios-borde", type: "line", source: "predios", "source-layer": "predios", minzoom: 14,
           paint: { "line-color": c.predio, "line-opacity": ["interpolate", ["linear"], ["zoom"], 14, 0.35, 17, 0.8], "line-width": ["interpolate", ["linear"], ["zoom"], 14, 0.4, 18, 1.4] } },
+      ] : []),
+      ...(conNumeros ? [
+        { id: "predios-numero", type: "symbol", source: "predios", "source-layer": "numeros", minzoom: 14,
+          layout: {
+            "text-field": ["step", ["zoom"], ["case", ["==", ["get", "zona"], "rural"], ["get", "numero"], ""], 16, ["get", "numero"]],
+            "text-font": [LETRA_MAPA], "text-size": ["interpolate", ["linear"], ["zoom"], 14, 10, 18, 14],
+            "text-padding": 1, "text-allow-overlap": false,
+          },
+          paint: { "text-color": c.predioNumero, "text-halo-color": c.fondo, "text-halo-width": 1.4 } },
       ] : []),
     ],
   } as StyleSpecification;

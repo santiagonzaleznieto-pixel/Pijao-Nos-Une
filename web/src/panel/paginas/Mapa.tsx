@@ -24,7 +24,7 @@ const COLOR: Record<string, string> = {
 const CENTRO: [number, number] = [-75.7045, 4.3335];
 const ETIQUETA = Object.fromEntries(CATALOGOS["C-01"].opciones) as Record<string, string>;
 
-function estilo(conMapaBase: boolean, conPredios = false): StyleSpecification {
+function estilo(conMapaBase: boolean, conPredios = false, conNumeros = false): StyleSpecification {
   const base: StyleSpecification = { version: 8, sources: {}, layers: [{ id: "fondo", type: "background", paint: { "background-color": "#F5F3EF" } }] };
   if (!conMapaBase) return base;
   const url = new URL("./mapa/pijao.pmtiles", location.href).href;
@@ -47,6 +47,18 @@ function estilo(conMapaBase: boolean, conPredios = false): StyleSpecification {
       { id: "predios-borde", type: "line", source: "predios", "source-layer": "predios", minzoom: 14,
         paint: { "line-color": "#6E7F64", "line-opacity": 0.7, "line-width": ["interpolate", ["linear"], ["zoom"], 14, 0.4, 18, 1.4] } },
     );
+    if (conNumeros) {
+      // Número de cada predio (rurales desde el zoom 14, urbanos desde el 16), con letras servidas por el propio sitio.
+      base.glyphs = `${location.origin}${location.pathname.replace(/[^/]*$/, "")}mapa/letras/{fontstack}/{range}.pbf`;
+      base.layers.push({
+        id: "predios-numero", type: "symbol", source: "predios", "source-layer": "numeros", minzoom: 14,
+        layout: {
+          "text-field": ["step", ["zoom"], ["case", ["==", ["get", "zona"], "rural"], ["get", "numero"], ""], 16, ["get", "numero"]],
+          "text-font": ["Letra"], "text-size": ["interpolate", ["linear"], ["zoom"], 14, 10, 18, 14], "text-padding": 1,
+        },
+        paint: { "text-color": "#3F4D38", "text-halo-color": "#F5F3EF", "text-halo-width": 1.4 },
+      } as StyleSpecification["layers"][number]);
+    }
   }
   return base;
 }
@@ -56,18 +68,20 @@ export default function Mapa() {
   const datos = useCarga(async () => {
     // El archivo del mapa base lo genera GitHub Actions al publicar; en desarrollo puede no estar.
     const hayBase = await fetch("./mapa/pijao.pmtiles", { method: "HEAD" }).then((r) => r.ok && Number(r.headers.get("content-length") ?? 1) > 1000, () => false);
-    const hayPredios = hayBase && await fetch("./mapa/predios.json").then((r) => (r.ok ? r.json() : null), () => null).then((j) => j?.disponible === true, () => false);
-    return { puntos: await fuente.puntosMapa(), hayBase, hayPredios };
+    const info = hayBase ? await fetch("./mapa/predios.json").then((r) => (r.ok ? r.json() : null), () => null) : null;
+    const hayPredios = info?.disponible === true;
+    const hayNumeros = hayPredios && info?.numeros === true;
+    return { puntos: await fuente.puntosMapa(), hayBase, hayPredios, hayNumeros };
   }, [fuente]);
   return (
     <>
       <Encabezado titulo="Mapa del avance" />
-      <Estado carga={datos}>{(d) => <VistaMapa puntos={d.puntos} hayBase={d.hayBase} hayPredios={d.hayPredios} />}</Estado>
+      <Estado carga={datos}>{(d) => <VistaMapa puntos={d.puntos} hayBase={d.hayBase} hayPredios={d.hayPredios} hayNumeros={d.hayNumeros} />}</Estado>
     </>
   );
 }
 
-function VistaMapa({ puntos, hayBase, hayPredios }: { puntos: PuntoMapa[]; hayBase: boolean; hayPredios: boolean }) {
+function VistaMapa({ puntos, hayBase, hayPredios, hayNumeros }: { puntos: PuntoMapa[]; hayBase: boolean; hayPredios: boolean; hayNumeros: boolean }) {
   const caja = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [sel, setSel] = useState<string | null>(null);
@@ -86,7 +100,7 @@ function VistaMapa({ puntos, hayBase, hayPredios }: { puntos: PuntoMapa[]; hayBa
     }
     let mapa: maplibregl.Map;
     try {
-      mapa = new maplibregl.Map({ container: caja.current, style: estilo(hayBase, hayPredios), center: CENTRO, zoom: 14, maxZoom: 18, attributionControl: { compact: true } });
+      mapa = new maplibregl.Map({ container: caja.current, style: estilo(hayBase, hayPredios, hayNumeros), center: CENTRO, zoom: 14, maxZoom: 18, attributionControl: { compact: true } });
     } catch {
       setError("Este navegador no puede dibujar el mapa (necesita WebGL). Pruebe con Chrome, Edge o Firefox actualizados.");
       return;
@@ -118,7 +132,7 @@ function VistaMapa({ puntos, hayBase, hayPredios }: { puntos: PuntoMapa[]; hayBa
           if (!p?.codigo) return;
           const area = typeof p.area_m2 === "number" ? (p.area_m2 >= 10000 ? `${(p.area_m2 / 10000).toFixed(1)} ha` : `${p.area_m2} m²`) : "";
           new maplibregl.Popup({ closeButton: true }).setLngLat(e.lngLat)
-            .setText(`${p.zona === "urbano" ? "Lote urbano" : "Predio rural"} · código ${String(p.codigo)}${area ? ` · ${area}` : ""}`).addTo(mapa);
+            .setText(`${p.numero ? `Predio n.º ${String(p.numero)} · ` : ""}${p.zona === "urbano" ? `Lote urbano${p.manzana ? ` (manzana ${String(p.manzana)})` : ""}` : "Predio rural"} · código ${String(p.codigo)}${area ? ` · ${area}` : ""}`).addTo(mapa);
         });
       }
       mapa.on("mouseenter", "viviendas", () => { mapa.getCanvas().style.cursor = "pointer"; });
@@ -130,7 +144,7 @@ function VistaMapa({ puntos, hayBase, hayPredios }: { puntos: PuntoMapa[]; hayBa
       }
     });
     return () => mapa.remove();
-  }, [puntos, hayBase, hayPredios]);
+  }, [puntos, hayBase, hayPredios, hayNumeros]);
 
   return (
     <>
