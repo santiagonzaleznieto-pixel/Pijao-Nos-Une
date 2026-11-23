@@ -790,7 +790,7 @@ end $$;
 -- Aviso del lunes para el Director y el Administrador (en la app y en el panel).
 alter table public.avisos_cuenta drop constraint if exists avisos_cuenta_tipo_check;
 alter table public.avisos_cuenta add constraint avisos_cuenta_tipo_check
-  check (tipo in ('dispositivo_nuevo', 'clave_cambiada', 'informe_semanal'));
+  check (tipo in ('dispositivo_nuevo', 'clave_cambiada', 'revision_permisos', 'informe_semanal'));
 
 create or replace function public._fecha_corta(d date) returns text
 language sql immutable set search_path = public, pg_temp as $$
