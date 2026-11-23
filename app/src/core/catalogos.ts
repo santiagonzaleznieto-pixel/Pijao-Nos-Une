@@ -1,4 +1,4 @@
-// Catálogos C-01 a C-20 (sección 19.3 del documento maestro). Clave = lo que se guarda; etiqueta = lo que se ve.
+// Catálogos C-01 a C-21 (sección 19.3 del documento maestro; C-21 desde 0021). Clave = lo que se guarda; etiqueta = lo que se ve.
 // Fuente de verdad en el servidor: tabla `catalogos` (P-42). Estos valores son los iniciales y el respaldo sin conexión.
 
 export type Opcion = readonly [clave: string, etiqueta: string];
@@ -112,6 +112,9 @@ export const CATALOGOS = {
     ["pendiente_inaccesible", "Pendiente empinada o inaccesible"], ["camino_privado", "Camino privado cerrado"],
     ["animal_bravo", "Animal bravo"], ["riesgo_seguridad", "Riesgo de seguridad"], ["mal_gps", "Mal GPS"], ["otro", "Otro"],
   ] },
+  // Puestos de votación de Pijao (0021): los agrega el Director en el panel, copiados de la Divipole de la Registraduría.
+  // Empieza vacío a propósito: no se inventan nombres. La app también sugiere los puestos que el equipo ya escribió.
+  "C-21": { nombre: "Puestos de votación de Pijao", opciones: [] },
 } as const satisfies Record<string, Catalogo>;
 
 export type CodigoCatalogo = keyof typeof CATALOGOS;

@@ -59,6 +59,7 @@ const RUTAS: Record<string, unknown> = {
   "(tabs)/inicio": require("../../app/(tabs)/inicio").default,
   "(tabs)/mapa": require("../../app/(tabs)/mapa").default,
   "(tabs)/nuevo": require("../../app/(tabs)/nuevo").default,
+  "(tabs)/personas": require("../../app/(tabs)/personas").default,
   "(tabs)/tareas": require("../../app/(tabs)/tareas").default,
   "(tabs)/mas": require("../../app/(tabs)/mas").default,
   entrar: require("../../app/entrar").default,
@@ -71,6 +72,7 @@ const RUTAS: Record<string, unknown> = {
   visita: require("../../app/visita").default,
   "vivienda/[id]": require("../../app/vivienda/[id]").default,
   "persona/[id]": require("../../app/persona/[id]").default,
+  "persona/votacion": require("../../app/persona/votacion").default,
   buscar: require("../../app/buscar").default,
   pendientes: require("../../app/pendientes").default,
   perfil: require("../../app/perfil").default,
@@ -94,10 +96,10 @@ beforeAll(async () => {
 });
 
 const casos: [string, string][] = [
-  ["/inicio", "Inicio"], ["/mapa", "Mapa"], ["/tareas", "Tareas"], ["/mas", "Más"],
+  ["/inicio", "Inicio"], ["/mapa", "Mapa"], ["/personas", "Personas"], ["/tareas", "Tareas"], ["/mas", "Más"],
   ["/entrar", "Entrar"], ["/registro", "Crear cuenta"], ["/recuperar", "Recuperar"],
   ["/cuenta", "Cuenta"], ["/acuerdos", "Acuerdos"], ["/ingreso", "Ingreso"], ["/registrar", "Registrar aquí"],
-  ["/visita?vivienda=practica-v-1", "Nueva visita"], ["/vivienda/practica-v-1", "Vivienda"], ["/persona/practica-p-1-0", "Persona"],
+  ["/visita?vivienda=practica-v-1", "Nueva visita"], ["/vivienda/practica-v-1", "Vivienda"], ["/persona/practica-p-1-0", "Persona"], ["/persona/votacion?id=practica-p-1-0", "Dónde vota"],
   ["/buscar", "Buscar"], ["/pendientes", "Pendientes"], ["/perfil", "Perfil"],
   ["/invitar", "Invitar"], ["/anuncios", "Anuncios"], ["/guion", "Guion"],
   ["/cumpleanos", "Cumpleañeros"], ["/jornada", "Jornada"], ["/incidente", "Incidente"], ["/ayuda", "Ayuda"], ["/eventos", "Eventos"],

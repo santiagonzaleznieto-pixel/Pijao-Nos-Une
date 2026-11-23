@@ -1,4 +1,4 @@
-// Barra inferior flotante (18.1): Inicio · Mapa · [Registrar aquí] · Tareas · Más, con la pastilla que se desliza.
+// Barra inferior flotante (18.1): Inicio · Mapa · [Registrar aquí] · Personas · Tareas · Más, con la pastilla que se desliza.
 // Franja superior con la conexión, lo que falta por enviar y «Ocultar pantalla».
 import { Tabs, useRouter } from "expo-router";
 import type { BottomTabBarProps } from "expo-router/tabs";
@@ -53,6 +53,7 @@ function Franja() {
 const ITEMS: Record<string, { titulo: string; icono: NombreIcono }> = {
   inicio: { titulo: "Inicio", icono: "casa" },
   mapa: { titulo: "Mapa", icono: "mapa" },
+  personas: { titulo: "Personas", icono: "personas" },
   tareas: { titulo: "Tareas", icono: "tareas" },
   mas: { titulo: "Más", icono: "menu" },
 };
@@ -97,7 +98,7 @@ function BarraInferior({ state, emitter, navigateToTab }: BottomTabBarProps) {
                 if (!activa && !ev.defaultPrevented) navigateToTab(r.key);
               }} style={{ flex: 1, minHeight: 56, alignItems: "center", justifyContent: "center", gap: 3 }}>
               <Icono nombre={item.icono} tam={22} color={tinta} grosor={activa ? 2.2 : 2} />
-              <Text style={{ fontFamily: fuente.tituloMedio, fontSize: tl(12), color: tinta }}>{item.titulo}</Text>
+              <Text numberOfLines={1} style={{ fontFamily: fuente.tituloMedio, fontSize: tl(state.routes.length > 5 ? 11 : 12), color: tinta }}>{item.titulo}</Text>
             </Pressable>
           );
         })}
@@ -116,6 +117,7 @@ export default function Pestanas() {
         <Tabs.Screen name="inicio" options={{ title: "Inicio" }} />
         <Tabs.Screen name="mapa" options={{ title: "Mapa" }} />
         <Tabs.Screen name="nuevo" options={{ title: "Registrar" }} />
+        <Tabs.Screen name="personas" options={{ title: "Personas" }} />
         <Tabs.Screen name="tareas" options={{ title: "Tareas" }} />
         <Tabs.Screen name="mas" options={{ title: "Más" }} />
       </Tabs>

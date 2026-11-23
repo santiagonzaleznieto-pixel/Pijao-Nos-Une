@@ -14,6 +14,7 @@ import { fechaHora } from "@/core/formato";
 const NOMBRE: Record<string, string> = {
   registrar_visita: "Visita", editar_visita: "Edición de visita", solicitud_titular: "Solicitud de datos", no_contactar: "No contactar",
   tarea_estado: "Tarea", anuncio_leido: "Anuncio leído", completar_ingreso: "Curso de ingreso", incidente: "Incidente",
+  votacion: "Dónde vota",
 };
 
 export default function Pendientes() {

@@ -52,6 +52,10 @@ export const ENVIOS: Record<string, Envio> = {
   tarea_estado: (i, rpc) => rpc("rpc_tarea_actualizar", { p_id: i.payload?.id, p_estado: i.payload?.estado, p_nota: i.payload?.nota ?? null }),
   solicitud_titular: (i, rpc) => rpc("rpc_solicitud_titular", { p: i.payload }),
   no_contactar: (i, rpc) => rpc("rpc_marcar_no_contactar", { p_persona: i.payload?.persona_id, p_motivo: i.payload?.motivo ?? null }),
+  // 0021: dónde vota (puesto y mesa consultados en la Registraduría o dichos por la persona).
+  votacion: (i, rpc) => rpc("rpc_persona_votacion", {
+    p_id: i.payload?.persona_id, p_vota: i.payload?.vota ?? null, p_puesto: i.payload?.puesto ?? null, p_mesa: i.payload?.mesa ?? null,
+  }),
   incidente: (i, rpc) => rpc("rpc_incidente", { p: i.payload }),
   eliminar: (i, rpc) => rpc("rpc_eliminar_registro", { p_tabla: i.payload?.tabla, p_id: i.payload?.id, p_motivo: i.payload?.motivo ?? "" }),
   anuncio_leido: (i, rpc) => rpc("rpc_anuncio_leido", { p_id: i.payload?.id }),
