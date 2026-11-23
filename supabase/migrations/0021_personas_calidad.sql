@@ -459,6 +459,7 @@ begin
     correo_enc = coalesce(c.correo_enc, a.correo_enc),
     correo_parcial = case when c.correo_enc is not null then c.correo_parcial else a.correo_parcial end,
     canal_preferido = coalesce(c.canal_preferido, a.canal_preferido),
+    canales_preferidos = coalesce(c.canales_preferidos, a.canales_preferidos),
     mejor_horario = coalesce(c.mejor_horario, a.mejor_horario),
     vota_en_pijao = coalesce(c.vota_en_pijao, a.vota_en_pijao),
     puesto_votacion = coalesce(nullif(c.puesto_votacion, ''), a.puesto_votacion),
