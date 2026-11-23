@@ -13,6 +13,7 @@ import { Informe, Tareas } from "./paginas/TareasInforme";
 import { Eventos } from "./paginas/Eventos";
 import { FichaColaborador } from "./paginas/FichaColaborador";
 import { Inicio } from "./paginas/Inicio";
+import { Personas } from "./paginas/Personas";
 import { Piloto } from "./paginas/Piloto";
 import { Salud } from "./paginas/Salud";
 import { Titulares } from "./paginas/Titulares";
@@ -36,6 +37,7 @@ const ICONOS: Record<string, string> = {
   incidentes: "M12 3l9.5 17h-19z M12 10v4 M12 17h.01",
   necesidades: "M4 5h16v11H9l-5 4z",
   calidad: "M5 12l4 4 10-10",
+  personas: "M12 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8z M4 21a8 8 0 0 1 16 0",
   cumpleanos: "M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z",
 };
 function IconoMenu({ ruta }: { ruta: string }) {
@@ -121,6 +123,7 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
   const r = resumen.datos;
   const menu: [string, string, number?][] = [
     ["inicio", "Inicio"],
+    ["personas", "Personas"],
     ["seguridad", "Seguridad en terreno"],
     ["informe", "Informe"],
     ["tareas", "Tareas"],
@@ -139,6 +142,7 @@ function Marco({ fuente, perfil, inactividadMin, salir }: {
   let vista;
   let vivienda = false;
   switch (pagina) {
+    case "personas": vista = <Personas />; break;
     case "colaboradores": vista = <Colaboradores />; break;
     case "colaborador": vista = <FichaColaborador id={param ?? ""} />; break;
     case "titulares": vista = <Titulares />; break;

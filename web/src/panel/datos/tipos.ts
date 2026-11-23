@@ -1,5 +1,6 @@
 // Tipos del panel: la forma de las filas que el panel lee (con las reglas por fila del servidor) y de lo que devuelven
 // las funciones rpc_*. Los nombres de los campos son los de la base (supabase/migrations).
+import type { EventoHistoria, FiltrosPersonas, PersonaLista, ResumenPersonas } from "@nucleo/personas";
 
 export type Rol = "admin" | "director" | "colaborador";
 
@@ -211,4 +212,50 @@ export interface Fuente {
   eventosEquipo(): Promise<EventoPanel[]>;
   guardarEvento(e: NuevoEvento): Promise<void>;
   cancelarEvento(id: string): Promise<void>;
+  // 0021: personas (todas, con lo que cada rol puede ver), dónde vota, duplicados, verificación por llamada e informe semanal
+  personas(f: FiltrosPersonas, desde: number): Promise<{ total: number; filas: PersonaLista[] }>;
+  resumenPersonas(): Promise<ResumenPersonas>;
+  historiaPersona(id: string): Promise<EventoHistoria[]>;
+  guardarVotacion(id: string, vota: string | null, puesto: string | null, mesa: string | null): Promise<void>;
+  duplicados(): Promise<Duplicados>;
+  descartarDuplicado(tipo: "vivienda" | "persona", a: string, b: string): Promise<void>;
+  fusionar(tipo: "vivienda" | "persona", conservar: string, absorber: string, motivo: string): Promise<void>;
+  verificaciones(semana: string | null): Promise<Verificaciones>;
+  sortearVerificaciones(semana: string | null): Promise<{ semana: string; total_visitas: number; sorteadas: number; ya_estaba: boolean }>;
+  resultadoVerificacion(id: string, estado: string, notas: string): Promise<void>;
+  informeSemanal(semana: string | null): Promise<InformeSemanal>;
+}
+
+export type { EventoHistoria, FiltrosPersonas, PersonaLista, ResumenPersonas };
+
+export interface ViviendaDup {
+  id: string; direccion: string | null; nombre_finca: string | null; barrio_vereda: string | null; predio: string | null; estado: string;
+  lat: number; lng: number; creado_en: string; registrado_por: string | null; visitas: number; personas: number;
+}
+export interface PersonaDup {
+  id: string; nombre: string; cedula_ult3: string | null; telefono_ult4: string | null; fecha_nacimiento: string | null;
+  puesto_votacion: string | null; mesa_votacion: string | null; estado: string; creado_en: string; direccion: string | null;
+  barrio_vereda: string | null; vivienda_id: string | null; registrado_por: string | null;
+}
+export interface ParDuplicado<T> { a: T; b: T; motivo: string; metros?: number }
+export interface Duplicados { viviendas: ParDuplicado<ViviendaDup>[]; personas: ParDuplicado<PersonaDup>[] }
+
+export interface Verificacion {
+  id: string; estado: string; notas: string | null; verificado_en: string | null; verificado_por: string | null; visita_fecha: string;
+  resultado: string; colaborador: string | null; persona: string | null; persona_id: string | null; telefono: string | null;
+  whatsapp: boolean | null; direccion: string | null; barrio_vereda: string | null;
+}
+export interface Verificaciones { semana: string | null; filas: Verificacion[]; semanas: string[]; pendiente_sorteo: boolean; semana_anterior: string }
+
+export interface InformeSemanal {
+  desde: string; hasta: string;
+  visitas: { total: number; con_conversacion: number; sin_contacto: number; en_rojo: number; semana_anterior: number };
+  viviendas_nuevas: number; personas_nuevas: number; necesidades_nuevas: number; colaboradores_activos: number;
+  por_colaborador: { nombre: string; visitas: number; conversaciones: number; en_rojo: number }[];
+  por_vereda: { vereda: string; visitas: number }[];
+  necesidades_top: { tema: string; n: number }[];
+  seguimientos_vencidos: number;
+  alertas: { abiertas: number; nuevas: number };
+  verificaciones: { sorteadas: number; pendientes: number; confirmadas: number; no_confirmadas: number };
+  votacion: { personas: number; con_puesto: number; vota_si: number; vota_no: number };
 }

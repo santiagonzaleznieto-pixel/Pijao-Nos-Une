@@ -2,7 +2,7 @@
 // necesidades de la comunidad, alertas de calidad y cumpleañeros de hoy.
 import { useEffect, useMemo, useState } from "react";
 import { fecha, fechaHora } from "../../logica/utiles";
-import type { AlertaCalidadPanel, IncidentePanel, NecesidadPanel } from "../datos/tipos";
+import type { AlertaCalidadPanel, IncidentePanel, NecesidadPanel, ParDuplicado, PersonaDup, Verificacion, ViviendaDup } from "../datos/tipos";
 import { EVENTO_SOS } from "../FranjaSos";
 import { Aviso, Chip, Encabezado, Estado, Pestanas, useAccion, useCarga, usePanel } from "../ui";
 
@@ -22,6 +22,8 @@ const TIPO_INCIDENTE: Record<string, string> = {
 const TIPO_ALERTA: Record<string, string> = {
   posible_duplicado: "Posible vivienda duplicada", distancia_excedida: "El teléfono estaba lejos de la casa", fuera_de_zona: "Fuera de los barrios y veredas dibujados",
   fuera_del_municipio: "Fuera del municipio", ritmo_sospechoso: "Visitas demasiado seguidas", salto_de_ubicacion: "Salto de ubicación imposible", gps_falso: "Ubicación simulada",
+  verificacion_no_confirmada: "La persona no confirmó la visita (verificación por llamada)", colaborador_en_revision: "Colaborador en revisión: varias visitas no confirmadas",
+  accesos_masivos: "Muchas consultas de datos completos en una hora",
 };
 const mapa = (lat: number | null, lng: number | null) => (lat != null && lng != null ? `https://maps.google.com/?q=${lat},${lng}` : null);
 const haceMin = (iso: string | null) => (iso ? Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000)) : null);
@@ -208,13 +210,23 @@ function ListaNecesidades({ lista, tema, setTema, recargar }: { lista: Necesidad
 
 // ----------------------------------------------------------------------------- calidad
 export function Calidad() {
+  const [pestana, setPestana] = useState<"alertas" | "duplicados" | "verificacion">("alertas");
+  return (
+    <>
+      <Encabezado titulo="Calidad de los registros" />
+      <Pestanas opciones={[["alertas", "Alertas"], ["duplicados", "Repetidos"], ["verificacion", "Verificación por llamada"]] as const} valor={pestana} cambiar={setPestana} />
+      {pestana === "alertas" ? <Alertas /> : pestana === "duplicados" ? <Duplicados /> : <VerificacionLlamada />}
+    </>
+  );
+}
+
+function Alertas() {
   const { fuente } = usePanel();
   const datos = useCarga(() => fuente.alertasCalidad(), [fuente]);
   const [filtro, setFiltro] = useState<"abiertas" | "resueltas">("abiertas");
   return (
     <>
-      <Encabezado titulo="Calidad de los registros" />
-      <p className="suave">Alertas automáticas del servidor: posibles duplicados, distancia excesiva, ubicación simulada, ritmo sospechoso. Revise cada una y anote qué encontró.</p>
+      <p className="suave">Alertas automáticas del servidor: posibles duplicados, distancia excesiva, ubicación simulada, ritmo sospechoso y visitas que la persona no confirmó. Revise cada una y anote qué encontró.</p>
       <Pestanas opciones={[["abiertas", "Por revisar"], ["resueltas", "Revisadas"]] as const} valor={filtro} cambiar={setFiltro} />
       <Estado carga={datos}>
         {(l) => {
@@ -223,6 +235,149 @@ export function Calidad() {
         }}
       </Estado>
     </>
+  );
+}
+
+// ----------------------------------------------------------------------------- repetidos (6.6, O-20)
+function Duplicados() {
+  const { fuente } = usePanel();
+  const datos = useCarga(() => fuente.duplicados(), [fuente]);
+  return (
+    <>
+      <p className="suave">Casas y personas que parecen registradas dos veces: mismo predio del IGAC o casas muy cerca con la misma dirección, y personas con el mismo nombre y además la misma casa, la misma fecha de nacimiento o el mismo final de teléfono. Al unirlas no se pierde nada: las visitas, autorizaciones y necesidades pasan a la que queda.</p>
+      <Estado carga={datos}>
+        {(d) => (
+          <>
+            <h2>Viviendas</h2>
+            {!d.viviendas.length ? <p className="suave">No hay viviendas repetidas.</p> : d.viviendas.map((par) => (
+              <ParRepetido key={`${par.a.id}-${par.b.id}`} tipo="vivienda" par={par} recargar={datos.recargar}
+                resumen={(v: ViviendaDup) => [v.direccion || v.nombre_finca || "Sin dirección", v.barrio_vereda, `${v.visitas} visita(s) · ${v.personas} persona(s)`,
+                  v.registrado_por ? `registró ${v.registrado_por}` : null, fecha(v.creado_en)].filter(Boolean).join(" · ")} />
+            ))}
+            <h2>Personas</h2>
+            {!d.personas.length ? <p className="suave">No hay personas repetidas.</p> : d.personas.map((par) => (
+              <ParRepetido key={`${par.a.id}-${par.b.id}`} tipo="persona" par={par} recargar={datos.recargar}
+                resumen={(x: PersonaDup) => [x.nombre, x.cedula_ult3 ? `cédula ···${x.cedula_ult3}` : "sin cédula", x.telefono_ult4 ? `cel. ···${x.telefono_ult4}` : null,
+                  x.fecha_nacimiento ? `nació ${x.fecha_nacimiento}` : null, x.barrio_vereda, x.registrado_por ? `registró ${x.registrado_por}` : null].filter(Boolean).join(" · ")} />
+            ))}
+          </>
+        )}
+      </Estado>
+    </>
+  );
+}
+
+function ParRepetido<T extends { id: string }>({ tipo, par, resumen, recargar }: {
+  tipo: "vivienda" | "persona"; par: ParDuplicado<T>; resumen: (x: T) => string; recargar: () => void;
+}) {
+  const { fuente } = usePanel();
+  const accion = useAccion();
+  const [queda, setQueda] = useState<"a" | "b">("a");
+  const [motivo, setMotivo] = useState("");
+  const conservar = queda === "a" ? par.a : par.b;
+  const absorber = queda === "a" ? par.b : par.a;
+  return (
+    <div className="tarjeta">
+      <div className="acciones" style={{ justifyContent: "space-between" }}>
+        <strong>{par.motivo}{par.metros != null ? ` (${par.metros} m)` : ""}</strong>
+        <Chip nivel="alerta">Por revisar</Chip>
+      </div>
+      {(["a", "b"] as const).map((k) => (
+        <label key={k} style={{ display: "flex", gap: 8, alignItems: "flex-start", margin: "8px 0" }}>
+          <input type="radio" name={`queda-${par.a.id}-${par.b.id}`} checked={queda === k} onChange={() => setQueda(k)} />
+          <span><strong>{k === "a" ? "Registro 1" : "Registro 2"}:</strong> {resumen(par[k])}</span>
+        </label>
+      ))}
+      <p className="suave pequeno">Se conserva el registro marcado; el otro se une a él y sale de las listas (queda en la auditoría).</p>
+      <div className="fila-form">
+        <div><label htmlFor={`mot-${par.a.id}`}>Motivo (opcional)</label><input id={`mot-${par.a.id}`} value={motivo} maxLength={200} onChange={(e) => setMotivo(e.target.value)} /></div>
+        <button type="button" className="boton" disabled={accion.ocupado}
+          onClick={() => void accion.ejecutar(() => fuente.fusionar(tipo, conservar.id, absorber.id, motivo.trim()), tipo === "vivienda" ? "Viviendas unidas." : "Personas unidas.").then((ok) => ok && recargar())}>
+          Unir en uno solo
+        </button>
+        <button type="button" className="boton secundario" disabled={accion.ocupado}
+          onClick={() => void accion.ejecutar(() => fuente.descartarDuplicado(tipo, par.a.id, par.b.id), "Marcados como distintos.").then((ok) => ok && recargar())}>
+          No son {tipo === "vivienda" ? "la misma casa" : "la misma persona"}
+        </button>
+      </div>
+      {accion.error && <Aviso tipo="error">{accion.error}</Aviso>}
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------------- verificación por llamada (R-27)
+const ESTADO_VERIF: Record<string, [string, "ok" | "alerta" | "critico" | "neutro"]> = {
+  pendiente: ["Por llamar", "alerta"], confirmada: ["Confirmó la visita", "ok"], no_confirmada: ["No confirmó la visita", "critico"],
+  no_contesto: ["No contestó", "neutro"], numero_errado: ["Número equivocado", "neutro"], no_quiso: ["No quiso responder", "neutro"],
+};
+
+function VerificacionLlamada() {
+  const { fuente, avisar } = usePanel();
+  const [semana, setSemana] = useState<string | null>(null);
+  const datos = useCarga(() => fuente.verificaciones(semana), [fuente, semana]);
+  const accion = useAccion();
+  return (
+    <>
+      <p className="suave">Cada lunes la app sortea el 5 % de las visitas de la semana anterior para llamar a la persona y preguntarle si de verdad la visitaron. Solo se llama a quien autorizó el contacto. Sea breve y amable: «Le llamamos de la campaña Pijao Nos Une para confirmar si esta semana lo visitó alguien del equipo».</p>
+      <Estado carga={datos}>
+        {(d) => (
+          <>
+            <div className="acciones" style={{ marginBottom: 10 }}>
+              {d.semanas.length > 0 && (
+                <select aria-label="Semana" value={d.semana ?? ""} onChange={(e) => setSemana(e.target.value || null)}>
+                  {d.semanas.map((s) => <option key={s} value={s}>Semana del {fecha(s)}</option>)}
+                </select>
+              )}
+              {d.pendiente_sorteo && (
+                <button type="button" className="boton" disabled={accion.ocupado}
+                  onClick={() => void accion.ejecutar(async () => {
+                    const r = await fuente.sortearVerificaciones(null);
+                    avisar(r.sorteadas ? `Se sortearon ${r.sorteadas} de ${r.total_visitas} visitas.` : "No hubo visitas para verificar esa semana.");
+                    setSemana(r.semana);
+                  }, "").then(() => datos.recargar())}>
+                  Sortear la semana del {fecha(d.semana_anterior)}
+                </button>
+              )}
+            </div>
+            {accion.error && <Aviso tipo="error">{accion.error}</Aviso>}
+            {!d.filas.length ? <p className="suave">{d.semanas.length ? "Esa semana no hubo visitas que se pudieran verificar (con conversación y autorización de contacto)." : "Todavía no hay sorteos. El primero se hace solo el próximo lunes, o use el botón de arriba."}</p>
+              : d.filas.map((v) => <TarjetaVerificacion key={v.id} v={v} recargar={datos.recargar} />)}
+          </>
+        )}
+      </Estado>
+    </>
+  );
+}
+
+function TarjetaVerificacion({ v, recargar }: { v: Verificacion; recargar: () => void }) {
+  const { fuente } = usePanel();
+  const accion = useAccion();
+  const [notas, setNotas] = useState(v.notas ?? "");
+  const [et, nivel] = ESTADO_VERIF[v.estado] ?? [v.estado, "neutro"];
+  const marcar = (estado: string, texto: string) =>
+    void accion.ejecutar(() => fuente.resultadoVerificacion(v.id, estado, notas.trim()), texto).then((ok) => ok && recargar());
+  return (
+    <div className="tarjeta">
+      <div className="acciones" style={{ justifyContent: "space-between" }}>
+        <strong>{v.persona ?? "Persona"}</strong>
+        <Chip nivel={nivel}>{et}</Chip>
+      </div>
+      <dl className="dato" style={{ marginTop: 8 }}>
+        <dt>Celular</dt><dd>{v.telefono ? <><a href={`tel:${v.telefono}`}>{v.telefono}</a>{v.whatsapp ? <> · <a href={`https://wa.me/57${v.telefono}`} target="_blank" rel="noreferrer">WhatsApp</a></> : null}</> : "Sin teléfono"}</dd>
+        <dt>Visita</dt><dd>{fechaHora(v.visita_fecha)} · {v.resultado} · {v.colaborador ?? "—"}</dd>
+        <dt>Dónde</dt><dd>{[v.direccion, v.barrio_vereda].filter(Boolean).join(" · ") || "—"}</dd>
+        {v.verificado_en && <><dt>Verificó</dt><dd>{v.verificado_por ?? "—"} · {fechaHora(v.verificado_en)}</dd></>}
+      </dl>
+      <div className="fila-form" style={{ flexWrap: "wrap" }}>
+        <div style={{ minWidth: 220 }}><label htmlFor={`vn-${v.id}`}>Notas de la llamada</label>
+          <input id={`vn-${v.id}`} value={notas} maxLength={500} onChange={(e) => setNotas(e.target.value)} /></div>
+        <button type="button" className="boton" disabled={accion.ocupado} onClick={() => marcar("confirmada", "Visita confirmada.")}>Confirmó</button>
+        <button type="button" className="boton secundario" disabled={accion.ocupado} onClick={() => marcar("no_confirmada", "Quedó la alerta para revisar.")}>No confirmó</button>
+        <button type="button" className="boton secundario" disabled={accion.ocupado} onClick={() => marcar("no_contesto", "Anotado: no contestó.")}>No contestó</button>
+        <button type="button" className="boton secundario" disabled={accion.ocupado} onClick={() => marcar("numero_errado", "Anotado: número equivocado.")}>Número equivocado</button>
+      </div>
+      {accion.error && <Aviso tipo="error">{accion.error}</Aviso>}
+    </div>
   );
 }
 

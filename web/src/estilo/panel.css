@@ -238,3 +238,12 @@ code, .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; f
   body { background: #fff; color: #122b52; }
   .tarjeta { box-shadow: none; break-inside: avoid; }
 }
+
+/* Botón con aspecto de enlace (por ejemplo, para filtrar por un puesto desde una tabla). */
+button.enlace { background: none; border: 0; padding: 0; font: inherit; color: var(--azul-oceano); text-decoration: underline; cursor: pointer; text-align: left; }
+button.enlace:focus-visible { outline: 2px solid var(--azul-oceano); outline-offset: 2px; border-radius: 4px; }
+
+/* Filtros en rejilla pareja (Personas). */
+.rejilla-filtros { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; align-items: end; }
+.rejilla-filtros label { display: block; margin-bottom: 4px; }
+.rejilla-filtros input, .rejilla-filtros select { width: 100%; box-sizing: border-box; }

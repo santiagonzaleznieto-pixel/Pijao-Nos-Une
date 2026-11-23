@@ -58,13 +58,13 @@ export function useSosAbiertos(fuente: Fuente): AlertaSos[] {
   // Título que parpadea mientras haya alertas abiertas.
   useEffect(() => {
     if (!abiertas.length) return;
-    const original = document.title;
-    let alterno = false;
+    const aviso = `🔴 SOS (${abiertas.length}) · Pijao Nos Une`;
+    // El título de la página cambia al navegar: se toma el vigente en cada vuelta (antes quedaba fijo el de la primera página).
+    let original = document.title;
     const t = window.setInterval(() => {
-      alterno = !alterno;
-      document.title = alterno ? `🔴 SOS (${abiertas.length}) · Pijao Nos Une` : original;
+      if (document.title !== aviso) { original = document.title; document.title = aviso; } else document.title = original;
     }, 1000);
-    return () => { window.clearInterval(t); document.title = original; };
+    return () => { window.clearInterval(t); if (document.title === aviso) document.title = original; };
   }, [abiertas.length]);
 
   return abiertas;

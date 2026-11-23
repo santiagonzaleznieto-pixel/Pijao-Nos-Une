@@ -84,15 +84,80 @@ function NuevaTareaForm({ gente, alCrear }: { gente: [string, string][]; alCrear
 }
 
 // ----------------------------------------------------------------------------- informe
+const PERIODOS = [["hoy", "Hoy"], ["semana", "Últimos 7 días"], ["mes", "Últimos 30 días"], ["semanal", "Informe semanal"]] as const;
+
+/** Informe semanal (lunes a domingo): el mismo que llega cada lunes como aviso al Director y al Administrador. */
+function InformeDeLaSemana() {
+  const { fuente } = usePanel();
+  const datos = useCarga(() => fuente.informeSemanal(null), [fuente]);
+  return (
+    <Estado carga={datos}>
+      {(r) => {
+        const cambio = r.visitas.semana_anterior ? Math.round(((r.visitas.total - r.visitas.semana_anterior) / r.visitas.semana_anterior) * 100) : null;
+        const maxV = Math.max(1, ...r.por_vereda.map((v) => v.visitas));
+        return (
+          <div className="informe">
+            <p className="suave">Semana del {fecha(r.desde)} al {fecha(r.hasta)} · {r.colaboradores_activos} personas del equipo hicieron visitas. Llega también cada lunes a las 6 a. m. como aviso.</p>
+            <div className="cuadricula">
+              <div className="tarjeta"><div className="suave">Visitas</div><div className="cifra">{r.visitas.total}</div>
+                <div className="suave pequeno">{r.visitas.con_conversacion} con conversación{cambio !== null ? ` · ${cambio >= 0 ? "+" : ""}${cambio} % frente a la semana anterior` : ""}</div></div>
+              <div className="tarjeta"><div className="suave">Personas nuevas</div><div className="cifra">{r.personas_nuevas}</div><div className="suave pequeno">{r.viviendas_nuevas} casas nuevas</div></div>
+              <div className="tarjeta"><div className="suave">Seguimientos vencidos</div><div className={`cifra${r.seguimientos_vencidos ? " alerta" : ""}`}>{r.seguimientos_vencidos}</div></div>
+              <div className="tarjeta"><div className="suave">Saben dónde votan</div><div className="cifra">{r.votacion.con_puesto}</div>
+                <div className="suave pequeno">de {r.votacion.personas} personas · {r.votacion.vota_no} votan en otro municipio</div></div>
+            </div>
+            <div className="tarjeta">
+              <h2>Por colaborador</h2>
+              {!r.por_colaborador.length ? <p className="suave">Nadie registró visitas esa semana.</p> : (
+                <div className="tabla-envoltura"><table>
+                  <thead><tr><th>Colaborador</th><th>Visitas</th><th>Con conversación</th><th>En rojo</th></tr></thead>
+                  <tbody>{r.por_colaborador.map((c) => <tr key={c.nombre}><td>{c.nombre}</td><td>{c.visitas}</td><td>{c.conversaciones}</td><td>{c.en_rojo ? <strong style={{ color: "var(--rojo)" }}>{c.en_rojo}</strong> : 0}</td></tr>)}</tbody>
+                </table></div>
+              )}
+            </div>
+            <div className="tarjeta">
+              <h2>Por vereda o barrio</h2>
+              {!r.por_vereda.length ? <p className="suave">Sin visitas esa semana.</p> : r.por_vereda.map((v) => (
+                <div key={v.vereda} style={{ display: "grid", gridTemplateColumns: "minmax(120px, 220px) 1fr 40px", gap: 10, alignItems: "center", margin: "6px 0" }}>
+                  <span>{v.vereda}</span>
+                  <span style={{ height: 10, borderRadius: 5, background: "var(--superficie-panel)", overflow: "hidden" }}><span style={{ display: "block", height: 10, width: `${(v.visitas / maxV) * 100}%`, background: "var(--degradado)" }} /></span>
+                  <strong style={{ textAlign: "right" }}>{v.visitas}</strong>
+                </div>
+              ))}
+            </div>
+            <div className="tarjeta">
+              <h2>Calidad y verificación</h2>
+              <ul>
+                <li>{r.visitas.en_rojo} visita(s) en rojo · {r.alertas.nuevas} alerta(s) nuevas · {r.alertas.abiertas} por revisar en total</li>
+                <li>Verificación por llamada: {r.verificaciones.sorteadas} sorteadas · {r.verificaciones.confirmadas} confirmadas · {r.verificaciones.no_confirmadas} no confirmadas · {r.verificaciones.pendientes} por llamar</li>
+                <li>Necesidades nuevas: {r.necesidades_nuevas}{r.necesidades_top.length ? ` (más pedidas: ${r.necesidades_top.map((t) => `${t.tema} ${t.n}`).join(", ")})` : ""}</li>
+              </ul>
+            </div>
+          </div>
+        );
+      }}
+    </Estado>
+  );
+}
+
 export function Informe() {
   const { fuente } = usePanel();
-  const [periodo, setPeriodo] = useState<"hoy" | "semana" | "mes">("hoy");
+  const [periodo, setPeriodo] = useState<"hoy" | "semana" | "mes" | "semanal">("hoy");
   const desde = periodo === "hoy" ? diaMas(0) : periodo === "semana" ? diaMas(-6) : diaMas(-29);
   const datos = useCarga(() => fuente.informe(desde), [fuente, desde]);
+  if (periodo === "semanal") {
+    return (
+      <>
+        <Encabezado titulo="Informe"><button type="button" className="boton secundario chico no-imprimir" onClick={() => window.print()}>Imprimir o guardar en PDF</button></Encabezado>
+        <div className="no-imprimir"><Pestanas opciones={PERIODOS} valor={periodo} cambiar={setPeriodo} /></div>
+        <InformeDeLaSemana />
+      </>
+    );
+  }
   return (
     <>
       <Encabezado titulo="Informe"><button type="button" className="boton secundario chico no-imprimir" onClick={() => window.print()}>Imprimir o guardar en PDF</button></Encabezado>
-      <div className="no-imprimir"><Pestanas opciones={[["hoy", "Hoy"], ["semana", "Últimos 7 días"], ["mes", "Últimos 30 días"]] as const} valor={periodo} cambiar={setPeriodo} /></div>
+      <div className="no-imprimir"><Pestanas opciones={PERIODOS} valor={periodo} cambiar={setPeriodo} /></div>
       <Estado carga={datos}>
         {(r) => {
           const pct = r.visitas ? Math.round((r.verdes / r.visitas) * 100) : 0;

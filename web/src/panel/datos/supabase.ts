@@ -4,6 +4,8 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { SUPABASE_ANON_KEY, SUPABASE_URL } from "../../config";
 import { mensajeDeError } from "../../logica/utiles";
 import { diaMas } from "../../logica/utiles";
+import { limpiarFiltros } from "@nucleo/personas";
+import type { Duplicados, EventoHistoria, FiltrosPersonas, InformeSemanal, PersonaLista, ResumenPersonas, Verificaciones } from "./tipos";
 import type { AlertaCalidadPanel, CumpleaneroPanel, EventoPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, NuevoEvento, Seguridad, TareaPanel } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto, CasaPanel, Colaborador, DefPermiso, Dispositivo, FilaAuditoria, FiltrosAuditoria, Fuente, Invitacion, OpcionCatalogo, PerfilPanel,
@@ -325,4 +327,27 @@ export class FuenteSupabase implements Fuente {
   }
   async guardarEvento(e: NuevoEvento) { await this.rpc("rpc_evento_guardar", { p: e }); }
   async cancelarEvento(id: string) { await this.rpc("rpc_evento_cancelar", { p_id: id }); }
+
+  // ------------------------------------------------------------------------------------------- 0021
+  personas(f: FiltrosPersonas, desde: number) {
+    return this.rpc<{ total: number; filas: PersonaLista[] }>("rpc_personas_lista", { p: { ...limpiarFiltros(f), desde, limite: 50 } });
+  }
+  resumenPersonas() { return this.rpc<ResumenPersonas>("rpc_personas_resumen"); }
+  historiaPersona(id: string) { return this.rpc<EventoHistoria[]>("rpc_persona_historia", { p_id: id }); }
+  async guardarVotacion(id: string, vota: string | null, puesto: string | null, mesa: string | null) {
+    await this.rpc("rpc_persona_votacion", { p_id: id, p_vota: vota, p_puesto: puesto, p_mesa: mesa });
+  }
+  duplicados() { return this.rpc<Duplicados>("rpc_duplicados"); }
+  async descartarDuplicado(tipo: "vivienda" | "persona", a: string, b: string) { await this.rpc("rpc_duplicado_descartar", { p_tipo: tipo, p_a: a, p_b: b }); }
+  async fusionar(tipo: "vivienda" | "persona", conservar: string, absorber: string, motivo: string) {
+    await this.rpc(tipo === "vivienda" ? "rpc_fusionar_viviendas" : "rpc_fusionar_personas", { p_conservar: conservar, p_absorber: absorber, p_motivo: motivo || null });
+  }
+  verificaciones(semana: string | null) { return this.rpc<Verificaciones>("rpc_verificaciones", { p_semana: semana }); }
+  sortearVerificaciones(semana: string | null) {
+    return this.rpc<{ semana: string; total_visitas: number; sorteadas: number; ya_estaba: boolean }>("rpc_sortear_verificaciones", { p_semana: semana });
+  }
+  async resultadoVerificacion(id: string, estado: string, notas: string) {
+    await this.rpc("rpc_verificacion_resultado", { p_id: id, p_estado: estado, p_notas: notas || null });
+  }
+  informeSemanal(semana: string | null) { return this.rpc<InformeSemanal>("rpc_informe_semana", { p_semana: semana }); }
 }

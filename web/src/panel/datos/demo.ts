@@ -6,6 +6,8 @@ import { PERMISOS, PLANTILLAS } from "@nucleo/permisos";
 import { PARAMS_POR_DEFECTO } from "@nucleo/reglas";
 import { diaMas } from "../../logica/utiles";
 import { ErrorPanel } from "./supabase";
+import { limpiarFiltros, type EventoHistoria, type FiltrosPersonas, type PersonaLista, type ResumenPersonas } from "@nucleo/personas";
+import type { Duplicados, InformeSemanal, Verificaciones } from "./tipos";
 import type { AlertaCalidadPanel, AlertaSos, CumpleaneroPanel, EventoPanel, IncidentePanel, InformePanel, NecesidadPanel, NuevaTarea, NuevoEvento, Seguridad, TareaPanel } from "./tipos";
 import type {
   AvisoPanel, MetricasPiloto,
@@ -546,4 +548,133 @@ export class FuenteDemo implements Fuente {
     this.eventosL.push({ id: `ev-${this.eventosL.length + 1}`, ...e });
   }
   async cancelarEvento(id: string) { await espera(); this.eventosL = this.eventosL.filter((x) => x.id !== id); }
+
+  // ------------------------------------------------------------------ 0021 (personas, duplicados, verificación, informe)
+  private personasL: PersonaLista[] = Array.from({ length: 36 }, (_, i) => personaEjemplo(i));
+  private descartadas = new Set<string>();
+  private verificacionesL = [
+    { id: "vf-1", estado: "pendiente", notas: null as string | null, verificado_en: null as string | null, verificado_por: null as string | null,
+      visita_fecha: haceDias(4), resultado: "Conversación completa", colaborador: "Colaboradora de ejemplo", persona: "Ana Ejemplo", persona_id: "pe-0",
+      telefono: "3000000001", whatsapp: true, direccion: "Calle de ejemplo 1" as string | null, barrio_vereda: "Centro" },
+    { id: "vf-2", estado: "confirmada", notas: "Confirmó la visita." as string | null, verificado_en: haceDias(1) as string | null,
+      verificado_por: "Director de ejemplo" as string | null, visita_fecha: haceDias(5), resultado: "Conversación breve", colaborador: "Colaborador de ejemplo",
+      persona: "Luis Muestra", persona_id: "pe-1", telefono: "3000000002", whatsapp: false, direccion: null as string | null, barrio_vereda: "La Mina" },
+  ];
+  private lunesPasado() { return diaMas(-((new Date().getDay() + 6) % 7) - 7); }
+
+  async personas(f: FiltrosPersonas, desde: number) {
+    await espera();
+    const x = limpiarFiltros(f);
+    const n = (t: unknown) => String(t ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const filas = this.personasL.filter((p) =>
+      (!x.texto || n(p.nombre).includes(n(x.texto)) || (p.cedula ?? "") === x.texto.replace(/\D/g, "")) &&
+      (!x.vereda || n(p.barrio_vereda).includes(n(x.vereda))) && (!x.puesto || n(p.puesto_votacion) === n(x.puesto)) &&
+      (!x.mesa || p.mesa_votacion === x.mesa) && (!x.sin_puesto || !p.puesto_votacion) &&
+      (!x.vota || (x.vota === "sin_dato" ? !p.vota_en_pijao : p.vota_en_pijao === x.vota)) && (!x.estado || p.estado === x.estado) &&
+      (!x.predio || (p.predio ?? "").includes(x.predio)) && (!x.id || p.id === x.id) && (!x.registro_por || p.registrado_por === x.registro_por));
+    return { total: filas.length, filas: filas.slice(desde, desde + 50).map((p) => ({ ...p })) };
+  }
+  async resumenPersonas(): Promise<ResumenPersonas> {
+    await espera();
+    const con = this.personasL.filter((p) => p.puesto_votacion);
+    const puestos = [...new Set(con.map((p) => p.puesto_votacion as string))].map((puesto) => {
+      const de = con.filter((p) => p.puesto_votacion === puesto);
+      const mesas = [...new Set(de.map((p) => p.mesa_votacion ?? "").filter(Boolean))].sort((a, b) => Number(a) - Number(b))
+        .map((mesa) => ({ mesa, personas: de.filter((p) => p.mesa_votacion === mesa).length }));
+      return { puesto, personas: de.length, mesas };
+    });
+    return {
+      total_visibles: this.personasL.length, completas: this.personasL.length, con_puesto: con.length,
+      vota: { si: this.personasL.filter((p) => p.vota_en_pijao === "si").length, no: this.personasL.filter((p) => p.vota_en_pijao === "no").length,
+        no_sabe: 0, sin_dato: this.personasL.filter((p) => !p.vota_en_pijao).length },
+      puestos, sugeridos: puestos.map((p) => p.puesto),
+      equipo: [{ id: "Colaboradora de ejemplo", nombre: "Colaboradora de ejemplo" }, { id: "Colaborador de ejemplo", nombre: "Colaborador de ejemplo" }],
+    };
+  }
+  async historiaPersona(id: string): Promise<EventoHistoria[]> {
+    await espera();
+    const p = this.personasL.find((x) => x.id === id);
+    return p ? [
+      { fecha: haceDias(2), tipo: "visita", titulo: "Visita: Conversación completa", detalle: null, por: p.registrado_por ?? null },
+      { fecha: haceDias(9), tipo: "autorizacion", titulo: "Autorizó: datos personales", detalle: "Método: firma pantalla", por: p.registrado_por ?? null },
+      { fecha: p.creado_en ?? haceDias(9), tipo: "registro", titulo: "Quedó registrada", detalle: null, por: p.registrado_por ?? null },
+    ] : [];
+  }
+  async guardarVotacion(id: string, vota: string | null, puesto: string | null, mesa: string | null) {
+    await espera();
+    const p = this.personasL.find((x) => x.id === id);
+    if (!p) throw new ErrorPanel("Persona no encontrada");
+    if (mesa && !/^\d{1,3}$/.test(mesa)) throw new ErrorPanel("La mesa es un número de 1 a 999");
+    Object.assign(p, vota === "no" ? { vota_en_pijao: "no", puesto_votacion: null, mesa_votacion: null }
+      : { vota_en_pijao: vota ?? (puesto ? "si" : null), puesto_votacion: puesto, mesa_votacion: mesa });
+    this.auditar("persona_votacion", "persona", id, { puesto, mesa });
+  }
+  async duplicados(): Promise<Duplicados> {
+    await espera();
+    const [a, b] = this.personasL;
+    const viv = (id: string, dir: string) => ({ id, direccion: dir, nombre_finca: null, barrio_vereda: "Centro", predio: "Predio IGAC 635480100000000100015000000000",
+      estado: "visitada_conversacion", lat: 4.3335, lng: -75.7045, creado_en: haceDias(6), registrado_por: "Colaboradora de ejemplo", visitas: 1, personas: 2 });
+    const per = (p: PersonaLista) => ({ id: p.id, nombre: p.nombre, cedula_ult3: p.cedula?.slice(-3) ?? null, telefono_ult4: p.telefono?.slice(-4) ?? null,
+      fecha_nacimiento: p.fecha_nacimiento ?? null, puesto_votacion: p.puesto_votacion ?? null, mesa_votacion: p.mesa_votacion ?? null, estado: p.estado ?? "activa",
+      creado_en: p.creado_en ?? haceDias(3), direccion: p.direccion ?? null, barrio_vereda: p.barrio_vereda ?? null, vivienda_id: null, registrado_por: p.registrado_por ?? null });
+    return {
+      viviendas: this.descartadas.has("v") ? [] : [{ a: viv("viv-a", "Calle 5 # 3-10"), b: viv("viv-b", "calle 5 #3-10"), motivo: "Mismo predio del IGAC", metros: 2 }],
+      personas: this.descartadas.has("p") || !a || !b ? [] : [{ a: per(a), b: { ...per(a), id: b.id, cedula_ult3: null }, motivo: "Mismo nombre y fecha de nacimiento" }],
+    };
+  }
+  async descartarDuplicado(tipo: "vivienda" | "persona") { await espera(); this.descartadas.add(tipo === "vivienda" ? "v" : "p"); }
+  async fusionar(tipo: "vivienda" | "persona", _conservar: string, absorber: string) {
+    await espera();
+    if (tipo === "persona") this.personasL = this.personasL.filter((p) => p.id !== absorber);
+    this.descartadas.add(tipo === "vivienda" ? "v" : "p");
+    this.auditar(tipo === "vivienda" ? "fusionar_viviendas" : "fusionar_personas", tipo, absorber, {});
+  }
+  async verificaciones(): Promise<Verificaciones> {
+    await espera();
+    const lunes = this.lunesPasado();
+    return { semana: lunes, filas: this.verificacionesL.map((x) => ({ ...x })), semanas: [lunes], pendiente_sorteo: false, semana_anterior: lunes };
+  }
+  async sortearVerificaciones() {
+    await espera();
+    return { semana: this.lunesPasado(), total_visitas: 40, sorteadas: this.verificacionesL.length, ya_estaba: true };
+  }
+  async resultadoVerificacion(id: string, estado: string, notas: string) {
+    await espera();
+    const v = this.verificacionesL.find((x) => x.id === id);
+    if (v) Object.assign(v, { estado, notas: notas || null, verificado_en: estado === "pendiente" ? null : ahora(), verificado_por: estado === "pendiente" ? null : this.perfil.nombre });
+  }
+  async informeSemanal(): Promise<InformeSemanal> {
+    await espera();
+    const lunes = this.lunesPasado();
+    return {
+      desde: lunes, hasta: diaMas(-((new Date().getDay() + 6) % 7) - 1),
+      visitas: { total: 42, con_conversacion: 31, sin_contacto: 11, en_rojo: 1, semana_anterior: 35 },
+      viviendas_nuevas: 18, personas_nuevas: 37, necesidades_nuevas: 22, colaboradores_activos: 5,
+      por_colaborador: [{ nombre: "Colaboradora de ejemplo", visitas: 17, conversaciones: 14, en_rojo: 0 }, { nombre: "Colaborador de ejemplo", visitas: 12, conversaciones: 8, en_rojo: 1 }],
+      por_vereda: [{ vereda: "Centro", visitas: 20 }, { vereda: "La Mina", visitas: 12 }, { vereda: "Norte", visitas: 10 }],
+      necesidades_top: [{ tema: "Vías, movilidad y conectividad", n: 8 }, { tema: "Agua y medio ambiente", n: 5 }],
+      seguimientos_vencidos: 3, alertas: { abiertas: 2, nuevas: 1 },
+      verificaciones: { sorteadas: 3, pendientes: 1, confirmadas: 2, no_confirmadas: 0 },
+      votacion: { personas: this.personasL.length, con_puesto: this.personasL.filter((p) => p.puesto_votacion).length, vota_si: 20, vota_no: 3 },
+    };
+  }
+}
+
+/** Persona de ejemplo para la demostración (nombres inventados, nada real). */
+function personaEjemplo(i: number): PersonaLista {
+  const nombres = ["Ana", "Luis", "María", "Jorge", "Carmen", "Pedro", "Rosa", "Andrés", "Gloria", "Diego", "Luz", "Camilo"];
+  const apellidos = ["Ejemplo", "Muestra", "Prueba", "Modelo"];
+  const veredas = ["Centro", "Norte", "La Mina", "El Placer", "Las Palmas"];
+  const puestos = ["Puesto de ejemplo · Colegio", "Puesto de ejemplo · Escuela rural"];
+  const conPuesto = i % 3 !== 0;
+  return {
+    id: `pe-${i}`, completo: true, propia: false, nombre: `${nombres[i % nombres.length]} ${apellidos[i % apellidos.length]}`,
+    cedula: String(24000000 + i * 1371), tipo_documento: "CC", telefono: `300${String(1000000 + i * 7919).slice(0, 7)}`, telefono_es_whatsapp: i % 2 === 0,
+    correo: i % 4 === 0 ? `persona${i}@ejemplo.co` : null, fecha_nacimiento: `19${60 + (i % 35)}-0${1 + (i % 9)}-1${i % 9}`, edad: 30 + (i % 35),
+    direccion: i % 2 ? null : `Calle de ejemplo ${i}`, nombre_finca: i % 2 ? `Finca de ejemplo ${i}` : null, barrio_vereda: veredas[i % veredas.length],
+    predio: i % 5 === 0 ? `Predio IGAC 63548010000000010${String(i + 1).padStart(4, "0")}000000000` : null,
+    vota_en_pijao: conPuesto ? "si" : i % 6 === 0 ? "no" : null, puesto_votacion: conPuesto ? puestos[i % 2] : null, mesa_votacion: conPuesto ? String(1 + (i % 7)) : null,
+    estado: i === 7 ? "no_contactar" : "activa", contacto_autorizado: i % 3 !== 1,
+    registrado_por: i % 2 ? "Colaborador de ejemplo" : "Colaboradora de ejemplo", creado_en: haceDias(1 + (i % 20)), ultima_visita: haceDias(i % 10),
+  };
 }
